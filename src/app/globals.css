@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Red+Hat+Display&family=Red+Hat+Text:wght@400;500&display=swap');
+
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
