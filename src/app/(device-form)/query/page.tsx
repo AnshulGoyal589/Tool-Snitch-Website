@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 
 export default function DeviceFormPage() {
     return (
-        <div className="flex flex-col lg:justify-center lg:item-center pl-[4rem] md:justify-start ">
+        <div className="flex flex-col lg:justify-center lg:item-center pl-[4rem] md:justify-center ">
             
              <Stepper/>
             <div className="flex lg:justify-center py-4 lg:px-4 md:justify-left md:justify-center  sm:justify-center">
