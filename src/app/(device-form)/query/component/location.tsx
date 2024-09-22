@@ -21,25 +21,10 @@ import {
 
 const frameworks = [
   {
-    value: "next.js",
-    label: "Next.js",
+    value: "dwarka",
+    label: "dwarka",
   },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
+
 ]
 
 export function Locationchoose() {
@@ -55,7 +40,7 @@ export function Locationchoose() {
           rounded='xl'
           role="combobox"
           aria-expanded={open}
-          className="w-[600px] pl-10  justify-between"
+          className="w-[35.2rem] pl-10  justify-between"
         >
           {value
             ? frameworks.find((framework) => framework.value === value)?.label
@@ -65,9 +50,9 @@ export function Locationchoose() {
       </PopoverTrigger>
       <PopoverContent className="w-[600px] p-0">
         <Command>
-          <CommandInput placeholder="Search framework..." />
+          <CommandInput placeholder="Search area..." />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>No area found.</CommandEmpty>
             <CommandGroup>
               {frameworks.map((framework) => (
                 <CommandItem

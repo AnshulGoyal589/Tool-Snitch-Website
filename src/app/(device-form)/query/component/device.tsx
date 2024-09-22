@@ -21,28 +21,28 @@ import {
 
 const frameworks = [
   {
-    value: "next.js",
-    label: "Next.js",
+    value: "redmi note 9",
+    label: "redmi",
   },
   {
-    value: "sveltekit",
-    label: "SvelteKit",
+    value: "iphone 15",
+    label: "iphone 15",
   },
   {
-    value: "nuxt.js",
+    value: "samsung s24",
     label: "Nuxt.js",
   },
   {
-    value: "remix",
-    label: "Remix",
+    value: "oppo f1",
+    label: "oppo f1",
   },
   {
-    value: "astro",
-    label: "Astro",
+    value: "blackberry",
+    label: "blackberry",
   },
 ]
 
-export function ComboboxDemo() {
+export function Device() {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState("")
 
@@ -54,7 +54,7 @@ export function ComboboxDemo() {
           size="xl"
           role="combobox"
           aria-expanded={open}
-          className="w-[600px] pl-10  justify-between"
+          className="w-[35.2rem] pl-10  justify-between"
         >
           {value
             ? frameworks.find((framework) => framework.value === value)?.label
@@ -64,7 +64,7 @@ export function ComboboxDemo() {
       </PopoverTrigger>
       <PopoverContent className="w-[600px] p-0">
         <Command>
-          <CommandInput placeholder="Search framework..." />
+          <CommandInput placeholder="Search phone model..." />
           <CommandList>
             <CommandEmpty>No framework found.</CommandEmpty>
             <CommandGroup>
