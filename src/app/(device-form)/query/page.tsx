@@ -10,7 +10,7 @@ export default function DeviceFormPage() {
     return (
         <div className="flex flex-col lg:justify-center lg:item-center pl-[4rem] md:justify-start ">
             
-             <Stepper/>
+             {/* <Stepper/> */}
             <div className="flex lg:justify-center py-4 lg:px-4 md:justify-left md:justify-center  sm:justify-center">
             <div><h1 className="mb-4 text-4xl font-josefin font-bold leading-none tracking-tight md:pl-10 text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Device Form</h1></div>
             
