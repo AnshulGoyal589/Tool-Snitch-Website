@@ -4,8 +4,6 @@ import { Locationchoose } from "./component/location";
 import { Stepper } from "./component/stepper";
 import { Button } from "@/components/ui/button"
 
-
-
 export default function DeviceFormPage() {
     return (
         <div className="flex flex-col lg:justify-center lg:item-center pl-[4rem] md:justify-start ">
@@ -30,16 +28,11 @@ export default function DeviceFormPage() {
             <Locationchoose/>
             </div>
 
-            <div className="flex lg:justify-center py-4 lg:p-4  md:justify-center sm:justify-start sm:justify-center   ">
-            <Input placeholder="Tell us the problem you’re facing with your device" className="w-[35.2rem] rounded-2xl h-[3rem]" />
+      <Input placeholder="Tell us the problem you&apos;re facing with your device"
+        className="w-[85%] md:w-[640px] mx-auto rounded-2xl h-[3rem] text-sm sm:text-xl my-6" />
 
-            </div>
+      <Button size='xl' className="bg-[#C6A86B] text-neutral-100 sm:text-xl" variant="outline">Submit</Button>
 
-            <div className="flex lg:justify-center py-4 lg:p-4  md:justify-center sm:justify-center">
-            <Button size='xl' className="bg-[#C6A86B] text-neutral-100" variant="outline">Submit</Button>
-
-
-            </div>
-        </div>
-    );
+    </div>
+  );
 }
