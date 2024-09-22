@@ -77,7 +77,7 @@ export function NavigationBar() {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <Link href="/repair" legacyBehavior passHref>
+            <Link href="/query" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Find Repair shop
               </NavigationMenuLink>
