@@ -4,7 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { FaGithub, FaInstagram, FaLinkedinIn, FaTwitter } from "react-icons/fa";
+import { FaInstagram, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 
 
 export default function Home() {
@@ -17,20 +17,33 @@ export default function Home() {
       </div>
 
       <div className="flex justify-center items-center">
-        <button className="bg-[#C6A86B] py-5 px-10 rounded-full text-white text-xl my-5">Lets fix it</button>
+        <button className="bg-[#C6A86B] py-4 px-8 md:py-5 md:px-10 rounded-full text-white md:text-xl my-5">Lets fix it</button>
       </div>
 
       <div className="flex items-center justify-center my-10">
-        <img src="/iPhone.png" alt="" className="relative z-10 max-h-[880px] max-w-[709px] h-[140vh] w-[80vw] sm:w-[60vw] md:w-[50vw] " />
-        <div className="absolute max-h-[680px] w-[90%] h-[90%] bg-[#212121] rounded-[64px]">
+        <img src="/iPhone.png" alt="" className="relative z-10 h-[330px] sm:h-[500px] md:h-[660px] lg:h-[770px] w-[50vw] sm:w-[480px] lg:w-[659px]" />
+        <div className="absolute h-[230px] sm:h-[320px] md:h-[450px] lg:h-[550px] w-[90%] bg-[#212121] rounded-[48px] md:rounded-[64px]">
           <h1 className="absolute left-[5%] bottom-[10%] text-white z-20 text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold">Why <br /> Tool Snitch?</h1>
         </div>
       </div>
 
       <img src="/group.png" alt="" className="w-full" />
 
-      <div className="text-center max-w-[70%] text-[#212121] text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold my-6 mx-auto">
+      <div className="text-center max-w-[70%] text-[#212121] text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mx-auto">
         <h1>Get your device fixed with Tool Snitch in just 4 simple steps</h1>
+      </div>
+
+
+      <div className="flex overflow-x-scroll no-scrollbar gap-16 md:gap-20 my-10 ps-20 pe-10">
+        <div className="h-[230px] md:h-[85vh] min-w-[40vw] md:min-w-[40vw]  sm:p-4 md:p-8 lg:p-10 xl:p-12">
+          <img src="/t.jpg" alt="" className="size-6 sm:size-8 md:size-10 lg:size-12 xl:size-14"/>
+          <h1 className="text-[#212121] py-3 sm:py-4 md:py-6 lg:py-8 sm:text-lg md:text-xl lg:text-2xl">Tool Snitch needs to understand your problem to help you find the best stores possible.</h1>
+          <button className="bg-[#C6A86B] py-3 px-6 md:py-4 md:px-8 rounded-full text-white md:text-lg">Lets fix it</button>
+        </div>
+        <img src="/carousel1.jpg" className="h-[230px] md:h-[85vh] min-w-[85vw] md:min-w-[65vw] bg-[#D8BA74] rounded-[2rem]"></img>
+        <img src="/carousel2.jpg" className="h-[230px] md:h-[85vh] min-w-[85vw] md:min-w-[65vw] bg-[#D8BA74] rounded-[2rem]"></img>
+        <img src="/carousel3.jpg" className="h-[230px] md:h-[85vh] min-w-[85vw] md:min-w-[65vw] bg-[#D8BA74] rounded-[2rem]"></img>
+        <img src="/carousel4.jpg" className="h-[230px] md:h-[85vh] min-w-[85vw] md:min-w-[65vw] bg-[#D8BA74] rounded-[2rem]"></img>
       </div>
 
       <div className="bg-[#212121] my-10 py-16 px-10 sm:px-12 md:px-14 lg:px-20">
@@ -95,33 +108,33 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="bg-[#212121] mt-10 py-16 px-10 sm:px-12 md:px-14 lg:px-20 flex flex-col justify-center items-center gap-3 ">
+      <div className="bg-[#212121] mt-10 py-16 px-6 sm:px-10 md:px-14 lg:px-20 flex flex-col justify-center items-center gap-3 ">
         
         <img src="toolsnitchlogo.png" alt="" />
         
         <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-semibold text-white" >TOOL SNITCH</h1>
         
-        <div className="sm:text-lg md:text-xl lg:text-2xl xl:text-3xl flex justify-center items-center text-white gap-20 py-5 font-thin">
+        <div className="text-sm sm:text-lg md:text-xl lg:text-2xl xl:text-3xl flex justify-around items-center text-white w-[90%] lg:w-[80%] py-8 font-thin">
           <a href="/about">About Us</a>
           <a href="/repair">Repair</a>
           <a href="/track">Track Order</a>
           <a href="/contact">Contact Us</a>
         </div>
 
-        <div className="flex justify-around w-full text-[#ffffff]/50 mt-5">
-          <h1 className="" >&copy; 2035 Tool Snitch</h1>
-          <div className="flex gap-10">
-            <a href="" className="*:md:size-5 *:lg:size-6" target="_blank" >
-              <FaTwitter />
+        <div className="flex justify-around items-center w-full text-[#ffffff]/50 mt-5">
+          <h1 className="text-sm sm:text-base md:text-lg" >&copy; 2035 Tool Snitch</h1>
+          <div className="flex w-[20%] justify-around items-center">
+            <a href="" className="" target="_blank" >
+              <FaTwitter className="md:size-5 lg:size-6" />
             </a>
-            <a href="" className="*:md:size-5 *:lg:size-6" target="_blank" >
-              <FaInstagram />
+            <a href="" className="" target="_blank" >
+              <FaInstagram className="md:size-5 lg:size-6"/>
             </a>
-            <a href="" className="*:md:size-5 *:lg:size-6" target="_blank" >
-              <FaLinkedinIn />
+            <a href="" className="" target="_blank" >
+              <FaLinkedinIn className="md:size-5 lg:size-6" />
             </a>
           </div>
-          <a href="" className="">Terms & Conditions</a>
+          <a href="" className="text-sm sm:text-base md:text-lg">Terms & Conditions</a>
         </div>
       </div>
 
