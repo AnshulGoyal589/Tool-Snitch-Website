@@ -5,7 +5,7 @@ import { Button } from "@nextui-org/react";
 import { IoFilter } from "react-icons/io5";
 import { FaStar } from "react-icons/fa";
 
-const FilterButton = ({ children }) => {
+const FilterButton = ({ children }: { children: React.ReactNode }) => {
   return (
     <Button
       radius="full"
