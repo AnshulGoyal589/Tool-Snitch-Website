@@ -24,6 +24,18 @@ const frameworks = [
     value: "dwarka",
     label: "dwarka",
   },
+  {
+    value: "east delhi",
+    label: "east delhi",
+  },
+  {
+    value: "south delhi",
+    label: "south delhi",
+  },
+  {
+    value: "noida",
+    label: "noida",
+  },
 
 ]
 
@@ -36,23 +48,22 @@ export function Locationchoose() {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          size="xl"
-          rounded='xl'
           role="combobox"
           aria-expanded={open}
-          className="w-[35.2rem] pl-10  justify-between"
+          className="w-full h-14 rounded-2xl pl-10 justify-between sm:text-xl"
         >
           {value
             ? frameworks.find((framework) => framework.value === value)?.label
             : "Choose your location"}
-          <ChevronsUpDown className="ml-2 h-4 w-12 shrink-0 opacity-50" />
+          <ChevronsUpDown className="h-4 w-12 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[600px] p-0">
+      <PopoverContent side="bottom" 
+        avoidCollisions={false} className="md:w-[580px] h-[210px] rounded-2xl">
         <Command>
           <CommandInput placeholder="Search area..." />
           <CommandList>
-            <CommandEmpty>No area found.</CommandEmpty>
+            <CommandEmpty>No framework found.</CommandEmpty>
             <CommandGroup>
               {frameworks.map((framework) => (
                 <CommandItem
@@ -65,7 +76,7 @@ export function Locationchoose() {
                 >
                   <Check
                     className={cn(
-                      "mr-2 h-4 w-4",
+                      "h-5",
                       value === framework.value ? "opacity-100" : "opacity-0"
                     )}
                   />
