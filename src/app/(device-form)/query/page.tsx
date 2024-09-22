@@ -4,42 +4,30 @@ import { Locationchoose } from "./component/location";
 import { Stepper } from "./component/stepper";
 import { Button } from "@/components/ui/button"
 
-
-
 export default function DeviceFormPage() {
-    return (
-        <div className="flex flex-col lg:justify-center lg:item-center pl-[4rem] md:justify-center ">
-            
-             <Stepper/>
-            <div className="flex lg:justify-center py-4 lg:px-4 md:justify-left md:justify-center  sm:justify-center">
-            <div><h1 className="mb-4 text-4xl font-josefin font-bold leading-none tracking-tight md:pl-10 text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Device Form</h1></div>
-            
-            </div>
+  return (
+    <div className="flex flex-col justify-center items-center">
 
-            <div className="flex lg:justify-center md:justify-center sm:justify-center">
-            <div className=" grid grid-cols-3 gap-10">
-           <div> <Button size='xl' className="hover:bg-[#C6A86B] hover:text-white active:bg-[#C6A86B]" variant="outline">Smartphone</Button></div>
-           <div> <Button size='xl' className="hover:bg-[#C6A86B] hover:text-white" variant="outline">Laptop</Button></div>
-           <div> <Button size='xl' className="hover:bg-[#C6A86B] hover:text-white" variant="outline">Printer</Button></div></div>
-            </div>
+      <h1 className="my-8 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-josefin font-bold text-[#212121]">Device Form</h1>
 
-            <div className="flex lg:justify-center py-4 lg:p-4  md:justify-center sm:justify-start sm:justify-center">
-            <Device/>
-            </div>
-            <div className="flex lg:justify-center py-4 lg:p-4  md:justify-center sm:justify-start sm:justify-center">
-            <Locationchoose/>
-            </div>
+      <div className="flex justify-around items-center w-[90%] md:w-[700px]">
+        <div> <Button className="h-12 lg:h-14 sm:w-40 lg:w-44 px-6 rounded-2xl sm:text-xl hover:bg-[#C6A86B] hover:text-white active:bg-[#C6A86B]" variant="outline">Smartphone</Button></div>
+        <div> <Button className="h-12 lg:h-14 sm:w-40 lg:w-44 px-6 rounded-2xl sm:text-xl hover:bg-[#C6A86B] hover:text-white active:bg-[#C6A86B]" variant="outline">Laptop</Button></div>
+        <div> <Button className="h-12 lg:h-14 sm:w-40 lg:w-44 px-6 rounded-2xl sm:text-xl hover:bg-[#C6A86B] hover:text-white active:bg-[#C6A86B]" variant="outline">Printer</Button></div>
+      </div>
 
-            <div className="flex lg:justify-center py-4 lg:p-4  md:justify-center sm:justify-start sm:justify-center   ">
-            <Input placeholder="Tell us the problem you’re facing with your device" className="w-[35.2rem] rounded-2xl h-[3rem]" />
+      <div className="my-6 w-[85%] md:w-[640px] mx-auto">
+        <Device />
+      </div>
+      <div className="w-[85%] md:w-[640px] mx-auto">
+        <Locationchoose />
+      </div>
 
-            </div>
+      <Input placeholder="Tell us the problem you&apos;re facing with your device"
+        className="w-[85%] md:w-[640px] mx-auto rounded-2xl h-[3rem] text-sm sm:text-xl my-6" />
 
-            <div className="flex lg:justify-center py-4 lg:p-4  md:justify-center sm:justify-center">
-            <Button size='xl' className="bg-[#C6A86B] text-neutral-100" variant="outline">Submit</Button>
+      <Button size='xl' className="bg-[#C6A86B] text-neutral-100 sm:text-xl" variant="outline">Submit</Button>
 
-
-            </div>
-        </div>
-    );
+    </div>
+  );
 }

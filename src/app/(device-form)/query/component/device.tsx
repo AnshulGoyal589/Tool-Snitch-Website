@@ -30,7 +30,7 @@ const frameworks = [
   },
   {
     value: "samsung s24",
-    label: "Nuxt.js",
+    label: "samsung s24",
   },
   {
     value: "oppo f1",
@@ -39,6 +39,18 @@ const frameworks = [
   {
     value: "blackberry",
     label: "blackberry",
+  },
+  {
+    value: "vivo v23",
+    label: "vivo v23",
+  },
+  {
+    value: "poco X3",
+    label: "poco X3",
+  },
+  {
+    value: "nothing",
+    label: "nothing",
   },
 ]
 
@@ -51,18 +63,18 @@ export function Device() {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          size="xl"
           role="combobox"
           aria-expanded={open}
-          className="w-[35.2rem] pl-10  justify-between"
+          className="w-full h-14 rounded-2xl pl-10 justify-between sm:text-xl"
         >
           {value
             ? frameworks.find((framework) => framework.value === value)?.label
             : "Choose Device"}
-          <ChevronsUpDown className="ml-2 h-4 w-12 shrink-0 opacity-50" />
+          <ChevronsUpDown className="h-4 w-12 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[600px] p-0">
+      <PopoverContent side="bottom" 
+        avoidCollisions={false} className=" md:w-[580px] h-[210px] rounded-2xl">
         <Command>
           <CommandInput placeholder="Search phone model..." />
           <CommandList>
@@ -79,7 +91,7 @@ export function Device() {
                 >
                   <Check
                     className={cn(
-                      "mr-2 h-4 w-4",
+                      "h-5",
                       value === framework.value ? "opacity-100" : "opacity-0"
                     )}
                   />
