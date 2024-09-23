@@ -107,4 +107,8 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .thumbCarousel__snapped button {
+    @apply ring-gray-500 scale-105;
+  }
 }

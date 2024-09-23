@@ -24,7 +24,7 @@ const Stages = [{
 
 export default function DeviceFormLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const currentStageIndex = Stages.findIndex(stage => stage.link === pathname);
+    const currentStageIndex = Stages.findIndex(stage => pathname.startsWith(stage.link));
     return (
         <div className="">
             <div className="max-w-xl mx-auto mt-8 md:mt-12 mb-8">
