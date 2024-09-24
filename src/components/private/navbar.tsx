@@ -56,7 +56,7 @@ const components: { title: string; href: string; description: string }[] = [
 
 export function NavigationBar() {
   return (
-    <div className="hidden md:flex justify-around items-center pt-[48px] ">
+    <div className="hidden md:flex justify-around items-center pt-[24px] ">
 
       <a href="./"><img className="object-cover" src="/toolsnitchlogo.png" /></a>
 
