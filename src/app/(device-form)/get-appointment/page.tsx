@@ -27,11 +27,11 @@ const page = () => {
 
            <div className='pt-[32px] pb-[16px]'><span className='font-regular font-inter text-neutral-600'> Pick a time on</span><span className='font-bold font-inter text-neutral-600'> Wednesday,13th september</span></div>
            <div className="">
-           <div className='grid grid-cols-5 gap-[12px]'>
+           <div className='grid grid-cols-5 sm:gap-24 md:gap-20 lg:gap-[12px]'>
            
-           <div><Button className='bg-[transparent] hover:bg-[#C6A86B] hover:text-white border  lg:w-[172px] lg:h-[51px] md:w-[80px] md:h-[40px] border-neutral-300'>Come in anytime</Button></div>
-           <div><Button className='bg-[transparent] hover:bg-[#C6A86B] hover:text-white border lg:w-[172px] lg:h-[51px] border-neutral-300 font-regular font-inter text-neutral-700'>10:00 AM</Button></div>
-           <div><Button className='bg-[transparent] hover:bg-[#C6A86B] hover:text-white border lg:w-[172px]  lg:h-[51px] border-neutral-300 font-regular font-inter text-neutral-700'>11:00 AM</Button></div>
+           <div className=''><Button className='bg-[transparent] hover:bg-[#C6A86B] hover:text-white border  lg:w-[172px] lg:h-[51px] sm:w-[20px] sm:h-[40px]  md:w-[80px] md:h-[40px] border-neutral-300'>Anytime</Button></div>
+           <div><Button className='bg-[transparent] hover:bg-[#C6A86B] hover:text-white border lg:w-[172px] lg:h-[51px] sm:w-[20px] sm:h-[40px] md:w-[80px] md:h-[40px] border-neutral-300 font-regular font-inter text-neutral-700'>10:00 AM</Button></div>
+           <div><Button className='bg-[transparent] hover:bg-[#C6A86B] hover:text-white border lg:w-[172px]  lg:h-[51px] sm:w-[20px] sm:h-[40px] md:w-[80px] md:h-[40px] border-neutral-300 font-regular font-inter text-neutral-700'>11:00 AM</Button></div>
            <div><Button className='bg-[transparent] hidden lg:block hover:bg-[#C6A86B] hover:text-white border w-[172px] border-neutral-300 h-[51px] font-regular font-inter text-neutral-700'>12:00 PM</Button></div>
            <div><Button className='bg-[transparent] hidden lg:block hover:bg-[#C6A86B] hover:text-white border w-[172px] border-neutral-300 h-[51px] font-regular font-inter text-neutral-700'>01:00 PM</Button></div>
            <div><Button className='bg-[transparent] hidden lg:block hover:bg-[#C6A86B] hover:text-white border w-[172px] border-neutral-300 h-[51px] font-regular font-inter text-neutral-700'>02:00 PM</Button></div>
