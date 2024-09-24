@@ -1,9 +1,7 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
+import { useState, useEffect } from "react";
 import { Device } from "./component/device";
-import { Locationchoose } from "./component/location";
-import { useState } from "react";
 
 interface DeviceOption {
   value: string;
@@ -34,42 +32,57 @@ export default function DeviceFormPage() {
     ],
   };
 
-  const handleBrandSelect = (brand: string) => {
-    setSelectedBrand(brand);
-  };
+  useEffect(() => {
+    if (selectedDeviceType) {
+      localStorage.setItem("selectedDeviceType", selectedDeviceType);
+    }
+  }, [selectedDeviceType]);
+
+  useEffect(() => {
+    if (selectedBrand) {
+      localStorage.setItem("selectedBrand", selectedBrand);
+    }
+  }, [selectedBrand]);
 
   const isNextDisabled = !selectedDeviceType || !selectedBrand;
 
   return (
     <div className="flex flex-col items-center md:min-h-screen">
-      <h1 className="mt-3 mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-josefin font-bold text-[#212121]">Device Form</h1>
+      <h1 className="mt-3 mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-josefin font-bold text-[#212121]">
+        Device Form
+      </h1>
 
       <div className="flex justify-around items-center flex-col gap-5 sm:gap-0 sm:flex-row w-[90%] md:w-[700px] sm:my-4">
-        <div className={`h-12 lg:h-32 w-44 sm:w-40 lg:w-44 px-6 rounded-2xl sm:text-xl flex justify-center items-center border-3 cursor-pointer ${selectedDeviceType === "smartphone" ? "bg-[#C6A86B] text-white" : "hover:bg-[#C6A86B] hover:text-white"}`}
-          onClick={() => setSelectedDeviceType("smartphone")}>
+        <div
+          className={`h-12 lg:h-32 w-44 sm:w-40 lg:w-44 px-6 rounded-2xl sm:text-xl flex justify-center items-center border-3 cursor-pointer ${selectedDeviceType === "smartphone" ? "bg-[#C6A86B] text-white" : "hover:bg-[#C6A86B] hover:text-white"}`}
+          onClick={() => setSelectedDeviceType("smartphone")}
+        >
           Smartphone
         </div>
-        <div className={`h-12 lg:h-32 w-44 sm:w-40 lg:w-44 px-6 rounded-2xl sm:text-xl flex justify-center items-center border-3 cursor-pointer ${selectedDeviceType === "laptop" ? "bg-[#C6A86B] text-white" : "hover:bg-[#C6A86B] hover:text-white"}`}
-          onClick={() => setSelectedDeviceType("laptop")}>
+        <div
+          className={`h-12 lg:h-32 w-44 sm:w-40 lg:w-44 px-6 rounded-2xl sm:text-xl flex justify-center items-center border-3 cursor-pointer ${selectedDeviceType === "laptop" ? "bg-[#C6A86B] text-white" : "hover:bg-[#C6A86B] hover:text-white"}`}
+          onClick={() => setSelectedDeviceType("laptop")}
+        >
           Laptop
         </div>
-        <div className={`h-12 lg:h-32 w-44 sm:w-40 lg:w-44 px-6 rounded-2xl sm:text-xl flex justify-center items-center border-3 cursor-pointer ${selectedDeviceType === "printer" ? "bg-[#C6A86B] text-white" : "hover:bg-[#C6A86B] hover:text-white"}`}
-          onClick={() => setSelectedDeviceType("printer")}>
+        <div
+          className={`h-12 lg:h-32 w-44 sm:w-40 lg:w-44 px-6 rounded-2xl sm:text-xl flex justify-center items-center border-3 cursor-pointer ${selectedDeviceType === "printer" ? "bg-[#C6A86B] text-white" : "hover:bg-[#C6A86B] hover:text-white"}`}
+          onClick={() => setSelectedDeviceType("printer")}
+        >
           Printer
         </div>
       </div>
 
       <div className="my-8 w-[85%] md:w-[640px] mx-auto">
-        <Device options={deviceOptions[selectedDeviceType as DeviceType] || []} onBrandSelect={handleBrandSelect} />
+        <Device
+          options={deviceOptions[selectedDeviceType as DeviceType] || []}
+          onBrandSelect={setSelectedBrand}
+        />
       </div>
-      {/* <div className="w-[85%] md:w-[640px] mx-auto">
-        <Locationchoose />
-      </div> */}
 
-      {/* Next button */}
-      <a 
-        href="/problem" 
-        className={`flex justify-center items-center h-11 px-8 mb-10 sm:h-14 rounded-3xl ${isNextDisabled ? "bg-gray-400 cursor-not-allowed" : "bg-[#C6A86B] text-neutral-100"} sm:text-xl`} 
+      <a
+        href={`/query/problem`}
+        className={`flex justify-center items-center h-11 px-8 mb-10 sm:h-14 rounded-3xl ${isNextDisabled ? "bg-gray-400 cursor-not-allowed" : "bg-[#C6A86B] text-neutral-100"} sm:text-xl`}
         onClick={(e) => {
           if (isNextDisabled) {
             e.preventDefault();
