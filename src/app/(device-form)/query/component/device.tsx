@@ -1,10 +1,7 @@
-"use client"
-
-import * as React from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
-
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -12,51 +9,26 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 
-const frameworks = [
-  {
-    value: "redmi note 9",
-    label: "redmi",
-  },
-  {
-    value: "iphone 15",
-    label: "iphone 15",
-  },
-  {
-    value: "samsung s24",
-    label: "samsung s24",
-  },
-  {
-    value: "oppo f1",
-    label: "oppo f1",
-  },
-  {
-    value: "blackberry",
-    label: "blackberry",
-  },
-  {
-    value: "vivo v23",
-    label: "vivo v23",
-  },
-  {
-    value: "poco X3",
-    label: "poco X3",
-  },
-  {
-    value: "nothing",
-    label: "nothing",
-  },
-]
+interface DeviceOption {
+  value: string;
+  label: string;
+}
 
-export function Device() {
-  const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
+interface DeviceProps {
+  options: DeviceOption[];
+  onBrandSelect: (brand: string) => void; // New prop for brand selection
+}
+
+export function Device({ options, onBrandSelect }: DeviceProps) {
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -67,35 +39,28 @@ export function Device() {
           aria-expanded={open}
           className="w-full h-14 rounded-2xl pl-10 justify-between sm:text-xl"
         >
-          {value
-            ? frameworks.find((framework) => framework.value === value)?.label
-            : "Choose Device"}
+          {value ? options.find((option) => option.value === value)?.label : "Choose Device"}
           <ChevronsUpDown className="h-4 w-12 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent side="bottom" 
-        avoidCollisions={false} className=" md:w-[580px] h-[210px] rounded-2xl">
+      <PopoverContent side="bottom" avoidCollisions={false} className="md:w-[580px] h-[210px] rounded-2xl">
         <Command>
-          <CommandInput placeholder="Search phone model..." />
+          <CommandInput placeholder="Search brand..." />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>Please select a device first.</CommandEmpty>
             <CommandGroup>
-              {frameworks.map((framework) => (
+              {options.map((option) => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
+                  key={option.value}
+                  value={option.value}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue)
-                    setOpen(false)
+                    setValue(currentValue === value ? "" : currentValue);
+                    onBrandSelect(currentValue); // Call onBrandSelect when a brand is selected
+                    setOpen(false);
                   }}
                 >
-                  <Check
-                    className={cn(
-                      "h-5",
-                      value === framework.value ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {framework.label}
+                  <Check className={cn("h-5", value === option.value ? "opacity-100" : "opacity-0")} />
+                  {option.label}
                 </CommandItem>
               ))}
             </CommandGroup>
@@ -103,5 +68,5 @@ export function Device() {
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }
