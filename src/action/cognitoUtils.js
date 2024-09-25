@@ -8,10 +8,8 @@ const poolData = {
 };
 const userPool = new CognitoUserPool(poolData);
 
-export function signIn() {
+export function signIn(ID, password) {
   console.log("Signing in")
-  const ID = "atishayj2202gmail.com";
-  const password = "Atishayj2202@";
   const authenticationDetails = new AuthenticationDetails({
     Username: ID,
     Password: password,
