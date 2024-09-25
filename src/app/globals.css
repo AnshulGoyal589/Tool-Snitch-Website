@@ -4,6 +4,34 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Red+Hat+Display&family=Red+Hat+Text:wght@400;500&display=swap');
 
+@keyframes slideIn {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+.nav-menu {
+  animation: slideIn 0.4s ease-out forwards;
+}
+
+.nav-menu-exit {
+  animation: slideOut 0.4s ease-in forwards;
+}
+
 
 /* :root {
   --background: #ffffff;

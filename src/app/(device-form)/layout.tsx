@@ -27,7 +27,7 @@ export default function DeviceFormLayout({ children }: { children: React.ReactNo
     const currentStageIndex = Stages.findIndex(stage => pathname.startsWith(stage.link));
     return (
         <div className="">
-            <div className="max-w-xl mx-auto mt-8 md:mt-12 mb-8">
+            <div className="max-w-xl mx-auto my-8">
                 <div className="flex justify-center items-center gap-2 md:gap-8">
                     {Stages.map((stage, index) => (
                         <Link key={`stage-${index}`} href={stage.link}>
