@@ -2,6 +2,7 @@ import { FaStar } from "react-icons/fa";
 import { Badge } from "@/components/ui/badge";
 import HeroCarousel from "../Carousel/HeroCarousel";
 import { Button } from "@nextui-org/react";
+import Link from "next/link";
 
 interface ShopHeroProps {
   shopName: string;
@@ -29,7 +30,7 @@ export default function ShopHero({
 }: ShopHeroProps) {
   return (
     <div className="mx-3 mt-4 md:mx-8 lg:mx-16 xl:mx-20">
-      <h1 className="text-5xl font-bold">{"QuickFix Tech Solutions"}</h1>
+      <h1 className="text-5xl font-bold">{shopName || "QuickFix Tech Solutions"}</h1>
       <div className="mt-4 flex items-center">
         <div className="flex items-center gap-2">
           <span className="flex items-center gap-1 rounded-full bg-[#FFD700]/20 px-2 py-1">
@@ -47,7 +48,7 @@ export default function ShopHero({
           <span className="ml-2 text-sm text-gray-800">{rating || 0 }</span>
         </div>
         <div className="ml-4 flex items-center gap-2">
-          <Badge variant="outline">{city}</Badge>
+          <Badge variant="outline">{city || "Mumbai"}</Badge>
           <Badge variant="outline">10 Year+</Badge>
         </div>
       </div>
@@ -57,6 +58,7 @@ export default function ShopHero({
             name="product"
             list={images || dummyData}
             orientation="horizontal"
+            className="h-[448px]"
           />
         </div>
         <div className="flex-1">
@@ -98,12 +100,16 @@ export default function ShopHero({
           </div>
           <div className="mt-4 flex items-center gap-2">
             <Button
+              as={Link}
+              href="/get-appointment"
               radius="full"
               className="bg-[#D8BA74] px-4 py-6 text-lg text-white"
             >
               Get Appinment{" "}
             </Button>
             <Button
+             as={Link}
+              href="/shops" 
               radius="full"
               variant="bordered"
               className="border-[#D8BA74] px-4 py-6 text-lg text-[#D8BA74]"

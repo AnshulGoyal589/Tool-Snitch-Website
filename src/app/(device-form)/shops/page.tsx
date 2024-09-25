@@ -5,39 +5,66 @@ import { FaSearch } from "react-icons/fa";
 import { Button } from "@nextui-org/react";
 import { IoFilter } from "react-icons/io5";
 import { FaStar } from "react-icons/fa";
-import { useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 import { SortDescriptor } from "@nextui-org/react";
 import { api } from "@/api/api";
 
-export default function DeviceFormPage() {
+export default function ShopsPage() {
   const [search, setSearch] = useState("");
   const [shops, setShops] = useState([]);
+  const [filteredShops, setFilteredShops] = useState([]);
+  const [dataScraped, setDataScraped] = useState([]);
   const [message, setMessage] = useState("");
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "rating",
     direction: "ascending",
   });
 
-  const featchShops = useCallback(async () => {
+  const featchShopsByRating = async () => {
     try {
       setMessage("");
-      const response = await api.get("/read/shops", {
-        params: {
-          search,
-          sortDescriptor,
-        },
-      });
-      setShops(response.data);
+      const response = await api.get("/read/shopsDatabyRating");
+      console.log(response.data);
+      setDataScraped(response.data);
     } catch (error) {
       console.error(error?.response?.data?.message);
       setMessage(error?.response?.data?.message);
     }
-  }, [search, sortDescriptor]);
-
+  }
+  
 
   useEffect(() => {
-    featchShops();
-  }, [featchShops, search, sortDescriptor]);
+    featchShopsByRating();
+  }, []);
+
+  useEffect(() => {
+    setFilteredShops(
+      shops.filter((shop) =>
+        shop.shopName.toLowerCase().includes(search.toLowerCase())
+      )
+    );
+  }, [search, shops]);
+
+  useEffect(() => {
+    let shop;
+    if (dataScraped.length > 0) {
+      shop = dataScraped.map((shop) => {
+        return {
+          id : shop._id,
+          shopName: shop.shopName,
+          rating: shop.rating,
+          location : shop.location,
+          picture: shop.images[0],
+          yearOfService: shop?.yearOfService || "10 Year",
+          aproximateDistance: "1.2 km",
+        };
+      });
+      console.log(shop);
+      setShops(shop);
+      setFilteredShops(shop);
+    }
+  }
+  , [dataScraped]);
 
   return (
     <div className="mx-4 my-8 md:mx-8 lg:mx-16">
@@ -50,6 +77,8 @@ export default function DeviceFormPage() {
             type="text"
             placeholder="Search for shops"
             className="text-md w-full rounded-r-full bg-transparent p-2 focus:outline-none"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <Button
@@ -73,7 +102,7 @@ export default function DeviceFormPage() {
           <span>Price: High to Low</span>
         </FilterButton>
       </div>
-      <ShopsSection />
+      <ShopsSection shops={filteredShops} />
     </div>
   );
 }

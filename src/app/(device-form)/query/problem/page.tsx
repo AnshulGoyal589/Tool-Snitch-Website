@@ -1,7 +1,7 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type DeviceType = "smartphone" | "laptop" | "printer";
 
@@ -57,7 +57,7 @@ const Page = () => {
     if (storedOtherProblem) {
       setOtherProblem(storedOtherProblem);
     }
-  }, []);
+  }, [laptop, printer, smartphone]);
 
   const handleProblemSelect = (problem: string) => {
     setSelectedProblem(problem);

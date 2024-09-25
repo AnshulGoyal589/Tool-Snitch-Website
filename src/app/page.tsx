@@ -5,6 +5,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { FaInstagram, FaLinkedinIn, FaTwitter } from "react-icons/fa";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 
 export default function Home() {
@@ -13,21 +16,23 @@ export default function Home() {
 
       <div className="flex flex-col items-center justify-center text-[#212121] text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold my-6">
         <h1>Have a broken device?</h1>
-        <h1>We'll find stores to fix it</h1>
+        <h1>We&apos;ll find stores to fix it</h1>
       </div>
 
       <div className="flex justify-center items-center">
-        <button className="bg-[#C6A86B] py-4 px-8 md:py-5 md:px-10 rounded-full text-white md:text-xl my-5">Lets fix it</button>
+        <Link href={"/login"} className="bg-[#C6A86B] py-4 px-8 md:py-5 md:px-10 rounded-full text-white md:text-xl my-5">
+          Lets fix it
+          </Link>
       </div>
 
       <div className="flex items-center justify-center my-10">
-        <img src="/iPhone.png" alt="" className="relative z-10 h-[330px] sm:h-[500px] md:h-[660px] lg:h-[770px] w-[50vw] sm:w-[480px] lg:w-[659px]" />
+        <Image height={400} width={300} src="/iPhone.png" alt="" className="relative z-10 h-[330px] sm:h-[500px] md:h-[660px] lg:h-[770px] w-[50vw] sm:w-[480px] lg:w-[659px]" />
         <div className="absolute h-[230px] sm:h-[320px] md:h-[450px] lg:h-[550px] w-[90%] bg-[#212121] rounded-[48px] md:rounded-[64px]">
           <h1 className="absolute left-[5%] bottom-[10%] text-white z-20 text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold">Why <br /> Tool Snitch?</h1>
         </div>
       </div>
 
-      <img src="/group.png" alt="" className="w-full" />
+      <Image height={400} width={300} src="/group.png" alt="" className="w-full" />
 
       <div className="text-center max-w-[70%] text-[#212121] text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mx-auto">
         <h1>Get your device fixed with Tool Snitch in just 4 simple steps</h1>
@@ -36,14 +41,15 @@ export default function Home() {
 
       <div className="flex overflow-x-scroll no-scrollbar gap-16 md:gap-20 my-10 ps-20 pe-10">
         <div className="h-[230px] md:h-[85vh] min-w-[40vw] md:min-w-[40vw]  sm:p-4 md:p-8 lg:p-10 xl:p-12">
-          <img src="/t.jpg" alt="" className="size-6 sm:size-8 md:size-10 lg:size-12 xl:size-14"/>
+          <Image src="/t.jpg" alt="" className="size-6 sm:size-8 md:size-10 lg:size-12 xl:size-14" height={400} width={300}/>
           <h1 className="text-[#212121] py-3 sm:py-4 md:py-6 lg:py-8 sm:text-lg md:text-xl lg:text-2xl">Tool Snitch needs to understand your problem to help you find the best stores possible.</h1>
-          <button className="bg-[#C6A86B] py-3 px-6 md:py-4 md:px-8 rounded-full text-white md:text-lg">Lets fix it</button>
-        </div>
-        <img src="/carousel1.jpg" className="h-[230px] md:h-[85vh] min-w-[85vw] md:min-w-[65vw] bg-[#D8BA74] rounded-[2rem]"></img>
-        <img src="/carousel2.jpg" className="h-[230px] md:h-[85vh] min-w-[85vw] md:min-w-[65vw] bg-[#D8BA74] rounded-[2rem]"></img>
-        <img src="/carousel3.jpg" className="h-[230px] md:h-[85vh] min-w-[85vw] md:min-w-[65vw] bg-[#D8BA74] rounded-[2rem]"></img>
-        <img src="/carousel4.jpg" className="h-[230px] md:h-[85vh] min-w-[85vw] md:min-w-[65vw] bg-[#D8BA74] rounded-[2rem]"></img>
+<Link href={"/login"} className="bg-[#C6A86B] py-4 px-8 md:py-5 md:px-10 rounded-full text-white md:text-xl my-5">
+          Lets fix it
+          </Link>        </div>
+        <Image height={400} width={300} src="/carousel1.jpg" className="h-[230px] md:h-[85vh] min-w-[85vw] md:min-w-[65vw] bg-[#D8BA74] rounded-[2rem]" alt="" />
+        <Image height={400} width={300} src="/carousel2.jpg" className="h-[230px] md:h-[85vh] min-w-[85vw] md:min-w-[65vw] bg-[#D8BA74] rounded-[2rem]"  alt="" />
+        <Image height={400} width={300} src="/carousel3.jpg" className="h-[230px] md:h-[85vh] min-w-[85vw] md:min-w-[65vw] bg-[#D8BA74] rounded-[2rem]"  alt="" />
+        <Image height={400} width={300} src="/carousel4.jpg" className="h-[230px] md:h-[85vh] min-w-[85vw] md:min-w-[65vw] bg-[#D8BA74] rounded-[2rem]"  alt="" />
       </div>
 
       <div className="bg-[#212121] my-10 py-16 px-10 sm:px-12 md:px-14 lg:px-20">

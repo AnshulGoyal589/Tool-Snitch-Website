@@ -54,7 +54,7 @@ const ShopProfileSchema = z.object({
 export const description =
   "A product edit page. The product edit page has a form to edit the product details, stock, product category, product status, and product images. The product edit page has a sidebar navigation and a main content area. The main content area has a form to edit the product details, stock, product category, product status, and product images. The sidebar navigation has links to product details, stock, product category, product status, and product images.";
 
-export default function Dashboard() {
+const MyShop = () => {
   const { toast } = useToast();
 
   const [disabled, setDisabled] = useState(true);
@@ -85,7 +85,7 @@ export default function Dashboard() {
     try {
       const response = await api.get("/read/read/shopProfile'");
       setShopDetails(response.data);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       toast({
         variant: "destructive",
@@ -103,6 +103,7 @@ export default function Dashboard() {
     if (shopDetails) {
       form.setValue("shopName", shopDetails.shopName);
       form.setValue("shopMail", shopDetails.shopMail);
+      form.setValue("shopDescription", shopDetails.shopDescription);
       form.setValue("shopPhone", shopDetails.shopPhone);
       form.setValue("address", shopDetails.address);
       form.setValue("pincode", shopDetails.pincode);
@@ -150,6 +151,7 @@ export default function Dashboard() {
         shopPhone: data.shopPhone,
         address: data.address,
         pincode: data.pincode,
+        shopDescription: data.shopDescription,
         // status: form.getValues("status"),
         images: image,
       };
@@ -222,7 +224,6 @@ export default function Dashboard() {
                                   <FormLabel>Description</FormLabel>
                                   <FormControl>
                                     <Textarea
-                                      placeholder="Description"
                                       className="h-32 resize-none"
                                       {...field}
                                       disabled={disabled}
@@ -345,31 +346,7 @@ export default function Dashboard() {
                             <span className="rounded-md border-1 border-y-gray-300 px-2 py-1 text-muted-foreground">
                               {form.getValues("status").toLocaleUpperCase()}
                             </span>
-                            {/* <Select>
-                              <SelectTrigger
-                                id="status"
-                                aria-label="Select status"
-                                aria-readonly="true"
-                                disabled={true}
-                                defaultValue=
-                              >
-                                <SelectValue placeholder="Select status" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="draft">
-                                  Draft
-                                </SelectItem>
-                                <SelectItem value="review">
-                                  Pending Review
-                                </SelectItem>
-                                <SelectItem value="published">
-                                  Published
-                                </SelectItem>
-                                <SelectItem value="archived">
-                                  Blocked
-                                </SelectItem>
-                              </SelectContent>
-                            </Select> */}
+                           
                           </div>
                           <div className="flex items-center gap-4">
                             {!disabled && (
@@ -529,9 +506,7 @@ export default function Dashboard() {
                             <span className="text-red-600">*</span> Maximum 5
                             images allowed, 2MB each
                           </span>
-                          <span className="text-xs text-muted-foreground">
-                            {image.length} images uploaded
-                          </span>
+                          
                         </div>
                       </CardContent>
                     </Card>
@@ -617,3 +592,7 @@ export default function Dashboard() {
     </div>
   );
 }
+
+
+
+export default MyShop;

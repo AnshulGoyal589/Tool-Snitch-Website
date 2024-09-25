@@ -18,10 +18,10 @@ import Link from "next/link";
 
 import useWindowSize from "react-use/lib/useWindowSize";
 
-export default function ShopsSection() {
+export default function ShopsSection({shops}: {shops: Shop[]}) {
   return (
     <div className="mt-4">
-      <ShopsTable />
+      <ShopsTable shops={shops}/>
     </div>
   );
 }
@@ -35,35 +35,35 @@ const columns = [
   { uid: "yearOfService", name: "Year of Service", sortable: true },
 ];
 
-const shops = [
-    {
-        id: 1,
-        shopName: "A Very Very Very Very Very Very Very Long Shop Name Pvt. Ltd.",
-        rating: 4,
-        picture: "https://randomuser.me/api/port",
-        location: "A- 577, Street No. -12, Tyagi Rd, Bank Colony, Mandoli Extension, Delhi, 110093",
-        aproximateDistance: "1.5 km",
-        yearOfService: 2,
-      },
-  {
-    id: 1,
-    shopName: "A Very Very Very Very Very Very Very Long Shop Name Pvt. Ltd.",
-    rating: 4,
-    picture: "https://randomuser.me/api/port",
-    location: "A- 577, Street No. -12, Tyagi Rd, Bank Colony, Mandoli Extension, Delhi, 110093",
-    aproximateDistance: "1.5 km",
-    yearOfService: 2,
-  },
-  {
-    id: 1,
-    shopName: "A Very Very Very Very Very Very Very Long Shop Name Pvt. Ltd.",
-    rating: 4,
-    picture: "https://randomuser.me/api/port",
-    location: "A- 577, Street No. -12, Tyagi Rd, Bank Colony, Mandoli Extension, Delhi, 110093",
-    aproximateDistance: "1.5 km",
-    yearOfService: 2,
-  },
-];
+// const shops = [
+//     {
+//         id: 1,
+//         shopName: "A Very Very Very Very Very Very Very Long Shop Name Pvt. Ltd.",
+//         rating: 4,
+//         picture: "https://randomuser.me/api/port",
+//         location: "A- 577, Street No. -12, Tyagi Rd, Bank Colony, Mandoli Extension, Delhi, 110093",
+//         aproximateDistance: "1.5 km",
+//         yearOfService: 2,
+//       },
+//   {
+//     id: 1,
+//     shopName: "A Very Very Very Very Very Very Very Long Shop Name Pvt. Ltd.",
+//     rating: 4,
+//     picture: "https://randomuser.me/api/port",
+//     location: "A- 577, Street No. -12, Tyagi Rd, Bank Colony, Mandoli Extension, Delhi, 110093",
+//     aproximateDistance: "1.5 km",
+//     yearOfService: 2,
+//   },
+//   {
+//     id: 1,
+//     shopName: "A Very Very Very Very Very Very Very Long Shop Name Pvt. Ltd.",
+//     rating: 4,
+//     picture: "https://randomuser.me/api/port",
+//     location: "A- 577, Street No. -12, Tyagi Rd, Bank Colony, Mandoli Extension, Delhi, 110093",
+//     aproximateDistance: "1.5 km",
+//     yearOfService: 2,
+//   },
+// ];
 
 type Shop = {
   id: number;
@@ -92,7 +92,7 @@ const MOBILE_COLUMNS = [
     "aproximateDistance"
 ];
 
-function ShopsTable() {
+function ShopsTable({shops}: {shops: Shop[]}) {
 
     
     
@@ -152,13 +152,13 @@ function ShopsTable() {
       case "picture":
         return (
           <div className="relative aspect-video w-32 overflow-hidden rounded-md bg-gray-300 mb-2">
-            {/* <Image
+            <Image
                 src={cellValue}
                 alt="Shop Picture"
                 layout="fill"
                 objectFit="cover"
                 unoptimized
-            /> */}
+            />
           </div>
         );
       default:
