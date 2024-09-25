@@ -1,4 +1,5 @@
 import { Button } from '@nextui-org/react'
+import Link from 'next/link'
 import React from 'react'
 
 
@@ -84,9 +85,9 @@ const page = () => {
         
         <div className="pb-4 flex items-center">
           <span className="pr-4 font-bold font-inter text-neutral-900">Rs 9999</span>
-          <Button className="w-[250px] rounded-xl  h-[50px] bg-[transparent] font-bold text-neutral-500 border border-neutral-400 hover:bg-[#C6A86B] hover:text-white">
+          <Link href={"/get-it-fixed"} className="w-[250px] rounded-xl  h-[50px] bg-[transparent] font-bold text-neutral-500 border border-neutral-400 hover:bg-[#C6A86B] hover:text-white flex justify-center items-center">
             Book Appointment
-          </Button>
+          </Link>
         </div>
         </div>
       </div>
