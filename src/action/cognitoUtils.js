@@ -8,10 +8,8 @@ const poolData = {
 };
 const userPool = new CognitoUserPool(poolData);
 
-export function signIn() {
+export function signIn(ID, password) {
   console.log("Signing in")
-  const ID = "atishayj2202gmail.com";
-  const password = "Atishayj2202@";
   const authenticationDetails = new AuthenticationDetails({
     Username: ID,
     Password: password,
@@ -55,6 +53,37 @@ export function signUp(ID, password, Name) {
       } else {
         resolve(result);
       }
+    });
+  });
+}
+
+
+export function getJwtToken(ID, password) {
+  const authenticationDetails = new AuthenticationDetails({
+    Username: ID,
+    Password: password,
+  });
+
+  const userData = {
+    Username: ID,
+    Pool: userPool,
+  };
+
+  const cognitoUser = new CognitoUser(userData);
+
+  return new Promise((resolve, reject) => {
+    cognitoUser.authenticateUser(authenticationDetails, {
+      onSuccess: (session) => {
+        // The ID token, Access token, and Refresh token
+        const idToken = session.getIdToken().getJwtToken();
+        const accessToken = session.getAccessToken().getJwtToken();
+        const refreshToken = session.getRefreshToken().getToken();
+
+        resolve({ idToken, accessToken, refreshToken });
+      },
+      onFailure: (err) => {
+        reject(err);
+      },
     });
   });
 }
