@@ -7,10 +7,12 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { usePathname } from "next/navigation";
 
 export function NavigationBar() {
   const [nav, setNav] = useState(false);
   const [animationClass, setAnimationClass] = useState('');
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleResize = () => {
@@ -87,27 +89,46 @@ export function NavigationBar() {
         <div>
           <NavigationMenu>
             <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>
-                  <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid gap-1 p-3 md:w-[400px] lg:w-[120px] divide-y divide-neutral-200">
-                    <li>
-                      <ListItem href="/docs" title="Account" />
-                    </li>
-                    <li>
-                      <ListItem href="/docs/installation" title="Orders" />
-                    </li>
-                    <li>
-                      <ListItem href="/docs/primitives/typography" title="Logout" />
-                    </li>
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
+              {pathname === "/" || pathname === "/register" || pathname === "/login" ? (
+                <NavigationMenuItem className="flex gap-2">
+                  <Link href="/register" legacyBehavior passHref>
+                    <NavigationMenuLink className="border-2 flex justify-center items-center rounded-full h-10 px-5 bg-[#C6A86B] border-[#C6A86B] text-white">
+                      Sign up
+                    </NavigationMenuLink>
+                  </Link>
+                  <Link href="/login" legacyBehavior passHref>
+                    <NavigationMenuLink className="border-2 flex justify-center items-center rounded-full h-10 px-5 text-[#C6A86B] border-[#C6A86B]">
+                      Login
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              ) : (
+                <NavigationMenu>
+                  <NavigationMenuList>
+                    <NavigationMenuItem>
+                      <NavigationMenuTrigger>
+                        <Avatar>
+                          <AvatarImage src="https://github.com/shadcn.png" />
+                          <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <ul className="grid gap-1 p-3 md:w-[400px] lg:w-[120px] divide-y divide-neutral-200">
+                          <li>
+                            <ListItem href="/docs" title="Account" />
+                          </li>
+                          <li>
+                            <ListItem href="/docs/installation" title="Orders" />
+                          </li>
+                          <li>
+                            <ListItem href="/docs/primitives/typography" title="Logout" />
+                          </li>
+                        </ul>
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                  </NavigationMenuList>
+                </NavigationMenu>
+              )}
             </NavigationMenuList>
           </NavigationMenu>
         </div>
