@@ -1,20 +1,82 @@
 "use client";
 
+import { useRouter } from 'next/navigation';
+import { CognitoUserPool, CognitoUserAttribute } from 'amazon-cognito-identity-js';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox"
+import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 
+// Cognito pool data
+const poolData = {
+  UserPoolId: 'ap-south-1_VKjbitmCA', // Replace with your Cognito User Pool ID
+  ClientId: '26b9i0nbi58vcq7gqfcdnjt8qo', // Replace with your Cognito Client ID
+};
+const userPool = new CognitoUserPool(poolData);
+
+// Sign-up function
+export function signUp(ID, password, Name = "abc") {
+  console.log("Signing up");
+
+  return new Promise((resolve, reject) => {
+    userPool.signUp(
+      ID,
+      password,
+      [
+        new CognitoUserAttribute({
+          Name: 'name',
+          Value: Name,
+        }),
+      ],
+      null,
+      (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
 
 export default function RegisterPage() {
-  const[selected,setSelected] = useState(false);
+  const router = useRouter(); // Next.js router for navigation
+  const [email, setEmail] = useState(''); // State for email input
+  const [password, setPassword] = useState(''); // State for password input
+  const [confirmPassword, setConfirmPassword] = useState(''); // State for confirm password input
+  const [selected, setSelected] = useState(false); // State for shop registration checkbox
+
+  // Handle sign-up process
+  const handleSignUp = () => {
+    if (!email || !password || !confirmPassword) {
+      alert("Please fill out all required fields.");
+      return;
+    }
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      alert("Passwords do not match. Please try again.");
+      return;
+    }
+
+    signUp(email, password, "abc")
+      .then(result => {
+        console.log("User signed up successfully:", result);
+        alert("Sign-up successful! Redirecting...");
+        router.push('/query'); // Redirect to /query after successful sign-up
+      })
+      .catch(error => {
+        console.error("Error signing up:", error);
+        alert(`Error signing up: ${error.message}`);
+      });
+  };
+
   return (
     <div className="flex flex-col justify-center item-center pt-[3rem]">
-
       <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-7 lg:gap-x-8 xl:gap-x-12 items-center lg:items-start">
           <div className="lg:col-span-3">
-
             <div className="">
               <h1 className="mb-4 text-4xl pt-2 font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white text-center lg:text-start">Sign up</h1>
             </div>
@@ -33,14 +95,35 @@ export default function RegisterPage() {
               </Button>
             </div>
 
-
             <div className="flex justify-center"><span>or</span></div>
-            <Input className="my-4 bg-[transparent] rounded-3xl h-12 w-[20rem] md:w-[30rem]" placeholder="Enter your Email" />
-            <Input className="my-4 bg-[transparent] rounded-3xl h-12 w-[20rem] md:w-[30rem]" placeholder="Enter a password" />
-            <Input className="my-4 bg-[transparent] rounded-3xl h-12 w-[20rem] md:w-[30rem]" placeholder="Confirm your password" />
 
-            <div className="flex items-center gap-2"
-            onClick={() => setSelected(!selected)}>
+            {/* Input for email */}
+            <Input
+              className="my-4 bg-[transparent] rounded-3xl h-12 w-[20rem] md:w-[30rem]"
+              placeholder="Enter your Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+
+            {/* Input for password */}
+            <Input
+              className="my-4 bg-[transparent] rounded-3xl h-12 w-[20rem] md:w-[30rem]"
+              type="password"
+              placeholder="Enter a password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            {/* Input for confirm password */}
+            <Input
+              className="my-4 bg-[transparent] rounded-3xl h-12 w-[20rem] md:w-[30rem]"
+              type="password"
+              placeholder="Confirm your password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+
+            <div className="flex items-center gap-2" onClick={() => setSelected(!selected)}>
               <Checkbox id="terms" />
               <label
                 htmlFor="terms"
@@ -49,31 +132,36 @@ export default function RegisterPage() {
                 Want to Register as a Shop?
               </label>
             </div>
-            
+
             {selected && (
               <div>
-              <Input className="my-4 bg-[transparent] rounded-3xl h-12 w-[20rem] md:w-[30rem]" placeholder="Enter your shop name" />
-            <Input className="my-4 bg-[transparent] rounded-3xl h-12 w-[20rem] md:w-[30rem]" placeholder="Enter your shop location" />
-            <Input className="my-4 bg-[transparent] rounded-3xl h-12 w-[20rem] md:w-[30rem]" placeholder="Enter your shop&apos;s specifications" />
-            <Input className="my-4 bg-[transparent] rounded-3xl h-12 w-[20rem] md:w-[30rem]" placeholder="Enter your phone number" />
-            </div>
+                <Input className="my-4 bg-[transparent] rounded-3xl h-12 w-[20rem] md:w-[30rem]" placeholder="Enter your shop name" />
+                <Input className="my-4 bg-[transparent] rounded-3xl h-12 w-[20rem] md:w-[30rem]" placeholder="Enter your shop location" />
+                <Input className="my-4 bg-[transparent] rounded-3xl h-12 w-[20rem] md:w-[30rem]" placeholder="Enter your shop's specifications" />
+                <Input className="my-4 bg-[transparent] rounded-3xl h-12 w-[20rem] md:w-[30rem]" placeholder="Enter your phone number" />
+              </div>
             )}
-            
 
-            <div><a href="./query"><Button className="my-4 hover:bg-black rounded-2xl h-12 w-[20rem] md:w-[30rem] bg-[#C6A86B]">Continue with Email</Button></a></div>
-            <div><span className="text-neutral-500">Looking to register as a shop? <a className="text-[#C6A86B]" href="/register">Register here</a></span></div>
+            {/* Continue with email button */}
+            <Button
+              className="my-4 hover:bg-black rounded-2xl h-12 w-[20rem] md:w-[30rem] bg-[#C6A86B]"
+              onClick={handleSignUp}
+            >
+              Continue with Email
+            </Button>
+
+            <div>
+              <span className="text-neutral-500">
+                Looking to register as a shop? <a className="text-[#C6A86B]" href="/register">Register here</a>
+              </span>
+            </div>
           </div>
 
           <div className="lg:col-span-4 mt-10 lg:mt-0 hidden lg:flex">
             <img className="w-full rounded-xl" src="login.png" alt="Hero Image" />
           </div>
         </div>
-
       </div>
-
-
-
-
     </div>
   );
 }
