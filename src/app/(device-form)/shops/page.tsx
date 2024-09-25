@@ -1,25 +1,46 @@
+"use client";
 import { ShopsSection } from "@/components";
 import { Input } from "@nextui-org/react";
 import { FaSearch } from "react-icons/fa";
 import { Button } from "@nextui-org/react";
 import { IoFilter } from "react-icons/io5";
 import { FaStar } from "react-icons/fa";
-
-const FilterButton = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <Button
-      radius="full"
-      variant="bordered"
-      className="flex h-6 items-center gap-2 text-xs"
-    >
-      {children}
-    </Button>
-  );
-};
+import { useCallback, useEffect, useState } from "react";
+import { SortDescriptor } from "@nextui-org/react";
+import { api } from "@/api/api";
 
 export default function DeviceFormPage() {
+  const [search, setSearch] = useState("");
+  const [shops, setShops] = useState([]);
+  const [message, setMessage] = useState("");
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
+    column: "rating",
+    direction: "ascending",
+  });
+
+  const featchShops = useCallback(async () => {
+    try {
+      setMessage("");
+      const response = await api.get("/read/shops", {
+        params: {
+          search,
+          sortDescriptor,
+        },
+      });
+      setShops(response.data);
+    } catch (error) {
+      console.error(error?.response?.data?.message);
+      setMessage(error?.response?.data?.message);
+    }
+  }, [search, sortDescriptor]);
+
+
+  useEffect(() => {
+    featchShops();
+  }, [featchShops, search, sortDescriptor]);
+
   return (
-    <div className=" mx-4 my-8 md:mx-8 lg:mx-16">
+    <div className="mx-4 my-8 md:mx-8 lg:mx-16">
       <div className="flex max-w-md">
         <div className="group flex items-center gap-2 rounded-full border-2 border-gray-200 focus-within:bg-gray-100 hover:bg-gray-100">
           <button className="rounded-l-full bg-transparent px-4 hover:bg-gray-100 focus:outline-none">
@@ -56,3 +77,15 @@ export default function DeviceFormPage() {
     </div>
   );
 }
+
+const FilterButton = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <Button
+      radius="full"
+      variant="bordered"
+      className="flex h-6 items-center gap-2 text-xs"
+    >
+      {children}
+    </Button>
+  );
+};

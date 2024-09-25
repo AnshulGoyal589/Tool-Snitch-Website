@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import ClassNames from 'embla-carousel-class-names';
 import { cn } from "@/lib/utils";
 
-const HeroCarousel = ({name,className, list, orientation="vertical"}: {name: string, className?: string, list: {id: number, name: string, image: string}[], orientation?: "horizontal" | "vertical"}) => {
+const HeroCarousel = ({name,className, list, orientation="vertical"}: {name: string, className?: string, list: {id: number, name?: string, url: string}[], orientation?: "horizontal" | "vertical"}) => {
     const Carname = name?.replace(/\s/g, "-").toLowerCase();
     const productImages = list || [];
     const autoscroll  = useRef(
@@ -93,7 +93,7 @@ const HeroCarousel = ({name,className, list, orientation="vertical"}: {name: str
                         )}>
                             <Button variant="ghost" className="aspect-square rounded-xl bg-gray-100/80  w-24 h-20 transition-all ease-in-out duration-300 ring-4 ring-gray-300 " onClick={() => onThumbClick(index)}>
                             <Avatar className="aspect-square rounded-xl w-24 h-20">
-                                <AvatarImage src={product.image} alt={product.name} className="bg-gray-100 w-full aspect-[24/20] rounded-xl object-contain" />
+                                <AvatarImage src={product.url} alt={product.name} className="bg-gray-100 w-full aspect-[24/20] rounded-xl object-contain" />
                                 <AvatarFallback className="text-black bg-gray-100/80 text-sm w-full h-full rounded-xl">
                                     {product.name}
                                 </AvatarFallback>
@@ -120,7 +120,7 @@ const HeroCarousel = ({name,className, list, orientation="vertical"}: {name: str
                     {productImages && productImages.map((product) => (
                         <CarouselItem key={`image-${Carname}-${product.id}`} className="w-full aspect-[6/4]">
                             <Avatar className="w-full h-full rounded-xl">
-                                <AvatarImage src={product.image} alt={product.name} className="bg-gray-100/80 w-full h-full rounded-xl object-contain" />
+                                <AvatarImage src={product.url} alt={product.name} className="bg-gray-100/80 w-full h-full rounded-xl object-contain" />
                                 <AvatarFallback className="text-black bg-gray-100/80 text-sm w-full h-full rounded-xl">
                                     {product.name}
                                 </AvatarFallback>
