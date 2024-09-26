@@ -11,9 +11,9 @@ import { api } from "@/api/api";
 
 export default function ShopsPage() {
   const [search, setSearch] = useState("");
-  const [shops, setShops] = useState([]);
-  const [filteredShops, setFilteredShops] = useState([]);
-  const [dataScraped, setDataScraped] = useState([]);
+  const [shops, setShops] = useState<any>([]);
+  const [filteredShops, setFilteredShops] = useState<any>([]);
+  const [dataScraped, setDataScraped] = useState<any>([]);
   const [message, setMessage] = useState("");
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "rating",
@@ -26,7 +26,7 @@ export default function ShopsPage() {
       const response = await api.get("/read/shopsDatabyRating");
       console.log(response.data);
       setDataScraped(response.data);
-    } catch (error) {
+    } catch (error:any) {
       console.error(error?.response?.data?.message);
       setMessage(error?.response?.data?.message);
     }
@@ -39,7 +39,7 @@ export default function ShopsPage() {
 
   useEffect(() => {
     setFilteredShops(
-      shops.filter((shop) =>
+      shops.filter((shop:any) =>
         shop.shopName.toLowerCase().includes(search.toLowerCase())
       )
     );
@@ -48,7 +48,7 @@ export default function ShopsPage() {
   useEffect(() => {
     let shop;
     if (dataScraped.length > 0) {
-      shop = dataScraped.map((shop) => {
+      shop = dataScraped.map((shop:any) => {
         return {
           id : shop._id,
           shopName: shop.shopName,

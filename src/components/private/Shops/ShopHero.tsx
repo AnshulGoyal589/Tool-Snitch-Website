@@ -1,3 +1,5 @@
+"use client";
+
 import { FaStar } from "react-icons/fa";
 import { Badge } from "@/components/ui/badge";
 import HeroCarousel from "../Carousel/HeroCarousel";
@@ -38,14 +40,13 @@ export default function ShopHero({
               return (
                 <FaStar
                   key={index}
-                  className={`${
-                    index < rating ? "text-[#FFD700]" : "text-gray-400"
-                  }`}
+                  className={`${index < rating ? "text-[#FFD700]" : "text-gray-400"
+                    }`}
                 />
               );
             })}
           </span>
-          <span className="ml-2 text-sm text-gray-800">{rating || 0 }</span>
+          <span className="ml-2 text-sm text-gray-800">{rating || 0}</span>
         </div>
         <div className="ml-4 flex items-center gap-2">
           <Badge variant="outline">{city || "Mumbai"}</Badge>
@@ -66,7 +67,7 @@ export default function ShopHero({
             <h3 className="text-xl font-semibold">Description</h3>
             <p className="mt-2 text-gray-800">
               {description ||
-              `
+                `
               At QuickFix Tech Solutions, we pride ourselves on offering fast,
               reliable repair services for smartphones, laptops, and tablets.
               With over 10 years of experience, our certified technicians ensure
@@ -83,7 +84,7 @@ export default function ShopHero({
           <div className="mt-4 flex gap-2">
             <span className="text-lg font-semibold">Address: </span>
             <address className="text-gray-800">
-             {address || "Shop No. 1, Ground Floor, Shree Sai Darshan CHS, Opp. Datta Mandir, Near Datta Mandir, Datta Mandir Rd, Datta Mandir, Malad East, Mumbai, Maharashtra 400097"}
+              {address || "Shop No. 1, Ground Floor, Shree Sai Darshan CHS, Opp. Datta Mandir, Near Datta Mandir, Datta Mandir Rd, Datta Mandir, Malad East, Mumbai, Maharashtra 400097"}
             </address>
           </div>
           <p className="mt-4">
@@ -104,12 +105,16 @@ export default function ShopHero({
               href="/get-appointment"
               radius="full"
               className="bg-[#D8BA74] px-4 py-6 text-lg text-white"
+              onClick={() => {
+                localStorage.setItem("shopName", shopName);
+                localStorage.setItem("shopLocation" , address);
+              }}
             >
               Get Appoinment{" "}
             </Button>
             <Button
-             as={Link}
-              href="/shops" 
+              as={Link}
+              href="/shops"
               radius="full"
               variant="bordered"
               className="border-[#D8BA74] px-4 py-6 text-lg text-[#D8BA74]"

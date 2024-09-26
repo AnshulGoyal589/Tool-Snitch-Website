@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Safe stringify function
-const safeStringify = (obj) => {
+const safeStringify = (obj:any) => {
   const seen = new WeakSet();
   return JSON.stringify(obj, (key, value) => {
     if (typeof value === 'object' && value !== null) {
@@ -65,7 +65,7 @@ const AnimatedFixSection = () => {
         initial="hidden"
         animate="visible"
       >
-        {items.map((item, index) => (
+        {items.map((item:any, index:any) => (
           <Link href={"/query"} key={safeStringify(item)}>
             <motion.div 
               className="bg-[#3c3c3c] h-[267px] rounded-3xl flex flex-col justify-center items-center overflow-hidden relative group cursor-pointer"

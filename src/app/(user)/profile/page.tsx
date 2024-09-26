@@ -50,7 +50,7 @@ export default function Profile() {
       setDisabled(true);
       const response = await api.get("/auth/getUserDetails");
       setUserData(response.data);
-    } catch (error) {
+    } catch (error:any) {
       toast({
         variant: "destructive",
         title: "Unable to fetch user",
@@ -92,7 +92,7 @@ export default function Profile() {
       });
       setDisabled(true);
       getUserData();
-    } catch (error) {
+    } catch (error:any) {
       toast({
         variant: "destructive",
         title: "Unable to update profile",

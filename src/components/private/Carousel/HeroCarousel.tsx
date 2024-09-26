@@ -20,8 +20,8 @@ const HeroCarousel = ({name,className, list, orientation="vertical"}: {name: str
     const autoscroll  = useRef(
         Autoplay({ delay: 3000, stopOnInteraction: true})
       );
-    const [thumbRef, setthumbRef] = useState();
-    const [imageRef, setImageRef] = useState();
+    const [thumbRef, setthumbRef] = useState<any>();
+    const [imageRef, setImageRef] = useState<any>();
     const [viewOrientation, setViewOrientation] = useState(orientation);
     const [index , setIndex] = useState(0);
 
@@ -33,7 +33,7 @@ const HeroCarousel = ({name,className, list, orientation="vertical"}: {name: str
 
     useEffect(() => {
         if(!thumbRef || !imageRef) return;
-        imageRef.on("select", (api) => {
+        imageRef.on("select", (api:any) => {
             setIndex(api.selectedScrollSnap());
         });
         return () => {
@@ -41,7 +41,7 @@ const HeroCarousel = ({name,className, list, orientation="vertical"}: {name: str
         }
     }, [thumbRef, imageRef]);
 
-    const onThumbClick = useCallback((index) => {
+    const onThumbClick = useCallback((index:any) => {
         console.log(thumbRef, imageRef);
         if(!imageRef || !thumbRef) return;
         imageRef.scrollTo(index);
@@ -73,7 +73,7 @@ const HeroCarousel = ({name,className, list, orientation="vertical"}: {name: str
         <Carousel className=""
                 orientation={viewOrientation}
                 setApi={setthumbRef}
-                axis={viewOrientation==="vertical"? "y" : "x"}
+                // axis={viewOrientation==="vertical"? "y" : "x"}
                 plugins={[ClassNames({
                     snapped : "thumbCarousel__snapped",
                     inView: "",

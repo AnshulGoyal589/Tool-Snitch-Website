@@ -35,8 +35,10 @@ const Page = () => {
   const [isNextDisabled, setIsNextDisabled] = useState(true);
   const [totalPrice, setTotalPrice] = useState(0);
   const [basePrice, setBasePrice] = useState(0);
-
+  const [brand, setBrand] = useState("");
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    setBrand(localStorage.getItem("selectedBrand") || "");
     localStorage.removeItem('selectedProblems');
     localStorage.removeItem('otherProblem');
     const storedDeviceType = localStorage.getItem("selectedDeviceType") as DeviceType | "";
@@ -65,6 +67,7 @@ const Page = () => {
   }, []);
 
   const handleProblemSelect = (problem: string) => {
+    if (typeof window === "undefined") return;
     setSelectedProblems((prevProblems) => {
       const updatedProblems = prevProblems.includes(problem)
         ? prevProblems.filter((p) => p !== problem)
@@ -75,11 +78,13 @@ const Page = () => {
   };
 
   const handleOtherProblemInput = (input: string) => {
+    if (typeof window === "undefined") return;
     setOtherProblem(input);
     localStorage.setItem("otherProblem", input);
   };
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     setIsNextDisabled(selectedProblems.length === 0 && otherProblem.trim() === "");
 
     // Calculate total price based on selected problems
@@ -103,7 +108,7 @@ const Page = () => {
     calculateTotalPrice();
   }, [selectedProblems, otherProblem, problems]);
 
-  const brand = localStorage.getItem("selectedBrand");
+  
 
   return (
     <div className="flex flex-col items-center">

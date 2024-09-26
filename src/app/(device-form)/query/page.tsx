@@ -46,6 +46,7 @@ export default function DeviceFormPage() {
   };
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     if (selectedDeviceType) {
       localStorage.setItem("selectedDeviceType", selectedDeviceType);
 
@@ -55,6 +56,7 @@ export default function DeviceFormPage() {
   }, [selectedDeviceType]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     if (selectedBrand) {
       localStorage.setItem("selectedBrand", selectedBrand);
     }

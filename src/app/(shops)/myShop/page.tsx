@@ -51,8 +51,6 @@ const ShopProfileSchema = z.object({
   status: z.string().optional(),
 });
 
-const description =
-  "A product edit page. The product edit page has a form to edit the product details, stock, product category, product status, and product images. The product edit page has a sidebar navigation and a main content area. The main content area has a form to edit the product details, stock, product category, product status, and product images. The sidebar navigation has links to product details, stock, product category, product status, and product images.";
 
 const MyShop = () => {
   const { toast } = useToast();
@@ -389,8 +387,8 @@ const MyShop = () => {
                             type="button"
                             onClick={() => {
                               if (activeImage) {
-                                setImage((prev) =>
-                                  prev.filter((img) => img !== activeImage)
+                                setImage((prev:any) =>
+                                  prev.filter((img:any) => img !== activeImage)
                                 );
                               }
                             }}
@@ -441,13 +439,13 @@ const MyShop = () => {
                                     .NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
                                 }
                                 signatureEndpoint="/api/sign-cloudinary-params"
-                                onSuccess={(result) => {
+                                onSuccess={(result:any) => {
                                   console.log(result);
                                   if (
                                     typeof result.info === "object" &&
                                     "secure_url" in result.info
                                   ) {
-                                    setImage((prev) => {
+                                    setImage((prev:any) => {
                                       if (prev) {
                                         return [
                                           ...prev,

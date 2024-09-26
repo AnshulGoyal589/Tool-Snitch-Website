@@ -4,25 +4,29 @@ import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 
 const Page = () => {
-  const [locationSuggestions, setLocationSuggestions] = useState([]);
+  const [locationSuggestions, setLocationSuggestions] = useState<{
+        display_name: string,
+        latitude: string,
+        longitude: string 
+       }[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isNextDisabled, setIsNextDisabled] = useState(true); // State to track if the next button should be enabled
 
   // Extracting terms from the API response
-  const extractTerms = (data) => {
-    if (!data || !data.predictions) {
-      return [];
-    }
+  // const extractTerms = (data) => {
+  //   if (!data || !data.predictions) {
+  //     return [];
+  //   }
 
-    return data.predictions.map((prediction) => ({
-      display_name: prediction?.structured_formatting?.main_text || '',
-      latitude: prediction?.geometry?.lat || '',
-      longitude: prediction?.geometry?.lng || ''
-    }));
-  };
+  //   return data.predictions.map((prediction) => ({
+  //     display_name: prediction?.structured_formatting?.main_text || '',
+  //     latitude: prediction?.geometry?.lat || '',
+  //     longitude: prediction?.geometry?.lng || ''
+  //   }));
+  // };
 
   // Fetching location suggestions
-  const olaSearchLocation = async (query) => {
+  const olaSearchLocation = async (query:string) => {
     if (query.length < 3) {
       setLocationSuggestions([]); // Clear suggestions if input is less than 3 characters
       return;
@@ -37,8 +41,19 @@ const Page = () => {
           }
         }
       );
+      let suggestions;
       const data = await response.json();
-      const suggestions = extractTerms(data);
+      if (!data || !data.predictions) {
+        suggestions = [];
+      }
+      else {
+        suggestions = data.predictions.map((prediction:any) => ({
+          display_name: prediction?.structured_formatting?.main_text || '',
+          latitude: prediction?.geometry?.lat || '',
+          longitude: prediction?.geometry?.lng || ''
+        }));
+      }
+      // const suggestions = extractTerms(data);
       setLocationSuggestions(suggestions); // Set the suggestions in state
     } catch (error) {
       console.error('Error searching location:', error);
@@ -46,19 +61,20 @@ const Page = () => {
   };
 
   // Handling input change
-  const handleInputChange = (event) => {
+  const handleInputChange = (event:any) => {
     const inputValue = event.target.value;
     setInputValue(inputValue); // Update input value
     olaSearchLocation(inputValue); // Call the search function on input change
   };
 
   // Handle location selection
-  const handleLocationSelect = (location) => {
+  const handleLocationSelect = (location:any) => {
+    if (typeof window === "undefined") return;
     setInputValue(location.display_name); // Update input with selected location
     setLocationSuggestions([]); // Clear suggestions
 
     // Store location and its coordinates in localStorage
-    localStorage.setItem('selectedLocation', location.display_name); 
+    localStorage.setItem('selectedLocation', location.display_name);
     localStorage.setItem('selectedLatitude', location.latitude);
     localStorage.setItem('selectedLongitude', location.longitude);
 
@@ -67,6 +83,7 @@ const Page = () => {
 
   // Clear local storage and set input value on initial render
   useEffect(() => {
+    if (typeof window === "undefined") return;
     localStorage.removeItem('selectedLocation'); // Remove location from local storage
     localStorage.removeItem('selectedLatitude'); // Remove latitude from local storage
     localStorage.removeItem('selectedLongitude'); // Remove longitude from local storage
