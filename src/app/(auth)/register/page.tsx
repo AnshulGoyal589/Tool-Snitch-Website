@@ -15,7 +15,7 @@ const poolData = {
 const userPool = new CognitoUserPool(poolData);
 
 // Sign-up function
-export function signUp(ID, password, Name = "abc") {
+function signUp(ID: string, password: string, Name:string = "abc") {
   console.log("Signing up");
 
   return new Promise((resolve, reject) => {
@@ -28,7 +28,7 @@ export function signUp(ID, password, Name = "abc") {
           Value: Name,
         }),
       ],
-      null,
+      [],
       (err, result) => {
         if (err) {
           reject(err);

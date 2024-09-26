@@ -12,7 +12,7 @@ const poolData = {
 };
 const userPool = new CognitoUserPool(poolData);
 
-export function signIn(ID, password) {
+function signIn(ID: string, password: string) {
   console.log("Signing in");
   const authenticationDetails = new AuthenticationDetails({
     Username: ID,
