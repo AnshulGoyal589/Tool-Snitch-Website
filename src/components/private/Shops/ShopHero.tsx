@@ -105,7 +105,7 @@ export default function ShopHero({
               radius="full"
               className="bg-[#D8BA74] px-4 py-6 text-lg text-white"
             >
-              Get Appinment{" "}
+              Get Appoinment{" "}
             </Button>
             <Button
              as={Link}
