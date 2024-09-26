@@ -7,32 +7,34 @@ type DeviceType = "smartphone" | "laptop" | "printer";
 
 const Page = () => {
   const laptop = [
-    { value: "broken screen", label: "broken screen" },
-    { value: "blacked out screen", label: "blacked out screen" },
-    { value: "broken keyboard", label: "broken keyboard" },
-    { value: "no audio output", label: "no audio output" },
-    { value: "Not charging", label: "Not charging" },
+    { value: "broken screen", label: "broken screen", price: 100 },
+    { value: "blacked out screen", label: "blacked out screen", price: 150 },
+    { value: "broken keyboard", label: "broken keyboard", price: 80 },
+    { value: "no audio output", label: "no audio output", price: 60 },
+    { value: "Not charging", label: "Not charging", price: 120 },
   ];
 
   const printer = [
-    { value: "cartridge empty", label: "cartridge empty" },
-    { value: "cartridge stuck", label: "cartridge stuck" },
-    { value: "paper stuck", label: "paper stuck" },
+    { value: "cartridge empty", label: "cartridge empty", price: 40 },
+    { value: "cartridge stuck", label: "cartridge stuck", price: 50 },
+    { value: "paper stuck", label: "paper stuck", price: 30 },
   ];
 
   const smartphone = [
-    { value: "broken screen", label: "broken screen" },
-    { value: "blacked out screen", label: "blacked out screen" },
-    { value: "no audio output", label: "no audio output" },
-    { value: "Touchscreen not working", label: "Touchscreen not working" },
-    { value: "Not charging", label: "Not charging" },
+    { value: "broken screen", label: "broken screen", price: 120 },
+    { value: "blacked out screen", label: "blacked out screen", price: 150 },
+    { value: "no audio output", label: "no audio output", price: 70 },
+    { value: "Touchscreen not working", label: "Touchscreen not working", price: 90 },
+    { value: "Not charging", label: "Not charging", price: 100 },
   ];
 
   const [selectedDeviceType, setSelectedDeviceType] = useState<DeviceType | "">("");
-  const [problems, setProblems] = useState<{ value: string; label: string }[]>([]);
+  const [problems, setProblems] = useState<{ value: string; label: string; price: number }[]>([]);
   const [selectedProblems, setSelectedProblems] = useState<string[]>([]);
   const [otherProblem, setOtherProblem] = useState<string>("");
   const [isNextDisabled, setIsNextDisabled] = useState(true);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [basePrice, setBasePrice] = useState(0);
 
   useEffect(() => {
     localStorage.removeItem('selectedProblems');
@@ -42,10 +44,13 @@ const Page = () => {
 
     if (storedDeviceType === "smartphone") {
       setProblems(smartphone);
+      setBasePrice(800);
     } else if (storedDeviceType === "laptop") {
       setProblems(laptop);
+      setBasePrice(1500);
     } else if (storedDeviceType === "printer") {
       setProblems(printer);
+      setBasePrice(1000);
     }
 
     const storedSelectedProblems = JSON.parse(localStorage.getItem("selectedProblems") || "[]");
@@ -57,7 +62,7 @@ const Page = () => {
     if (storedOtherProblem) {
       setOtherProblem(storedOtherProblem);
     }
-  }, [laptop, printer, smartphone]);
+  }, []);
 
   const handleProblemSelect = (problem: string) => {
     setSelectedProblems((prevProblems) => {
@@ -76,7 +81,27 @@ const Page = () => {
 
   useEffect(() => {
     setIsNextDisabled(selectedProblems.length === 0 && otherProblem.trim() === "");
-  }, [selectedProblems, otherProblem]);
+
+    // Calculate total price based on selected problems
+    const calculateTotalPrice = () => {
+      let price = 0;
+      selectedProblems.forEach((problem) => {
+        const foundProblem = problems.find(p => p.value === problem);
+        if (foundProblem) {
+          price += foundProblem.price;
+        }
+      });
+
+      if (otherProblem.trim() !== "") {
+        price += 100;
+      }
+      const total = basePrice+price;
+      setTotalPrice(total);
+      localStorage.setItem("totalPrice", total.toString());
+    };
+
+    calculateTotalPrice();
+  }, [selectedProblems, otherProblem, problems]);
 
   const brand = localStorage.getItem("selectedBrand");
 
@@ -114,6 +139,8 @@ const Page = () => {
           value={otherProblem}
           onChange={(e) => handleOtherProblemInput(e.target.value)}
         />
+
+        <h2 className="mt-4 text-lg font-josefin">Total Price: ${totalPrice}</h2> {/* Display total price */}
 
         <div className='flex justify-center items-center my-5'>
           <a

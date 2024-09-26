@@ -101,19 +101,17 @@ const Page = () => {
 
           <div className="pt-[64px] pl-16">
             <div className="pb-[16px]">
-              <span className="font-bold font-inter text-neutral-500">Problem statement</span>
+              <span className="font-bold font-inter text-neutral-500">Device Name</span>
             </div>
             <div className="flex items-center">
-              <Button className="w-[80px] h-[80px] bg-[#C6A86B]" />
-              <span className="pl-[16px] font-medium font-inter text-neutral-700">{deviceInfo.deviceName}</span>
+              <span className="font-medium font-inter text-neutral-700 text-xl">{deviceInfo.deviceName}</span>
             </div>
 
             <div className="pb-[16px] pt-[32px]">
-              <span className="font-bold font-inter text-neutral-500">Shop Summary</span>
+              <span className="font-bold font-inter text-neutral-500">Shop Name</span>
             </div>
             <div className="flex items-center">
-              <Button className="w-[80px] h-[80px] bg-[#C6A86B]" />
-              <span className="pl-[16px] font-medium font-inter text-neutral-700">{deviceInfo.shopName}</span>
+              <span className="font-medium font-inter text-neutral-700">{deviceInfo.shopName}</span>
             </div>
 
             <div className="pb-[5px] pt-[32px]">
