@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 export function NavigationBar() {
   const [nav, setNav] = useState(false);
@@ -57,7 +58,7 @@ export function NavigationBar() {
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href="/about" legacyBehavior passHref>
+              <Link href="/" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   About
                 </NavigationMenuLink>
@@ -71,14 +72,14 @@ export function NavigationBar() {
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href="/track" legacyBehavior passHref>
+              <Link href="/" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Track Order
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href="/contact" legacyBehavior passHref>
+              <Link href="/" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Contact Us
                 </NavigationMenuLink>
@@ -115,13 +116,13 @@ export function NavigationBar() {
                       <NavigationMenuContent>
                         <ul className="grid gap-1 p-3 md:w-[400px] lg:w-[120px] divide-y divide-neutral-200">
                           <li>
-                            <ListItem href="/docs" title="Account" />
+                            <ListItem href="/profile" title="Account" />
                           </li>
                           <li>
-                            <ListItem href="/docs/installation" title="Orders" />
+                            <ListItem href="/" title="Orders" />
                           </li>
                           <li>
-                            <ListItem href="/docs/primitives/typography" title="Logout" />
+                            <ListItem href="/" title="Logout" />
                           </li>
                         </ul>
                       </NavigationMenuContent>
@@ -159,10 +160,10 @@ export function NavigationBar() {
           }}
         >
           <a href="/" className="">Home</a>
-          <a href="/about" className="">About</a>
+          <a href="/" className="">About</a>
           <a href="/query" className="">Find Repair Shop</a>
-          <a href="/track" className="">Track Order</a>
-          <a href="/contact" className="">Contact Us</a>
+          <a href="/" className="">Track Order</a>
+          <a href="/" className="">Contact Us</a>
           <a href="/login" className="">Login</a>
           <a href="/register" className="">Register</a>
         </div>
