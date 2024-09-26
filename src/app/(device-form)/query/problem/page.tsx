@@ -140,8 +140,6 @@ const Page = () => {
           onChange={(e) => handleOtherProblemInput(e.target.value)}
         />
 
-        <h2 className="mt-4 text-lg font-josefin">Total Price: ${totalPrice}</h2> {/* Display total price */}
-
         <div className='flex justify-center items-center my-5'>
           <a
             href={isNextDisabled ? "#" : "/query/location"}
