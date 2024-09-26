@@ -1,17 +1,8 @@
 import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: 'https://tools-snitch.yellowbush-cadc3844.centralindia.azurecontainerapps.io/',
+  baseURL: 'https://tools-snitch.yellowbush-cadc3844.centralindia.azurecontainerapps.io',
     headers: {
         'Content-Type': 'application/json',
     },
 });
-
-// api.interceptors.request.use((config) => {
-//     const token = localStorage.getItem('token');
-//     if (token) {
-//         config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-// }
-// );
