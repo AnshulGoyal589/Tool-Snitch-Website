@@ -45,7 +45,7 @@ const Page = () => {
       totalPrice
     });
   }, []);
-
+ 
   const formatDate = (date) => {
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     return date.toLocaleDateString('en-US', options);
@@ -57,7 +57,7 @@ const Page = () => {
         <div className="grid lg:grid-cols-4 sm:grid-cols-1 gap-4">
           <div className="lg:col-span-3 sm:col-span-1">
             <p className="font-josefin font-bold lg:text-[64px] md:text-[50px] sm:text-[40px] text-neutral-800">
-              Book an appointment
+              Book an Appointment
             </p>
             <span className="text-gray-500 pt-10 font-inter p-2">Choose a date</span>
 

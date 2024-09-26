@@ -30,12 +30,12 @@ const Page = () => {
 
   const [selectedDeviceType, setSelectedDeviceType] = useState<DeviceType | "">("");
   const [problems, setProblems] = useState<{ value: string; label: string }[]>([]);
-  const [selectedProblem, setSelectedProblem] = useState<string | null>(null);
+  const [selectedProblems, setSelectedProblems] = useState<string[]>([]);
   const [otherProblem, setOtherProblem] = useState<string>("");
   const [isNextDisabled, setIsNextDisabled] = useState(true);
 
   useEffect(() => {
-    localStorage.removeItem('selectedProblem');
+    localStorage.removeItem('selectedProblems');
     localStorage.removeItem('otherProblem');
     const storedDeviceType = localStorage.getItem("selectedDeviceType") as DeviceType | "";
     setSelectedDeviceType(storedDeviceType);
@@ -48,11 +48,11 @@ const Page = () => {
       setProblems(printer);
     }
 
-    const storedSelectedProblem = localStorage.getItem("selectedProblem");
+    const storedSelectedProblems = JSON.parse(localStorage.getItem("selectedProblems") || "[]");
     const storedOtherProblem = localStorage.getItem("otherProblem");
 
-    if (storedSelectedProblem) {
-      setSelectedProblem(storedSelectedProblem);
+    if (storedSelectedProblems.length > 0) {
+      setSelectedProblems(storedSelectedProblems);
     }
     if (storedOtherProblem) {
       setOtherProblem(storedOtherProblem);
@@ -60,20 +60,23 @@ const Page = () => {
   }, [laptop, printer, smartphone]);
 
   const handleProblemSelect = (problem: string) => {
-    setSelectedProblem(problem);
-    setOtherProblem(""); 
-    localStorage.setItem("selectedProblem", problem);
+    setSelectedProblems((prevProblems) => {
+      const updatedProblems = prevProblems.includes(problem)
+        ? prevProblems.filter((p) => p !== problem)
+        : [...prevProblems, problem];
+      localStorage.setItem("selectedProblems", JSON.stringify(updatedProblems));
+      return updatedProblems;
+    });
   };
 
   const handleOtherProblemInput = (input: string) => {
     setOtherProblem(input);
-    setSelectedProblem(null); 
     localStorage.setItem("otherProblem", input);
   };
 
   useEffect(() => {
-    setIsNextDisabled(!selectedProblem && otherProblem.trim() === "");
-  }, [selectedProblem, otherProblem]);
+    setIsNextDisabled(selectedProblems.length === 0 && otherProblem.trim() === "");
+  }, [selectedProblems, otherProblem]);
 
   const brand = localStorage.getItem("selectedBrand");
 
@@ -85,7 +88,7 @@ const Page = () => {
         </h1>
 
         <div className='flex sm:text-xl font-josefin text-gray-400 flex-wrap justify-center'>
-          <h1 className="">What problem are you facing with your&nbsp;</h1>
+          <h1 className="">What problems are you facing with your&nbsp;</h1>
           <h1 className='font-bold text-black'>{brand}</h1>
           <h1>?</h1>
         </div>
@@ -96,7 +99,7 @@ const Page = () => {
             <div
               key={index}
               className={`flex justify-center items-center px-5 h-8 rounded-full border-2 
-              ${selectedProblem === p.value ? "bg-[#C6A86B] text-white" : "hover:bg-[#C6A86B] hover:text-white"}`}
+              ${selectedProblems.includes(p.value) ? "bg-[#C6A86B] text-white" : "hover:bg-[#C6A86B] hover:text-white"}`}
               onClick={() => handleProblemSelect(p.value)}
             >
               {p.label}

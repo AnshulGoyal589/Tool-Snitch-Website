@@ -55,15 +55,21 @@ export default function Home() {
       <div className="bg-[#212121] my-10 py-16 px-10 sm:px-12 md:px-14 lg:px-20">
         <h1 className="text-white text-center text-5xl font-semibold">We can help you fix</h1>
         <div className="grid md:grid-cols-3 my-10 gap-10">
-          <div className="bg-[#3c3c3c] h-[267px] rounded-3xl flex justify-center items-center">
-            <h1 className="text-5xl sm:text-7xl md:text-3xl lg:text-5xl xl:text-6xl text-[#B7B7B7]">Smartphones</h1>
-          </div>
-          <div className="bg-[#3c3c3c] h-[267px] rounded-3xl flex justify-center items-center">
-            <h1 className="text-5xl sm:text-7xl md:text-3xl lg:text-5xl xl:text-6xl text-[#B7B7B7]">Laptops</h1>
-          </div>
-          <div className="bg-[#3c3c3c] h-[267px] rounded-3xl flex justify-center items-center">
-            <h1 className="text-5xl sm:text-7xl md:text-3xl lg:text-5xl xl:text-6xl text-[#B7B7B7]">Laptops</h1>
-          </div>
+          <Link href={"/query"}>
+              <div className="bg-[#3c3c3c] h-[267px] rounded-3xl flex justify-center items-center">
+                  <h1 className="text-5xl sm:text-7xl md:text-3xl lg:text-5xl xl:text-6xl text-[#B7B7B7]"> Smartphonesm</h1>
+              </div>
+          </Link>
+          <Link href={"/query"}>
+              <div className="bg-[#3c3c3c] h-[267px] rounded-3xl flex justify-center items-center">
+                <h1 className="text-5xl sm:text-7xl md:text-3xl lg:text-5xl xl:text-6xl text-[#B7B7B7]">Laptops</h1>
+              </div>
+          </Link>
+          <Link href={"/query"}>
+            <div className="bg-[#3c3c3c] h-[267px] rounded-3xl flex justify-center items-center">
+              <h1 className="text-5xl sm:text-7xl md:text-3xl lg:text-5xl xl:text-6xl text-[#B7B7B7]"> Printers </h1>
+            </div>
+          </Link>
           <div className="bg-[#3c3c3c] h-[267px] rounded-3xl flex justify-center items-center md:col-span-3">
             <h1 className="text-5xl sm:text-7xl md:text-7xl lg:text-8xl xl:text-9xl text-[#878787] text-center">More comming soon</h1>
           </div>
