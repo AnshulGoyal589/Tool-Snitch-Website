@@ -32,9 +32,25 @@ export default function DeviceFormPage() {
     ],
   };
 
+  const calculateTotalPrice = (deviceType: DeviceType) => {
+    switch (deviceType) {
+      case "smartphone":
+        return 800;
+      case "laptop":
+        return 1500;
+      case "printer":
+        return 1000;
+      default:
+        return 0;
+    }
+  };
+
   useEffect(() => {
     if (selectedDeviceType) {
       localStorage.setItem("selectedDeviceType", selectedDeviceType);
+
+      const totalPrice = calculateTotalPrice(selectedDeviceType as DeviceType);
+      localStorage.setItem("totalPrice", totalPrice.toString());
     }
   }, [selectedDeviceType]);
 
