@@ -8,6 +8,7 @@ import { FaInstagram, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import AnimatedFixSection from './AnimatedFixSection';
 
 
 export default function Home() {
@@ -52,7 +53,7 @@ export default function Home() {
         <Image height={4000} width={3000} src="/carousel4.jpg" className="h-[230px] md:h-[85vh] min-w-[85vw] md:min-w-[65vw] bg-[#D8BA74] rounded-[2rem]"  alt="" />
       </div>
 
-      <div className="bg-[#212121] my-10 py-16 px-10 sm:px-12 md:px-14 lg:px-20">
+      {/* <div className="bg-[#212121] my-10 py-16 px-10 sm:px-12 md:px-14 lg:px-20">
         <h1 className="text-white text-center text-5xl font-semibold">We can help you fix</h1>
         <div className="grid md:grid-cols-3 my-10 gap-10">
           <Link href={"/query"}>
@@ -74,7 +75,8 @@ export default function Home() {
             <h1 className="text-5xl sm:text-7xl md:text-7xl lg:text-8xl xl:text-9xl text-[#878787] text-center">More comming soon</h1>
           </div>
         </div>
-      </div>
+      </div> */}
+      <AnimatedFixSection />
 
       <div className="flex flex-col md:flex-row justify-around items-center md:items-start px-6 sm:px-10 my-16">
         
