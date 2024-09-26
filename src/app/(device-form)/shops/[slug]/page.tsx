@@ -33,7 +33,7 @@ export default async function ShopDetailsPage({params} : {params: {slug: string}
             },
             services: data.devicesDeal,
             description: data.desc,
-            images: data.images.map((image, index) => ({id: index, url: image, name: `image-${index}`})),
+            images: data.images.map((image:string, index:number) => ({id: index, url: image, name: `image-${index}`})),
             city: data.shopKeeper.state
         }
 
