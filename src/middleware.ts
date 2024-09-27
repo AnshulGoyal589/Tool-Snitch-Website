@@ -4,11 +4,11 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
-  const isPublicAsset = pathname.startsWith('_next/') || pathname ===  '/toolsnitchlogo.png';
+  const isPublicAsset = pathname.startsWith('/_next/image') || pathname ===  '/toolsnitchlogo.png';
   
   const jwtToken = request.cookies.get('jwtToken')?.value;
 
-  
+  console.log(pathname , "  " , isPublicAsset);
   
   if (isPublicAsset) {
     return NextResponse.next();
