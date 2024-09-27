@@ -90,7 +90,7 @@ export function NavigationBar() {
         <div>
           <NavigationMenu>
             <NavigationMenuList>
-              {pathname === "/" || pathname === "/register" || pathname === "/login" ? (
+              {pathname === "/register" || pathname === "/login" ? (
                 <NavigationMenuItem className="flex gap-2">
                   <Link href="/register" legacyBehavior passHref>
                     <NavigationMenuLink className="border-2 flex justify-center items-center rounded-full h-10 px-5 bg-[#C6A86B] border-[#C6A86B] text-white">
@@ -122,7 +122,7 @@ export function NavigationBar() {
                             <ListItem href="/" title="Orders" />
                           </li>
                           <li>
-                            <ListItem href="/" title="Logout" />
+                            <ListItem href="/login" title="Logout" />
                           </li>
                         </ul>
                       </NavigationMenuContent>
