@@ -83,7 +83,7 @@ export default function RegisterPage() {
             <div className="">
               <p className="mb-6 text-lg font-normal text-gray-500 lg:text-lg dark:text-gray-400 text-center lg:text-start">Sign up to make getting appointments easier</p>
             </div>
-            <div className="flex justify-center items-center lg:justify-start">
+{/*             <div className="flex justify-center items-center lg:justify-start">
               <Button className="rounded-3xl bg-[transparent] text-gray-500 border h-12 w-[12rem] xl:w-[16rem] hover:bg-[#C6A86B] hover:text-white">
                 <svg className="w-4 mr-2 h-auto" width="46" height="47" viewBox="0 0 46 47" fill="none">
                   <path d="M46 24.0287C46 22.09 45.8533 20.68 45.5013 19.2112H23.4694V27.9356H36.4069C36.1429 30.1094 34.7347 33.37 31.5957 35.5731L31.5663 35.8669L38.5191 41.2719L38.9885 41.3306C43.4477 37.2181 46 31.1669 46 24.0287Z" fill="#4285F4" />
@@ -96,7 +96,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="flex justify-center"><span>or</span></div>
-
+ */}
             {/* Input for email */}
             <Input
               className="my-4 bg-[transparent] rounded-3xl h-12 w-[20rem] md:w-[30rem]"
