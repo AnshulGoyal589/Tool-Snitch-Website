@@ -4,15 +4,15 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
-  const isPublicAsset = pathname.startsWith('/_next/') || pathname === '/favicon.ico' || pathname ===  '/toolsnitchlogo.png';
+  const isPublicAsset = pathname.startsWith('/_next/') || pathname === '/favicon.ico' || pathname ===  '/toolsnitchlogo.png'  || pathname ===  '/carousel1.jpg'  || pathname ===  '/carousel2.jpg'  || pathname ===  '/t.jpg' ;
   
   const jwtToken = request.cookies.get('jwtToken')?.value;
 
-  console.log(pathname);
-
+  
   if (isPublicAsset) {
     return NextResponse.next();
   }
+  console.log(pathname);
 
   if (jwtToken) {
     if (isAuthPage) {
