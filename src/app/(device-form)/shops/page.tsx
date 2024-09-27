@@ -25,8 +25,27 @@ export default function ShopsPage() {
       setMessage("");
       const response = await api.get("/read/shopsDatabyRating");
       console.log(response.data);
+      let localData;
+      if(typeof window !== 'undefined') {
+        localData = JSON.parse(localStorage.getItem("shopData") || "{}");
+        if(localData?.status === "Visible") {
+          setDataScraped([...response.data, {
+            _id : "ab-rb-er-21",
+            ...localData
+          }]);
+        }
+      }
       setDataScraped(response.data);
     } catch (error:any) {
+      if(typeof window !== 'undefined') {
+        const localData = JSON.parse(localStorage.getItem("shopData") || "{}");
+        if(localData?.status === "Visible") {
+          setDataScraped([{
+            _id : "ab-rb-er-21",
+            ...localData
+          }]);
+        }
+      }
       console.error(error?.response?.data?.message);
       setMessage(error?.response?.data?.message);
     }
@@ -67,7 +86,7 @@ export default function ShopsPage() {
   , [dataScraped]);
 
   return (
-    <div className="mx-4 my-8 md:mx-8 lg:mx-16">
+    <div className="mx-4 my-8 md:mx-8 lg:mx-16" suppressHydrationWarning>
       <div className="flex max-w-md">
         <div className="group flex items-center gap-2 rounded-full border-2 border-gray-200 focus-within:bg-gray-100 hover:bg-gray-100">
           <button className="rounded-l-full bg-transparent px-4 hover:bg-gray-100 focus:outline-none">

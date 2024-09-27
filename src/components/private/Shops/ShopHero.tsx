@@ -7,32 +7,53 @@ import { Button } from "@nextui-org/react";
 import Link from "next/link";
 
 interface ShopHeroProps {
-  shopName: string;
-  rating: number;
-  address: string;
-  timings: {
+  shopName?: string;
+  rating?: number;
+  address?: string;
+  timings?: {
     open: string;
     close: string;
   };
-  services: string[];
-  description: string;
-  images: { id: number; name?: string; url: string }[];
-  city: string;
+  services?: string[];
+  description?: string;
+  images?: { id: number; name?: string; url: string }[];
+  city?: string;
+  path?: string;
 }
 
 export default function ShopHero({
   shopName,
-  rating,
+  rating = 0,
   address,
   timings,
   services,
   description,
   images,
   city,
+  path,
 }: ShopHeroProps) {
+
+  if(path === "ab-rb-er-21") {
+    if(typeof window !== 'undefined') {
+      const shopData = JSON.parse(localStorage.getItem("shopData") || "{}");
+      shopName = shopData.shopName;
+      rating = shopData.rating;
+      address = shopData.location;
+      timings = {
+        open: shopData.openTime || "10:00 AM",
+        close: shopData.closeTime || "8:00 PM"
+      };
+      services = shopData.devicesDeal;
+      description = shopData.desc;
+      images = shopData.images.map((image:string, index:number) => ({id: index, url: image, name: `image-${index}`}));
+      city = shopData.state;
+    }
+  }
+
+
   return (
-    <div className="mx-3 mt-4 md:mx-8 lg:mx-16 xl:mx-20">
-      <h1 className="text-5xl font-bold">{shopName || "QuickFix Tech Solutions"}</h1>
+    <div className="mx-3 mt-4 md:mx-8 lg:mx-16 xl:mx-20" >
+      <h1 className="text-5xl font-bold" suppressHydrationWarning >{shopName || "QuickFix Tech Solutions"}</h1>
       <div className="mt-4 flex items-center">
         <div className="flex items-center gap-2">
           <span className="flex items-center gap-1 rounded-full bg-[#FFD700]/20 px-2 py-1">
@@ -106,8 +127,8 @@ export default function ShopHero({
               radius="full"
               className="bg-[#D8BA74] px-4 py-6 text-lg text-white"
               onClick={() => {
-                localStorage.setItem("shopName", shopName);
-                localStorage.setItem("shopLocation" , address);
+                localStorage.setItem("shopName", shopName || "QuickFix Tech Solutions");
+                localStorage.setItem("shopLocation" , address || "Shop No. 1, Ground Floor, Shree Sai Darshan CHS, Opp. Datta Mandir, Near Datta Mandir, Datta Mandir Rd, Datta Mandir, Malad East, Mumbai, Maharashtra 400097");
               }}
             >
               Get Appoinment{" "}

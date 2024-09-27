@@ -81,8 +81,17 @@ const MyShop = () => {
   });
   const fetchShopDetails = useCallback(async () => {
     try {
-      const response = await api.get("/read/read/shopProfile'");
-      setShopDetails(response.data);
+      if (typeof window === "undefined") return;
+      // let jwt = localStorage.getItem("JwtToken");
+      // console.log(jwt);
+      // const response = await api.get("/auth/myShop", {
+      //   headers: {
+      //     Authorization: `Bearer ${jwt}`,
+      //   },
+      // });
+      // setShopDetails(response.data);
+      const shopData = JSON.parse(localStorage.getItem("shopData") || "{}");
+      setShopDetails(shopData);
     } catch (error: any) {
       console.error(error);
       toast({
@@ -149,12 +158,17 @@ const MyShop = () => {
         shopPhone: data.shopPhone,
         address: data.address,
         pincode: data.pincode,
-        shopDescription: data.shopDescription,
-        // status: form.getValues("status"),
+        desc: data.shopDescription,
+        status: "Visible",
         images: image,
+        rating : 0,
+        state : details.state,
       };
       console.log(data);
-      await api.post("/auth/shopData", POST_DATA);
+      if(typeof window !== 'undefined') {
+        localStorage.setItem("shopData", JSON.stringify(POST_DATA));
+      }
+      // await api.post("/auth/shopData", POST_DATA);
       setDisabled(true);
       fetchShopDetails();
       toast({
@@ -388,7 +402,7 @@ const MyShop = () => {
                             onClick={() => {
                               if (activeImage) {
                                 setImage((prev:any) =>
-                                  prev.filter((img:any) => img !== activeImage)
+                                  prev?.filter((img:any) => img !== activeImage)
                                 );
                               }
                             }}

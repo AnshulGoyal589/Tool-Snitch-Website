@@ -8,7 +8,7 @@ const poolData = {
 };
 const userPool = new CognitoUserPool(poolData);
 
-export function signIn(ID, password) {
+function signIn(ID, password) {
   console.log("Signing in")
   const authenticationDetails = new AuthenticationDetails({
     Username: ID,
@@ -38,7 +38,7 @@ export function signIn(ID, password) {
   });
 }
 
-export function signUp(ID, password, Name) {
+function signUp(ID, password, Name) {
   console.log("Signing up");
 
   return new Promise((resolve, reject) => {
@@ -58,7 +58,7 @@ export function signUp(ID, password, Name) {
 }
 
 
-export function getJwtToken(ID, password) {
+function getJwtToken(ID, password) {
   const authenticationDetails = new AuthenticationDetails({
     Username: ID,
     Password: password,
@@ -87,3 +87,5 @@ export function getJwtToken(ID, password) {
     });
   });
 }
+
+export { signIn, signUp, getJwtToken };

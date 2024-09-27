@@ -15,14 +15,15 @@ export default async function ShopDetailsPage({params} : {params: {slug: string}
 
     const data = await getShopDetails(params.slug);
 
-    if(!data) {
+    if(!data && params.slug !== "ab-rb-er-21") {
         return <div className="min-h-[40vh] flex justify-center items-center">
             <h1 className="text-8xl font-black text-gray-200 dark:text-gray-700">Shop Not Found</h1>
         </div>
     }
 
-    
-    const shop =  {
+    let shop;
+    if(params.slug !== "ab-rb-er-21") {
+        shop =  {
             id : data._id,
             shopName: data.shopName,
             rating: data.rating,
@@ -31,16 +32,23 @@ export default async function ShopDetailsPage({params} : {params: {slug: string}
                 open: data.openTime || "10:00 AM",
                 close: data.closeTime || "8:00 PM"
             },
-            services: data.devicesDeal,
+            services: [data.devicesDeal],
             description: data.desc,
             images: data.images.map((image:string, index:number) => ({id: index, url: image, name: `image-${index}`})),
             city: data.shopKeeper.state
         }
+        return (
+            <>
+            <ShopHero {...shop} path = {`${params.slug}`}/>
+            <ReviewSection/>
+            </>
+        )
+    }
 
     return (
         
         <>
-        <ShopHero {...shop}/>
+        <ShopHero  path = {`${params.slug}`}/>
         <ReviewSection/>
         </>
     )

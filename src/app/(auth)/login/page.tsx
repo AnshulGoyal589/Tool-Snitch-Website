@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation'; // Import useRouter
+import { getJwtToken } from '@/action/cognitoUtils';
 
 const poolData = {
   UserPoolId: 'ap-south-1_VKjbitmCA', // Replace with your Cognito User Pool ID
@@ -52,8 +53,18 @@ export default function LoginPage() {
       signIn(email, password)
         .then((session) => {
           console.log("Login successful!", session);
+          
+          // Get JWT token and store it in localStorage
+          getJwtToken(email, password).then((token) => {
+             if(typeof window !== 'undefined') {
+              const jwt = token.accessToken
+               localStorage.setItem('JwtToken', jwt);
+             }
+             router.push('/query');
+          }
+          );
           // Redirect to /query upon success
-          router.push('/query');
+          // router.push('/query');
         })
         .catch((err) => {
           console.error("Login failed", err);
