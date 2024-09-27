@@ -4,9 +4,11 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
-  const isPublicAsset = pathname.startsWith('/_next/') || pathname === '/favicon.ico';
+  const isPublicAsset = pathname.startsWith('/_next/') || pathname === '/favicon.ico' || pathname ===  '/toolsnitchlogo.png';
   
   const jwtToken = request.cookies.get('jwtToken')?.value;
+
+  console.log(pathname);
 
   if (isPublicAsset) {
     return NextResponse.next();
@@ -26,5 +28,6 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image).*)'],
+  matcher: ['/((?!api|favicon.ico).*)'],
 };
+
