@@ -46,7 +46,7 @@ function signIn(ID: string, password: string) {
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const router = useRouter(); // Use Next.js router
+  const router = useRouter(); 
 
   const handleSignIn = () => {
     if (email && password) {
@@ -54,21 +54,19 @@ export default function LoginPage() {
         .then((session) => {
           console.log("Login successful!", session);
           
-          // Get JWT token and store it in localStorage
           getJwtToken(email, password).then((token) => {
              if(typeof window !== 'undefined') {
               const jwt = token.accessToken
-               localStorage.setItem('JwtToken', jwt);
+              localStorage.setItem('JwtToken', jwt); 
+              document.cookie = `jwtToken=${jwt}; path=/; max-age=3600; secure; samesite=strict`;
              }
              router.push('/query');
           }
           );
-          // Redirect to /query upon success
-          // router.push('/query');
         })
         .catch((err) => {
           console.error("Login failed", err);
-          alert("Login failed: " + err.message); // Show error in alert
+          alert("Login failed: " + err.message); 
         });
     }
   };

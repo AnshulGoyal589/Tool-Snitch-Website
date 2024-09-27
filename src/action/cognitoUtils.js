@@ -25,7 +25,6 @@ function signIn(ID, password) {
   return new Promise((resolve, reject) => {
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: (session) => {
-        // Keep the session alive for at least 1 month
         const expirationDate = new Date();
         expirationDate.setMonth(expirationDate.getMonth() + 1);
         localStorage.setItem('userSession', JSON.stringify(session));
@@ -62,7 +61,7 @@ function getJwtToken(ID, password) {
   const authenticationDetails = new AuthenticationDetails({
     Username: ID,
     Password: password,
-  });
+  }); 
 
   const userData = {
     Username: ID,
