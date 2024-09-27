@@ -122,7 +122,7 @@ export function NavigationBar() {
                             <ListItem href="/" title="Orders" />
                           </li>
                           <li>
-                            <ListItem href="/" title="Logout" />
+                            <ListItem href="/login" title="Logout" />
                           </li>
                         </ul>
                       </NavigationMenuContent>
