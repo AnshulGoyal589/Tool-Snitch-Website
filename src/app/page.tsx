@@ -21,7 +21,7 @@ export default function Home() {
       </div>
 
       <div className="flex justify-center items-center">
-        <Link href={"/login"} className="bg-[#C6A86B] py-4 px-8 md:py-5 md:px-10 rounded-full text-white md:text-xl my-5">
+        <Link href={"/query"} className="bg-[#C6A86B] py-4 px-8 md:py-5 md:px-10 rounded-full text-white md:text-xl my-5">
           Lets fix it
           </Link>
       </div>
@@ -44,7 +44,7 @@ export default function Home() {
         <div className="h-[230px] md:h-[85vh] min-w-[40vw] md:min-w-[40vw]  sm:p-4 md:p-8 lg:p-10 xl:p-12">
           <Image src="/t.jpg" alt="" className="size-6 sm:size-8 md:size-10 lg:size-12 xl:size-14" height={4000} width={3000}/>
           <h1 className="text-[#212121] py-3 sm:py-4 md:py-6 lg:py-8 sm:text-lg md:text-xl lg:text-2xl">Tool Snitch needs to understand your problem to help you find the best stores possible.</h1>
-<Link href={"/login"} className="bg-[#C6A86B] py-4 px-8 md:py-5 md:px-10 rounded-full text-white md:text-xl my-5">
+<Link href={"/query"} className="bg-[#C6A86B] py-4 px-8 md:py-5 md:px-10 rounded-full text-white md:text-xl my-5">
           Lets fix it
           </Link>        </div>
         <Image height={4000} width={3000} src="/carousel1.jpg" className="h-[230px] md:h-[85vh] min-w-[85vw] md:min-w-[65vw] bg-[#D8BA74] rounded-[2rem]" alt="" />
