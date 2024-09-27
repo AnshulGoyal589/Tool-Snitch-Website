@@ -7,13 +7,20 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 
 export function NavigationBar() {
   const [nav, setNav] = useState(false);
   const [animationClass, setAnimationClass] = useState('');
   const pathname = usePathname();
+  const [loggedIn , setIsLoggedIn] = useState< string | null >(null);
+  const router = useRouter();
+
+  useEffect(() => {
+      if (typeof window === "undefined") return;
+      setIsLoggedIn(localStorage.getItem('JwtToken'));
+  })
 
   useEffect(() => {
     const handleResize = () => {
@@ -41,6 +48,15 @@ export function NavigationBar() {
     }
     setNav(!nav);
   };
+
+  const handleLogout = () => {
+    document.cookie = 'jwtToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    localStorage.clear();
+    setIsLoggedIn(null);
+    router.push('/');
+  };
+
+  
 
   return (
     <>
@@ -90,7 +106,7 @@ export function NavigationBar() {
         <div>
           <NavigationMenu>
             <NavigationMenuList>
-              {pathname === "/register" || pathname === "/login" ? (
+              { loggedIn==null ? (
                 <NavigationMenuItem className="flex gap-2">
                   <Link href="/register" legacyBehavior passHref>
                     <NavigationMenuLink className="border-2 flex justify-center items-center rounded-full h-10 px-5 bg-[#C6A86B] border-[#C6A86B] text-white">
@@ -122,7 +138,7 @@ export function NavigationBar() {
                             <ListItem href="/" title="Orders" />
                           </li>
                           <li>
-                            <ListItem href="/login" title="Logout" />
+                            <ListItem onClick={handleLogout} title="Logout" />
                           </li>
                         </ul>
                       </NavigationMenuContent>
@@ -164,16 +180,36 @@ export function NavigationBar() {
           <a href="/query" className="">Find Repair Shop</a>
           <a href="/" className="">Track Order</a>
           <a href="/" className="">Contact Us</a>
-          <a href="/login" className="">Login</a>
-          <a href="/register" className="">Register</a>
+          { loggedIn == null && <a href="/login" className="">Login</a> }
+          { loggedIn == null && <a href="/register" className="">Register</a>}
+          { loggedIn !== null && <a href="/register"  onClick={handleLogout} className="">Logout</a> }
         </div>
       )}
     </>
   );
 }
 
-const ListItem = React.forwardRef<React.ElementRef<"a">, React.ComponentPropsWithoutRef<"a">>(
-  ({ className, title, children, ...props }, ref) => {
+const ListItem = React.forwardRef<React.ElementRef<"a">, React.ComponentPropsWithoutRef<"a"> & { onClick?: () => void }>(
+  ({ className, title, children, onClick, ...props }, ref) => {
+    if (onClick) {
+      return (
+        <li>
+          <button
+            onClick={onClick}
+            className={cn(
+              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground w-full text-left",
+              className
+            )}
+          >
+            <div className="text-sm font-medium leading-none">{title}</div>
+            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+              {children}
+            </p>
+          </button>
+        </li>
+      );
+    }
+    
     return (
       <li>
         <NavigationMenuLink asChild>
