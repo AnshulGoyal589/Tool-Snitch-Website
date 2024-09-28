@@ -55,7 +55,7 @@ export default function LoginPage() {
       setIsLoading(true);
       signIn(email, password)
         .then((session) => {
-          console.log("Login successful!", session);
+          console.log("Login successful!", session); 
           
           getJwtToken(email, password).then((token) => {
              if(typeof window !== 'undefined') {
