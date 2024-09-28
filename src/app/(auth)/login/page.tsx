@@ -1,10 +1,11 @@
 'use client';
 
-import { CognitoUserPool, CognitoUser, AuthenticationDetails, CognitoUserAttribute } from 'amazon-cognito-identity-js';
+import { CognitoUserPool, CognitoUser, AuthenticationDetails } from 'amazon-cognito-identity-js';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';   
+
 import { getJwtToken } from '@/action/cognitoUtils';
 
 const poolData = {
@@ -25,15 +26,17 @@ function signIn(ID: string, password: string) {
     Pool: userPool,
   };
 
-  const cognitoUser = new CognitoUser(userData);
+  const cognitoUser = new CognitoUser(userData);   
+
 
   return new Promise((resolve, reject) => {
     cognitoUser.authenticateUser(authenticationDetails, {
-      onSuccess: (session) => {
-        // Keep the session alive for at least 1 month
+      onSuccess:   
+ (session) => {
         const expirationDate = new Date();
         expirationDate.setMonth(expirationDate.getMonth() + 1);
         localStorage.setItem('userSession', JSON.stringify(session));
+        localStorage.setItem('isLoggedIn', 'true'); 
         resolve(session);
       },
       onFailure: (err) => {
@@ -46,38 +49,43 @@ function signIn(ID: string, password: string) {
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [loginSuccess, setLoginSuccess] = useState(false);
-  const router = useRouter(); 
+  const [isLoading, setIsLoading] = useState(false);   
 
-  const handleSignIn = () => {
+  const [loginSuccess, setLoginSuccess]   
+ = useState(false);
+  const router = useRouter();
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined' && localStorage.getItem('isLoggedIn')) {
+      setLoginSuccess(true);
+      router.push('/query');
+    }
+  }, []);
+
+  const handleSignIn = async () => {
     if (email && password) {
       setIsLoading(true);
-      signIn(email, password)
-        .then((session) => {
-          console.log("Login successful!", session); 
-          
-          getJwtToken(email, password).then((token) => {
-             if(typeof window !== 'undefined') {
-              const jwt = token.accessToken
-              localStorage.setItem('JwtToken', jwt); 
-              document.cookie = `jwtToken=${jwt}; path=/; max-age=3600; secure; samesite=strict`;
-             }
-             setLoginSuccess(true);
-             setTimeout(() => {
-               router.push('/query');
-             }, 2000); // Redirect after 2 seconds
-          });
-        })
-        .catch((err) => {
-          console.error("Login failed", err);
-          alert("Login failed: " + err.message); 
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+      try {
+        const session = await signIn(email, password);
+        console.log("Login successful!", session);
+
+        const token = await getJwtToken(email, password);
+        if (typeof window !== 'undefined') {
+          const jwt = token.accessToken;
+          localStorage.setItem('JwtToken', jwt);
+          document.cookie = `jwtToken=${jwt}; path=/; max-age=3600; secure; samesite=strict`;
+        }
+        setLoginSuccess(true);
+        router.push('/query'); 
+      } catch (err) {
+        console.error("Login failed", err);
+        alert("Login failed: " + (err as Error).message);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
+
 
   return (
     <div className="flex flex-col justify-center item-center pt-[3rem] mb-10">
@@ -92,8 +100,6 @@ export default function LoginPage() {
                 Welcome back, login to get your device fixed quick
               </p>
             </div>
-
-            {/* Existing code for Google login button (commented out) */}
 
             <div className="flex flex-col justify-center items-center lg:items-start gap-5 my-5">
               <Input
