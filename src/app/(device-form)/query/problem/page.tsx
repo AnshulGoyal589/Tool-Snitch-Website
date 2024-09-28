@@ -128,8 +128,8 @@ const Page = () => {
           {problems.map((p, index) => (
             <div
               key={index}
-              className={`flex justify-center items-center px-5 h-8 rounded-full border-2 
-              ${selectedProblems.includes(p.value) ? "bg-[#C6A86B] text-white" : "hover:bg-[#C6A86B] hover:text-white"}`}
+              className={`flex justify-center items-center px-5 h-12 rounded-lg border-2 border-gray-300 shadow-sm transition-all duration-300 ease-in-out 
+              ${selectedProblems.includes(p.value) ? "bg-[#C6A86B] text-white" : "hover:bg-[#C6A86B] hover:text-white hover:shadow-lg"}`}
               onClick={() => handleProblemSelect(p.value)}
             >
               {p.label}
