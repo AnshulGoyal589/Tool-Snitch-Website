@@ -8,7 +8,7 @@ export function middleware(request: NextRequest) {
   
   const jwtToken = request.cookies.get('jwtToken')?.value;
 
-  if (jwtToken) {
+  if (jwtToken) { 
     if (isAuthPage) {
       return NextResponse.redirect(new URL('/', request.url));
     }
