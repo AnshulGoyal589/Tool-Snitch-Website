@@ -135,7 +135,7 @@ const Page = () => {
           className={`flex justify-center items-center h-11 px-14 mb-10 sm:h-14 rounded-3xl 
             ${isNextDisabled ? "bg-gray-400 cursor-not-allowed" : "bg-[#C6A86B] text-neutral-100"}`}
           onClick={(e) => {
-            if (isNextDisabled) e.preventDefault(); // Prevent navigation if disabled
+            if (isNextDisabled) e.preventDefault(); // Prevent navigation if disabled 
           }}
         >
           Next

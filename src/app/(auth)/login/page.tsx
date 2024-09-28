@@ -58,7 +58,7 @@ export default function LoginPage() {
   useEffect(() => {
     if (typeof window !== 'undefined' && localStorage.getItem('isLoggedIn')) {
       setLoginSuccess(true);
-      router.replace('/query');
+      router.replace('/');
     }
   }, []);
 
@@ -76,7 +76,7 @@ export default function LoginPage() {
           document.cookie = `jwtToken=${jwt}; path=/; max-age=3600; secure; samesite=strict`;
         }
         setLoginSuccess(true);
-        router.replace('/query'); 
+        router.replace('/'); 
       } catch (err) {
         console.error("Login failed", err);
         alert("Login failed: " + (err as Error).message);
