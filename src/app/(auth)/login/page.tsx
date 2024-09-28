@@ -28,7 +28,6 @@ function signIn(ID: string, password: string) {
 
   const cognitoUser = new CognitoUser(userData);   
 
-
   return new Promise((resolve, reject) => {
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess:   
@@ -50,9 +49,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);   
-
-  const [loginSuccess, setLoginSuccess]   
- = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
   const router = useRouter();
   
   useEffect(() => {
@@ -60,7 +57,7 @@ export default function LoginPage() {
       setLoginSuccess(true);
       router.replace('/');
     }
-  }, []);
+  }, [router]);
 
   const handleSignIn = async () => {
     if (email && password) {
@@ -72,11 +69,13 @@ export default function LoginPage() {
         const token = await getJwtToken(email, password);
         if (typeof window !== 'undefined') {
           const jwt = token.accessToken;
-          localStorage.setItem('JwtToken', jwt);
+          
           document.cookie = `jwtToken=${jwt}; path=/; max-age=3600; secure; samesite=strict`;
+          localStorage.setItem('JwtToken', jwt);
         }
+
         setLoginSuccess(true);
-        router.replace('/'); 
+        window.location.href = '/'; 
       } catch (err) {
         console.error("Login failed", err);
         alert("Login failed: " + (err as Error).message);
@@ -86,16 +85,15 @@ export default function LoginPage() {
     }
   };
 
-
   return (
     <div className="flex flex-col justify-center item-center pt-[3rem] mb-10">
       <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-7 lg:gap-x-8 xl:gap-x-12 items-center lg:items-start">
           <div className="lg:col-span-3 my-4">
-            <div className="">
+            <div>
               <h1 className="mb-4 text-4xl pt-2 font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white text-center lg:text-start">Login</h1>
             </div>
-            <div className="">
+            <div>
               <p className="mb-6 text-lg font-normal text-gray-500 lg:text-lg dark:text-gray-400 text-center lg:text-start">
                 Welcome back, login to get your device fixed quick
               </p>
@@ -132,7 +130,9 @@ export default function LoginPage() {
                 </div>
               )}
             </div>
-            <div><span>Looking to register as a shop? <a className="text-[#C6A86B]" href="/register">Register here</a></span></div>
+            <div>
+              <span>Looking to register as a shop? <a className="text-[#C6A86B]" href="/register">Register here</a></span>
+            </div>
           </div>
 
           <div className="lg:col-span-4 mt-10 lg:mt-0 hidden lg:flex">
