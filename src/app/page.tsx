@@ -196,7 +196,7 @@ export default function Home() {
         </div>
 
         <div className="flex justify-around items-center w-full text-[#ffffff]/50 mt-5">
-          <h1 className="text-sm sm:text-base md:text-lg" >&copy; 2035 Tool Snitch</h1>
+          <h1 className="text-sm sm:text-base md:text-lg" >&copy; 2024 Tool Snitch</h1>
           <div className="flex w-[20%] justify-around items-center">
             <a href="" className="" target="_blank" >
               <FaTwitter className="md:size-5 lg:size-6" />
