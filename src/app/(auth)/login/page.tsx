@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';   
-
+import { api } from "@/api/api";
 import { getJwtToken } from '@/action/cognitoUtils';
 
 const poolData = {
@@ -13,6 +13,26 @@ const poolData = {
   ClientId: '26b9i0nbi58vcq7gqfcdnjt8qo',
 };
 const userPool = new CognitoUserPool(poolData);
+
+async function checkShopkeeper(email: string): Promise<boolean> {
+  try {
+    
+    const shopkeeperResponse = await api.post("/read/shopkeeper-profile", { email });
+    if (shopkeeperResponse.data.isShopkeeper) {
+      return true;
+    }
+    
+    const customerResponse = await api.post("/read/customer-profile", { email });
+    if ( !customerResponse.data.isShopkeeper) {
+      return false;
+    }
+
+    throw new Error("User profile not found");
+  } catch (error) {
+    console.error("Error checking user profile:", error);
+    throw error;
+  }
+}
 
 function signIn(ID: string, password: string) {
   console.log("Signing in");
@@ -64,6 +84,8 @@ export default function LoginPage() {
       setIsLoading(true);
       try {
         const session = await signIn(email, password);
+        const isShopkeeper = await checkShopkeeper( email );
+        console.log("isShopkeeper: ",isShopkeeper);
         console.log("Login successful!", session);
 
         const token = await getJwtToken(email, password);
@@ -72,7 +94,9 @@ export default function LoginPage() {
           
           const farFuture = new Date(2099, 11, 31).toUTCString();
           document.cookie = `jwtToken=${jwt}; path=/; expires=${farFuture}; secure; samesite=strict`;
+          document.cookie = `isShopkeeper=${isShopkeeper}; path=/; expires=${farFuture}; secure; samesite=strict`;
           localStorage.setItem('JwtToken', jwt);
+          localStorage.setItem('isShopkeeper', isShopkeeper ? 'true' : 'false');
         }
 
         setLoginSuccess(true);
