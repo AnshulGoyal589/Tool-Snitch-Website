@@ -64,7 +64,7 @@ const Page = () => {
           <p className="font-josefin font-bold lg:text-[64px] md:text-[50px] sm:text-[40px] text-neutral-800">
             Book an Appointment
           </p>
-          <span className="text-gray-500 pt-10 font-inter p-2">Choose a date</span>
+          <span className="text-gray-500 pt-10 font-inter p-2">Choose a day</span>
 
           <div className="grid grid-cols-4 sm:grid-cols-7 gap-4 pt-[16px]">
             {dates && dates.map((dateObj, index) => (

@@ -195,7 +195,7 @@ function ShopsTable({shops}: {shops: Shop[]}) {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"No Shops Found"} items={shops}>
+      <TableBody emptyContent={"Shops are loading... Please wait"} items={shops}>
         {(item) => (
           <TableRow key={item.id} className="hover:bg-gray-100 cursor-pointer" as={Link} href={`/shops/${item.id}`}>
             {(columnKey) => <TableCell

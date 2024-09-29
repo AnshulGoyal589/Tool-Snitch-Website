@@ -70,7 +70,8 @@ export default function LoginPage() {
         if (typeof window !== 'undefined') {
           const jwt = token.accessToken;
           
-          document.cookie = `jwtToken=${jwt}; path=/; max-age=3600; secure; samesite=strict`;
+          const farFuture = new Date(2099, 11, 31).toUTCString();
+          document.cookie = `jwtToken=${jwt}; path=/; expires=${farFuture}; secure; samesite=strict`;
           localStorage.setItem('JwtToken', jwt);
         }
 
