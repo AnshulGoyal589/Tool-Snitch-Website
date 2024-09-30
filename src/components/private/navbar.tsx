@@ -15,11 +15,13 @@ export function NavigationBar() {
   const [animationClass, setAnimationClass] = useState('');
   const pathname = usePathname();
   const [loggedIn , setIsLoggedIn] = useState< string | null >(null);
+  const [isShopkeeper , setIsShopkeeper] = useState< string | null >(null);
   const router = useRouter();
-
+  
   useEffect(() => {
       if (typeof window === "undefined") return;
       setIsLoggedIn(localStorage.getItem('JwtToken'));
+      setIsShopkeeper(localStorage.getItem('isShopkeeper'));
   })
 
   useEffect(() => {
@@ -66,6 +68,8 @@ export function NavigationBar() {
         </a>
         <NavigationMenu>
           <NavigationMenuList>
+          {isShopkeeper=='false' ? 
+            <>
             <NavigationMenuItem>
               <Link href="/" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
@@ -73,7 +77,20 @@ export function NavigationBar() {
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
+            </>
+            :
+            <>
             <NavigationMenuItem>
+              <Link href="/" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Dashboard
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            </>
+            }  
+          {isShopkeeper=='false' ? 
+            <><NavigationMenuItem>
               <Link href="/" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   About
@@ -94,6 +111,16 @@ export function NavigationBar() {
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
+            </>:<>
+              <NavigationMenuItem>
+              <Link href="/" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Order History
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+                </>
+                }
             <NavigationMenuItem>
               <Link href="/" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
