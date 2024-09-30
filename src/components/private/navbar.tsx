@@ -68,17 +68,7 @@ export function NavigationBar() {
         </a>
         <NavigationMenu>
           <NavigationMenuList>
-          {isShopkeeper=='false' ? 
-            <>
-            <NavigationMenuItem>
-              <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Home
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-            </>
-            :
+          {isShopkeeper=='true' ? 
             <>
             <NavigationMenuItem>
               <Link href="/" legacyBehavior passHref>
@@ -88,38 +78,50 @@ export function NavigationBar() {
               </Link>
             </NavigationMenuItem>
             </>
+            :
+            <>
+            <NavigationMenuItem>
+              <Link href="/" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Home
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            </>
             }  
-          {isShopkeeper=='false' ? 
-            <><NavigationMenuItem>
-              <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  About
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href="/query" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Find Repair Shop
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Track Order
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-            </>:<>
+          {isShopkeeper=='true' ? 
+            <>
               <NavigationMenuItem>
-              <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <Link href="/" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Order History
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-                </>
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            </>:
+            <>
+              <NavigationMenuItem>
+                <Link href="/" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    About
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/query" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Find Repair Shop
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Track Order
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            </>
                 }
             <NavigationMenuItem>
               <Link href="/" legacyBehavior passHref>

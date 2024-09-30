@@ -103,7 +103,9 @@ export default function LoginPage() {
         window.location.href = '/'; 
       } catch (err) {
         console.error("Login failed", err);
-        alert("Login failed: " + (err as Error).message);
+        const errorMessage = (err as Error).message;
+        if( errorMessage=="User is not confirmed." ) alert("Login failed: " + "Please verify your E-Mail from the link sent to your E-Mail address." );
+        else alert("Login failed: " + errorMessage );
       } finally {
         setIsLoading(false);
       }
