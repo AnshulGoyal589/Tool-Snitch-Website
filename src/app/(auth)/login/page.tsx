@@ -100,7 +100,8 @@ export default function LoginPage() {
         }
 
         setLoginSuccess(true);
-        window.location.href = '/'; 
+        if ( !isShopkeeper ) window.location.href = '/'; 
+        else window.location.href = '/dashboard'; 
       } catch (err) {
         console.error("Login failed", err);
         const errorMessage = (err as Error).message;
