@@ -9,6 +9,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { api } from "@/api/api";
 
 interface SalesDataPoint {
   month: string;
@@ -31,6 +32,10 @@ const Dashboard = () => {
   const [shopName] = useState('My Shop');
   const [openingTime, setOpeningTime] = useState('09:00');
   const [closingTime, setClosingTime] = useState('18:00');
+  const [editingHours, setEditingHours] = useState(false);
+  const [tempOpeningTime, setTempOpeningTime] = useState('09:00');
+  const [tempClosingTime, setTempClosingTime] = useState('18:00');
+  const [errorMessage, setErrorMessage] = useState('');
   const [salesData, setSalesData] = useState<SalesDataPoint[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [closingDateRanges, setClosingDateRanges] = useState<ClosingDateRange[]>([]);
@@ -58,12 +63,70 @@ const Dashboard = () => {
     setNotifications(fakeNotifications);
   }, []);
 
+  const validateTime = (time: string): boolean => {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60;
+  };
+
+  const handleEditHours = () => {
+    setEditingHours(true);
+    setTempOpeningTime(openingTime);
+    setTempClosingTime(closingTime);
+  };
+
+  const handleSaveHours = () => {
+    if (!validateTime(tempOpeningTime) || !validateTime(tempClosingTime)) {
+      setErrorMessage('Invalid time format. Please use HH:MM and ensure hours are 0-23 and minutes are 0-59.');
+      return;
+    }
+
+    const openingMinutes = getMinutesFromTime(tempOpeningTime);
+    const closingMinutes = getMinutesFromTime(tempClosingTime);
+
+    if (closingMinutes <= openingMinutes) {
+      setErrorMessage('Closing time must be later than opening time.');
+      return;
+    }
+
+    setOpeningTime(tempOpeningTime);
+    setClosingTime(tempClosingTime);
+    setEditingHours(false);
+    setErrorMessage('');
+
+    // Simulate sending data to backend
+    sendUpdatedHoursToBackend(tempOpeningTime, tempClosingTime);
+  };
+
+  const getMinutesFromTime = (time: string): number => {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
+  };
+
+  const sendUpdatedHoursToBackend = async (opening: string, closing: string) => {
+    try {
+      const response = await api.post('/shopkeeperUpdate/dailyHours', {
+        cognitoId: 'your-cognito-id-here', // You'll need to replace this with the actual Cognito ID
+        openingTime: opening,
+        closingTime: closing
+      });
+
+      if (response.status === 200) {
+        console.log('Shop hours updated successfully');
+        // You might want to show a success message to the user here
+      }
+    } catch (error) {
+      console.error('Error updating shop hours:', error);
+      setErrorMessage('Failed to update shop hours. Please try again.');
+      // You might want to show an error message to the user here
+    }
+  };
+
   const handleOpeningTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setOpeningTime(e.target.value);
+    setTempOpeningTime(e.target.value);
   };
 
   const handleClosingTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setClosingTime(e.target.value);
+    setTempClosingTime(e.target.value);
   };
 
   const handleStartDateSelect = (date: Date | undefined) => {
@@ -117,24 +180,41 @@ const Dashboard = () => {
             <CardTitle>Shop Hours</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="mb-4">
-              <Label htmlFor="openingTime">Opening Time</Label>
-              <Input
-                id="openingTime"
-                type="time"
-                value={openingTime}
-                onChange={handleOpeningTimeChange}
-              />
-            </div>
-            <div>
-              <Label htmlFor="closingTime">Closing Time</Label>
-              <Input
-                id="closingTime"
-                type="time"
-                value={closingTime}
-                onChange={handleClosingTimeChange}
-              />
-            </div>
+            {editingHours ? (
+              <>
+                <div className="mb-4">
+                  <Label htmlFor="openingTime">Opening Time</Label>
+                  <Input
+                    id="openingTime"
+                    type="time"
+                    value={tempOpeningTime}
+                    onChange={handleOpeningTimeChange}
+                  />
+                </div>
+                <div className="mb-4">
+                  <Label htmlFor="closingTime">Closing Time</Label>
+                  <Input
+                    id="closingTime"
+                    type="time"
+                    value={tempClosingTime}
+                    onChange={handleClosingTimeChange}
+                  />
+                </div>
+                {errorMessage && (
+                  <Alert variant="destructive" className="mb-4">
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>{errorMessage}</AlertDescription>
+                  </Alert>
+                )}
+                <Button onClick={handleSaveHours}>Save Changes</Button>
+              </>
+            ) : (
+              <>
+                <p className="mb-2">Opening Time: {openingTime}</p>
+                <p className="mb-4">Closing Time: {closingTime}</p>
+                <Button onClick={handleEditHours}>Edit Hours</Button>
+              </>
+            )}
           </CardContent>
         </Card>
 
