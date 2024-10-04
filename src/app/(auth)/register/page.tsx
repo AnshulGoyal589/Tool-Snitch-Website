@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { api } from "@/api/api";
+import Image from 'next/image';
 
 const poolData = {
   UserPoolId: "ap-south-1_VKjbitmCA",
@@ -217,11 +218,14 @@ export default function RegisterPage() {
           </div>
 
           <div className="mt-10 hidden lg:col-span-4 lg:mt-0 lg:flex">
-            <img
-              className="w-full rounded-xl"
-              src="login.png"
-              alt="Hero Image"
-            />
+          <Image
+            src="/login.png"
+            alt="Hero Image"
+            width={500}
+            height={300}
+            layout="responsive"
+            className="rounded-xl"
+          />
           </div>
         </div>
       </div>

@@ -184,7 +184,12 @@ export default function Home() {
 
       <div className="bg-[#212121] mt-10 py-16 px-6 sm:px-10 md:px-14 lg:px-20 flex flex-col justify-center items-center gap-3 ">
         
-        <img src="toolsnitchlogo.png" alt="" />
+      <Image 
+        src="/toolsnitchlogo.png" 
+        alt="Tool Snitch Logo" 
+        width={150} 
+        height={50}
+      />
         
         <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-semibold text-white" >TOOL SNITCH</h1>
         

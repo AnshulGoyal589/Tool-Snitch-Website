@@ -104,19 +104,60 @@ const Dashboard = () => {
     }
   };
 
-  const convertTo24Hour = (time: { hour: string; minute: string; period: string }): number => {
-    let hours = parseInt(time.hour, 10);
-    const minutes = parseInt(time.minute, 10);
-    if (time.period === 'PM' && hours !== 12) hours += 12;
-    if (time.period === 'AM' && hours === 12) hours = 0;
-    return hours * 60 + minutes;
-  };
+  // const convertTo24Hour = (time: { hour: string; minute: string; period: string }): number => {
+  //   let hours = parseInt(time.hour, 10);
+  //   const minutes = parseInt(time.minute, 10);
+  //   if (time.period === 'PM' && hours !== 12) hours += 12;
+  //   if (time.period === 'AM' && hours === 12) hours = 0;
+  //   return hours * 60 + minutes;
+  // };
 
-  const convertTo12Hour = (minutes: number): { hour: string; minute: string; period: string } => {
-    let hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
+  // const convertTo12Hour = (minutes: number): { hour: string; minute: string; period: string } => {
+  //   let hours = Math.floor(minutes / 60);
+  //   const mins = minutes % 60;
+  //   const period = hours >= 12 ? 'PM' : 'AM';
+  //   hours = hours % 12 || 12;
+  //   return {
+  //     hour: hours.toString().padStart(2, '0'),
+  //     minute: mins.toString().padStart(2, '0'),
+  //     period
+  //   };
+  // };
+
+  // const validateTime = (time: { hour: string; minute: string }): boolean => {
+  //   const hour = parseInt(time.hour, 10);
+  //   const minute = parseInt(time.minute, 10);
+  //   return hour >= 1 && hour <= 12 && minute >= 0 && minute <= 59;
+  // };
+
+  // Update the time conversion functions
+const convertTo24Hour = (time: { hour: string; minute: string; period: string }): number => {
+  let hours = parseInt(time.hour);
+  const minutes = parseInt(time.minute);
+  if (time.period === 'PM' && hours !== 12) hours += 12;
+  if (time.period === 'AM' && hours === 12) hours = 0;
+  return hours * 60 + minutes;
+};
+
+  const convertTo12Hour = (timeStr: string | number): { hour: string; minute: string; period: string } => {
+    let totalMinutes: number;
+    
+    if (typeof timeStr === 'string') {
+      const [time, period] = timeStr.split(' ');
+      const [hours, minutes] = time.split(':').map(num => parseInt(num));
+      let totalHours = hours;
+      if (period === 'PM' && hours !== 12) totalHours += 12;
+      if (period === 'AM' && hours === 12) totalHours = 0;
+      totalMinutes = totalHours * 60 + minutes;
+    } else {
+      totalMinutes = timeStr;
+    }
+
+    let hours = Math.floor(totalMinutes / 60);
+    const mins = totalMinutes % 60;
     const period = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12 || 12;
+    
     return {
       hour: hours.toString().padStart(2, '0'),
       minute: mins.toString().padStart(2, '0'),
@@ -125,9 +166,21 @@ const Dashboard = () => {
   };
 
   const validateTime = (time: { hour: string; minute: string }): boolean => {
-    const hour = parseInt(time.hour, 10);
-    const minute = parseInt(time.minute, 10);
+    const hour = parseInt(time.hour);
+    const minute = parseInt(time.minute);
     return hour >= 1 && hour <= 12 && minute >= 0 && minute <= 59;
+  };
+
+  const capTimeValue = (value: string, max: number): string => {
+    const numValue = parseInt(value);
+    if (isNaN(numValue) || numValue < 0) return '00';
+    if (numValue > max) return max.toString().padStart(2, '0');
+    return numValue.toString().padStart(2, '0');
+  };
+
+  const handleTimeChange = (timeType: 'opening' | 'closing', field: 'hour' | 'minute' | 'period', value: string) => {
+    const setTime = timeType === 'opening' ? setTempOpeningTime : setTempClosingTime;
+    setTime(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSaveHours = async () => {
@@ -174,23 +227,8 @@ const Dashboard = () => {
     setTempClosingTime(convertTo12Hour(convertTo24Hour(convertTo12Hour(closingTime))));
   };
 
-  const capTimeValue = (value: string, max: number): string => {
-    const numValue = parseInt(value, 10);
-    if (isNaN(numValue) || numValue < 0) return '00';
-    if (numValue > max) return max.toString().padStart(2, '0');
-    return numValue.toString().padStart(2, '0');
-  };
-
-  const handleTimeChange = (timeType: 'opening' | 'closing', field: 'hour' | 'minute' | 'period', value: string) => {
-    if (timeType === 'opening') {
-      setTempOpeningTime(prev => ({ ...prev, [field]: value }));
-    } else {
-      setTempClosingTime(prev => ({ ...prev, [field]: value }));
-    }
-  };
-
   const handleTimeBlur = (timeType: 'opening' | 'closing', field: 'hour' | 'minute') => {
-    let updatedOpeningTime = { ...tempOpeningTime };
+    const updatedOpeningTime = { ...tempOpeningTime };
     let updatedClosingTime = { ...tempClosingTime };
 
     if (timeType === 'opening') {

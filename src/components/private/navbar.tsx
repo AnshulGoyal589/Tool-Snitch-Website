@@ -63,9 +63,15 @@ export function NavigationBar() {
   return (
     <>
       <div className="hidden md:flex justify-around items-center pt-[24px]">
-        <a href="./">
-          <img className="object-cover z-50" src="/toolsnitchlogo.png" />
-        </a>
+      <Link href="./">
+        <Image
+          src="/toolsnitchlogo.png"
+          alt="ToolSnitch Logo"
+          width={150}
+          height={50}
+          className="object-cover z-50"
+        />
+      </Link>
         <NavigationMenu>
           <NavigationMenuList>
           {isShopkeeper=='true' ? 
@@ -190,9 +196,15 @@ export function NavigationBar() {
             <FaBars size={30} color="black" />
           )}
         </div>
-        <a href="./" className="z-50">
-          <img className="object-cover" src="/toolsnitchlogo.png" />
-        </a>
+        <Link href="./" className="z-50">
+          <Image
+            src="/toolsnitchlogo.png"
+            alt="ToolSnitch Logo"
+            width={100}
+            height={30}
+            className="object-cover"
+          />
+        </Link>
       </div>
       {(nav || animationClass === 'nav-menu-exit') && (
         <div
