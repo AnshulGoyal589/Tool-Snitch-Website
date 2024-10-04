@@ -9,8 +9,8 @@ import { api } from "@/api/api";
 import { getJwtToken } from '@/action/cognitoUtils';
 
 const poolData = {
-  UserPoolId: 'ap-south-1_VKjbitmCA',
-  ClientId: '26b9i0nbi58vcq7gqfcdnjt8qo',
+  UserPoolId: process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID!,
+  ClientId: process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID!,
 };
 const userPool = new CognitoUserPool(poolData);
 

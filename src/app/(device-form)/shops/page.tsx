@@ -23,8 +23,8 @@ export default function ShopsPage() {
   const featchShopsByRating = async () => {
     try {
       setMessage("");
-      const response = await api.get("/read/shopsDatabyRating");
-      console.log(response.data);
+      const response = await api.get("/read/shopsData");
+      // console.log(response.data);
       let localData;
       if(typeof window !== 'undefined') {
         localData = JSON.parse(localStorage.getItem("shopData") || "{}");
@@ -72,7 +72,7 @@ export default function ShopsPage() {
           id : shop._id,
           shopName: shop.shopName,
           rating: shop.rating,
-          location : shop.location,
+          location : shop.shopLocation,
           picture: shop.images[0],
           yearOfService: shop?.yearOfService || "10 Year",
           aproximateDistance: "1.2 km",
