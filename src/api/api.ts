@@ -13,7 +13,8 @@ import axios from 'axios';
 import { CognitoUserPool } from 'amazon-cognito-identity-js';
 
 export const api = axios.create({
-  baseURL: 'http://localhost:8000',
+  // baseURL: 'http://localhost:8000',
+  baseURL: 'https://toolsnitch.ninja',
   headers: {
     'Content-Type': 'application/json',
   },
