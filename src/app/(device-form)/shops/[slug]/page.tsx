@@ -1,5 +1,8 @@
+'use client'
+
 import { ReviewSection, ShopHero } from "@/components";
 import { api } from "@/api/api";
+import { useEffect } from 'react';
 
 export default async function ShopDetailsPage({params} : {params: {slug: string}}) {
 
@@ -8,10 +11,12 @@ export default async function ShopDetailsPage({params} : {params: {slug: string}
             const response = await api.get(`/read/shopData/${slug}`);
             return response.data;
         } catch (error) {
-            // console.error(error.message);
             return null;
         }
     }
+    useEffect(() => {
+        localStorage.setItem("shopID", params.slug);
+    }, [params.slug]);
 
     const data = await getShopDetails(params.slug);
 
@@ -20,22 +25,20 @@ export default async function ShopDetailsPage({params} : {params: {slug: string}
             <h1 className="text-8xl font-black text-gray-200 dark:text-gray-700">Shop Not Found</h1>
         </div>
     }
-
+    console.log("Data of images: ",data.images);
     let shop;
     if(params.slug !== "ab-rb-er-21") {
         shop =  {
             id : data._id,
             shopName: data.shopName,
             rating: data.rating,
-            address: data.location,
-            timings: {
-                open: data.openTime || "10:00 AM",
-                close: data.closeTime || "8:00 PM"
-            },
+            location: data.location,
+            address: data.address,
+            openingTime : data.openingTime,
+            closingTime : data.closingTime,
             services: [data.devicesDeal],
             description: data.desc,
-            images: data.images.map((image:string, index:number) => ({id: index, url: image, name: `image-${index}`})),
-            // city: data.shopKeeper.state
+            // images: data.images.map((image:string, index:number) => ({id: index, url: image, name: `image-${index}`})),
         }
         return (
             <>

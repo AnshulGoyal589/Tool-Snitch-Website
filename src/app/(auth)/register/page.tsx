@@ -65,7 +65,7 @@ export default function RegisterPage() {
       const commonData = {
         cognitoId: cognitoResult.userSub,
         email,
-        isShopkeeper: selected,
+        name
       };
 
       let mongoDbResult;

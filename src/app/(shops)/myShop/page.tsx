@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { getUserSession } from '@/utils/auth'
 import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -35,14 +35,15 @@ import {
 import pincodes from "indian-pincodes";
 
 const ShopProfileSchema = z.object({
-  shopName: z
-    .string()
-    .min(3, "Shop name must be at least 3 characters long")
-    .max(50, "Shop name must be at most 50 characters long"),
-  shopDescription: z
-    .string()
-    .min(3, "Shop description must be at least 3 characters long")
-    .max(500, "Shop description must be at most 500 characters long"),
+  shopName: z.string(),
+  ownerName: z.string(),
+  shopDescription: z.string(),
+  shopLocation: z.string(),
+  shopAddress: z.string(),
+  shopSpecs: z.string(),
+  shopDesc: z.string(),
+  shopOpenTime: z.string(),
+  shopCloseTime: z.string(),
   shopMail: z.string().email(),
   shopPhone: z.string().min(10).max(10),
   address: z.string().min(3, "Address Required"),
@@ -56,42 +57,43 @@ const MyShop = () => {
   const { toast } = useToast();
 
   const [disabled, setDisabled] = useState(true);
-  const [shopDetails, setShopDetails] = useState<
-    null | z.infer<typeof ShopProfileSchema> | undefined
-  >(null);
-  const [activeImage, setActiveImage] = useState<string | undefined | null>(
-    null
-  );
+  const [shopDetails, setShopDetails] = useState<null | z.infer<typeof ShopProfileSchema> | undefined>(null);
+  const [activeImage, setActiveImage] = useState<string | undefined | null>(null);
   const [image, setImage] = useState<string[] | undefined | null>([
     "https://images.unsplash.com/photo-1719937206255-cc337bccfc7d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "https://images.unsplash.com/photo-1719937206255-cc337bccfc7d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   ]);
+
   const form = useForm({
     resolver: zodResolver(ShopProfileSchema),
     defaultValues: {
       shopName: "Test Shop",
+      ownerName: "",
       shopDescription: "Test Description",
+      shopLocation: "",
+      shopAddress: "",
+      shopSpecs: "",
+      shopDesc: "",
+      shopOpenTime: "",
+      shopCloseTime: "",
       shopMail: "test@test.com",
-      shopPhone: "1234567890",
+      shopPhone: "+91 XXXXXXXXXX",
       address: "Test Address",
-      pincode: "123456",
+      pincode: "000000",
       status: "review",
       images: [],
     },
   });
+
   const fetchShopDetails = useCallback(async () => {
     try {
-      if (typeof window === "undefined") return;
-      // let jwt = localStorage.getItem("JwtToken");
-      // console.log(jwt);
-      // const response = await api.get("/auth/myShop", {
-      //   headers: {
-      //     Authorization: `Bearer ${jwt}`,
-      //   },
-      // });
-      // setShopDetails(response.data);
-      const shopData = JSON.parse(localStorage.getItem("shopData") || "{}");
-      setShopDetails(shopData);
+      const cognitoId = await getUserSession();
+      if (!cognitoId) {
+        throw new Error("User not authenticated");
+      }
+      const response = await api.get(`/shop/${cognitoId}`);
+      console.log("Shop Profile Data: ",response.data);
+      setShopDetails(response.data);
     } catch (error: any) {
       console.error(error);
       toast({
@@ -108,16 +110,19 @@ const MyShop = () => {
 
   useEffect(() => {
     if (shopDetails) {
-      form.setValue("shopName", shopDetails.shopName);
-      form.setValue("shopMail", shopDetails.shopMail);
-      form.setValue("shopDescription", shopDetails.shopDescription);
-      form.setValue("shopPhone", shopDetails.shopPhone);
-      form.setValue("address", shopDetails.address);
-      form.setValue("pincode", shopDetails.pincode);
-      form.setValue("status", shopDetails.status || "review");
+      form.reset({
+        shopName: shopDetails.shopName,
+        shopMail: shopDetails.shopMail,
+        shopDescription: shopDetails.shopDescription,
+        shopPhone: shopDetails.shopPhone,
+        address: shopDetails.address,
+        pincode: shopDetails.pincode,
+        status: shopDetails.status || "review",
+      });
       setImage(shopDetails.images);
     }
   }, [shopDetails, form]);
+
 
   useEffect(() => {
     if (image) {
@@ -126,9 +131,7 @@ const MyShop = () => {
   }, [image]);
 
   const onSubmit = async (data: z.infer<typeof ShopProfileSchema>) => {
-    // Validate the form data
     const isValid = await form.trigger();
-    // Image validation
     const ImageValid =
       image &&
       image.length > 0 &&
@@ -138,8 +141,7 @@ const MyShop = () => {
     if (!ImageValid || !isValid) {
       return;
     }
-
-    // Validate the pincode
+  
     const details = pincodes.getPincodeDetails(Number(data.pincode));
     if (!details) {
       form.setError("pincode", {
@@ -148,27 +150,24 @@ const MyShop = () => {
       });
       return;
     }
-
-    // Submit the form data
+  
     try {
       setDisabled(true);
+      const cognitoId = await getUserSession();
+      if (!cognitoId) {
+        throw new Error("User not authenticated");
+      }
       const POST_DATA = {
         shopName: data.shopName,
-        shopMail: data.shopMail,
         shopPhone: data.shopPhone,
         address: data.address,
         pincode: data.pincode,
         desc: data.shopDescription,
         status: "Visible",
         images: image,
-        rating : 0,
-        state : details.state,
+        state: details.state,
       };
-      console.log(data);
-      if(typeof window !== 'undefined') {
-        localStorage.setItem("shopData", JSON.stringify(POST_DATA));
-      }
-      // await api.post("/auth/shopData", POST_DATA);
+      await api.put(`/shop/${cognitoId}`, POST_DATA);
       setDisabled(true);
       fetchShopDetails();
       toast({
@@ -252,26 +251,23 @@ const MyShop = () => {
                           </div>
                           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                             <div>
-                              <FormField
-                                control={form.control}
-                                name="shopMail"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        placeholder="Email"
-                                        {...field}
-                                        disabled={disabled}
-                                      />
-                                    </FormControl>
-                                    {/* <FormDescription>
-                                    Please provide a valid email address.
-                                  </FormDescription> */}
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
+                            <FormField
+                              control={form.control}
+                              name="shopMail"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Email</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="Email"
+                                      {...field}
+                                      disabled={true}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
                             </div>
                             <div>
                               <FormField
@@ -287,9 +283,6 @@ const MyShop = () => {
                                         disabled={disabled}
                                       />
                                     </FormControl>
-                                    {/* <FormDescription>
-                                      Please provide a valid phone number.
-                                    </FormDescription> */}
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -310,9 +303,6 @@ const MyShop = () => {
                                       disabled={disabled}
                                     />
                                   </FormControl>
-                                  {/* <FormDescription>
-                                    Please provide a valid address.
-                                  </FormDescription> */}
                                   <FormMessage />
                                 </FormItem>
                               )}
@@ -333,9 +323,6 @@ const MyShop = () => {
                                         disabled={disabled}
                                       />
                                     </FormControl>
-                                    {/* <FormDescription>
-                                      Please provide a valid pincode.
-                                    </FormDescription> */}
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -494,7 +481,6 @@ const MyShop = () => {
                                 }}
                               </CldUploadWidget>
                             )}
-
                             {/* <button className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed">
                               <Upload className="h-4 w-4 text-muted-foreground" />
                               <span className="sr-only">Upload</span>

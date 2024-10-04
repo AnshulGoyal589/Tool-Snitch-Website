@@ -22,7 +22,7 @@ export function NavigationBar() {
       if (typeof window === "undefined") return;
       setIsLoggedIn(localStorage.getItem('JwtToken'));
       setIsShopkeeper(localStorage.getItem('isShopkeeper'));
-  })
+  },[])
 
   useEffect(() => {
     const handleResize = () => {

@@ -10,10 +10,8 @@ interface ShopHeroProps {
   shopName?: string;
   rating?: number;
   address?: string;
-  timings?: {
-    open: string;
-    close: string;
-  };
+  openingTime?: string;
+  closingTime?: string;
   services?: string[];
   description?: string;
   images?: { id: number; name?: string; url: string }[];
@@ -25,7 +23,8 @@ export default function ShopHero({
   shopName,
   rating = 0,
   address,
-  timings,
+  openingTime,
+  closingTime,
   services,
   description,
   images,
@@ -39,10 +38,8 @@ export default function ShopHero({
       shopName = shopData.shopName;
       rating = shopData.rating;
       address = shopData.location;
-      timings = {
-        open: shopData.openTime || "10:00 AM",
-        close: shopData.closeTime || "8:00 PM"
-      };
+      openingTime = shopData.openingTime;
+      closingTime = shopData.closingTime;
       services = shopData.devicesDeal;
       description = shopData.desc;
       images = shopData.images.map((image:string, index:number) => ({id: index, url: image, name: `image-${index}`}));
@@ -50,6 +47,34 @@ export default function ShopHero({
     }
   }
 
+  const convertTo12Hour = (time24: string | undefined): string => {
+    if (!time24) return "";
+    
+    try {
+      // Handle if time is already in 12-hour format
+      if (time24.toLowerCase().includes('am') || time24.toLowerCase().includes('pm')) {
+        return time24;
+      }
+  
+      const [hours, minutes] = time24.split(':').map(num => parseInt(num, 10));
+      
+      if (isNaN(hours) || isNaN(minutes)) {
+        throw new Error('Invalid time format');
+      }
+  
+      const period = hours >= 12 ? 'PM' : 'AM';
+      const hours12 = hours % 12 || 12; // Convert 0 to 12 for midnight
+      
+      // Ensure minutes are padded with leading zero if needed
+      const minutesFormatted = minutes.toString().padStart(2, '0');
+      
+      return `${hours12}:${minutesFormatted} ${period}`;
+    } catch (error) {
+      console.error('Error converting time:', error);
+      return time24 || ""; // Return original value if conversion fails
+    }
+  };
+  
 
   return (
     <div className="mx-3 mt-4 md:mx-8 lg:mx-16 xl:mx-20" >
@@ -111,7 +136,7 @@ export default function ShopHero({
           <p className="mt-4">
             <span className="text-lg font-semibold">Timings: </span>
             <span className="text-gray-800">
-              {timings?.open || "10:00 AM"} - {timings?.close || "8:00 PM"}
+            {openingTime || "10:00 AM"} - {closingTime || "8:00 PM"}
             </span>
           </p>
           <div className="mt-4">
