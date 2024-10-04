@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';   
 import { api } from "@/api/api";
 import { getJwtToken } from '@/action/cognitoUtils';
+import Image from 'next/image';
 
 const poolData = {
   UserPoolId: process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID!,
@@ -164,7 +165,14 @@ export default function LoginPage() {
           </div>
 
           <div className="lg:col-span-4 mt-10 lg:mt-0 hidden lg:flex">
-            <img className="w-full rounded-xl" src="login.png" alt="Hero Image" />
+            <Image
+              src="/login.png"
+              alt="Hero Image"
+              width={500}
+              height={300}
+              layout="responsive"
+              className="rounded-xl"
+            />
           </div>
         </div>
       </div>

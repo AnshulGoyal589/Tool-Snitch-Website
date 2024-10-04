@@ -2,6 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
+import Image from 'next/image';
 
 const OLA_API_KEY = 'wK829Ehvq1i7fVyVQTyDJfsHfRNPEfy9n34xh7kH';
 const STYLE_NAME = 'default-light-standard';
@@ -130,7 +131,7 @@ const Page = () => {
 
         {selectedLocation && (
           <div className="mt-4">
-            <img 
+            <Image 
               src={getMapImageUrl(selectedLocation)} 
               alt={`Map of ${selectedLocation.display_name}`}
               width={MAP_WIDTH}
