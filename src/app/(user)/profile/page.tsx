@@ -1,13 +1,14 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { use, useCallback, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useToast } from "@/hooks/use-toast";
 import { api } from "@/api/api";
+import { useToast } from "@/hooks/use-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Avatar } from "@nextui-org/react";
+import { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
-import { set, z } from "zod";
-import pincodes from "indian-pincodes";
+import { CldUploadWidget } from "next-cloudinary";
+import { z } from "zod";
 
 import {
   Form,
@@ -21,11 +22,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@nextui-org/react";
 
 const ProfileSchema = z.object({
-  username: z.string().nonempty(),
+  name: z.string().min(3).max(255),
   email: z.string().email(),
-  phone: z.string().min(10),
-  address: z.string().nonempty(),
-  pincode: z.string().min(6).max(6),
+  phone: z.string().length(10).regex(/^\d+$/),
+  address: z.string().min(3).max(255),
+  profilePic: z.string().optional(),
 });
 
 export default function Profile() {
@@ -37,32 +38,37 @@ export default function Profile() {
   const form = useForm({
     resolver: zodResolver(ProfileSchema),
     defaultValues: {
-      username: "Test",
-      email: "test@test.com",
+      name: "Dhruv Patel",
+      email: "dhruvpatel@test.com",
       phone: "1234567890",
-      address: "Test Address",
-      pincode: "123456",
+      address: "Ahmedabad, Gujarat",
+      profilePic: "https://randomuser.me/api/portraits",
     },
   });
 
   const getUserData = useCallback(async () => {
     try {
-      setDisabled(true);
-      const response = await api.get("/auth/getUserDetails");
+      const JwtToken = localStorage.getItem("JwtToken");
+      const response = await api.get("/auth/customer-my-profile", {
+        headers: {
+          Authorization: `Bearer ${JwtToken}`,
+        },
+      });
+      console.log(response);
       setUserData(response.data);
-    } catch (error:any) {
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Unable to fetch user",
         description: error.response?.data?.message || "Something went wrong",
       });
     }
-    setDisabled(false);
-  }, [toast]);
+    // setDisabled(false);
+  }, [toast, setUserData, setDisabled, api]);
 
-  //   useEffect(() => {
-  //     getUserData();
-  //   }, [getUserData]);
+  useEffect(() => {
+    getUserData();
+  }, []);
 
   useEffect(() => {
     form.reset(userData);
@@ -70,20 +76,6 @@ export default function Profile() {
 
   const onSubmit = async (data: z.infer<typeof ProfileSchema>) => {
     console.log(data);
-
-    // Pincode validation
-    const details = pincodes.getPincodeDetails(Number(data.pincode));
-    if (!details) {
-      form.setError("pincode", {
-        type: "manual",
-        message: "Invalid Pincode",
-      });
-
-      return;
-    }
-
-    setDisabled(true);
-
     try {
       await api.put("/auth/updateProfile", data);
       toast({
@@ -92,45 +84,106 @@ export default function Profile() {
       });
       setDisabled(true);
       getUserData();
-    } catch (error:any) {
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Unable to update profile",
         description: error.response?.data?.message || "Something went wrong",
       });
-      setDisabled(false);
     }
   };
 
   return (
-    <div className="my-16 flex flex-col items-center justify-center">
-      <section className="mt-8 flex max-w-5xl items-center justify-center rounded-xl border-2 border-[#D8BA74] shadow-md shadow-[#D8BA74]">
+    <div className="mx-4 my-4 sm:mx-8 md:mx-16 md:my-8 lg:mx-24 xl:mx-32">
+      <section className="mx-auto max-w-5xl">
         <div className="">
           <div className="space-y-4 p-4">
-            <h1 className="border-[#D8BA74]/ border-b-2 pb-3 text-2xl font-bold">
-              My Profile
-            </h1>
+            <h1 className="pb-3 text-2xl font-bold md:text-4xl">Profile</h1>
             <Form {...form}>
               <form
                 className="space-y-4"
                 onSubmit={form.handleSubmit((data) => onSubmit(data))}
                 method="POST"
               >
-                <div className="space-y-4">
+                <div className="mt-2 flex items-center justify-start gap-2 md:mt-4 md:gap-4">
+                  <Avatar
+                    src={form.watch("profilePic")}
+                    size="lg"
+                    name={form.watch("name")}
+                  />
+                  <div className="space-y-2">
+                    <h2 className="text-base font-semibold md:text-2xl">
+                      Proflie Picture
+                    </h2>
+                    <div className="flex items-center gap-2">
+                      <CldUploadWidget
+                        uploadPreset={
+                          process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+                        }
+                        signatureEndpoint="/api/sign-cloudinary-params"
+                        onSuccess={(result: any) => {
+                          console.log(result);
+                          if (
+                            typeof result.info === "object" &&
+                            "secure_url" in result.info
+                          ) {
+                            form.setValue("profilePic", result.info.secure_url);
+                          }
+                        }}
+                        options={{
+                          maxFiles: 1,
+                          sources: ["local", "url"],
+                          multiple: false,
+                          autoMinimize: false,
+                          maxFileSize: 2 * 1024 * 1024, // 2MB
+                          clientAllowedFormats: ["jpeg", "png"],
+                        }}
+                      >
+                        {({ open }) => {
+                          return (
+                            <button
+                              type="button"
+                              className="rounded-full bg-[#D8BA74] px-3 py-1 text-sm text-white transition-colors duration-300 hover:bg-[#D8BA74]/80 disabled:cursor-not-allowed disabled:bg-[#D8BA74]/70"
+                              disabled={disabled}
+                              onClick={() => open()}
+                            >
+                              Upload
+                            </button>
+                          );
+                        }}
+                      </CldUploadWidget>
+                      <button
+                        type="button"
+                        className="rounded-full bg-red-500 px-3 py-1 text-sm text-white transition-colors duration-300 hover:bg-red-500/80 disabled:cursor-not-allowed disabled:bg-red-500/70"
+                        disabled={disabled}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="max-w-96 space-y-4">
                   <FormField
                     control={form.control}
-                    name="username"
+                    name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Name</FormLabel>
+                        <FormLabel>Full Name</FormLabel>
                         <FormControl>
-                          <Input {...field} disabled={disabled} />
+                          <Input
+                            {...field}
+                            disabled={disabled}
+                            className="rounded-full border-2 border-gray-400"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+                </div>
 
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <FormField
                     control={form.control}
                     name="email"
@@ -138,42 +191,36 @@ export default function Profile() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input {...field} disabled={true} />
+                          <Input
+                            {...field}
+                            disabled={true}
+                            className="rounded-full border-2 border-gray-400"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Phone</FormLabel>
-                          <FormControl>
-                            <Input {...field} disabled={disabled} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            disabled={disabled}
+                            className="rounded-full border-2 border-gray-400"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-                    <FormField
-                      control={form.control}
-                      name="pincode"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Pincode</FormLabel>
-                          <FormControl>
-                            <Input {...field} disabled={disabled} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
+                <div className="">
                   <FormField
                     control={form.control}
                     name="address"
@@ -181,7 +228,11 @@ export default function Profile() {
                       <FormItem>
                         <FormLabel>Address</FormLabel>
                         <FormControl>
-                          <Input {...field} disabled={disabled} />
+                          <Input
+                            {...field}
+                            disabled={disabled}
+                            className="rounded-full border-2 border-gray-400"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -190,12 +241,12 @@ export default function Profile() {
 
                   {/* <Button type="submit">Update</Button> */}
                 </div>
-                <div className="flex justify-end">
+                <div className="flex justify-start gap-4">
                   {!disabled && (
                     <Button
                       type="button"
                       onClick={() => setDisabled(true)}
-                      className="m-4 bg-black px-4 py-2 text-white"
+                      className="rounded-full bg-red-500 px-4 py-2 text-white"
                     >
                       Cancel
                     </Button>
@@ -204,7 +255,7 @@ export default function Profile() {
                   {!disabled && (
                     <Button
                       type="submit"
-                      className="m-4 bg-black px-4 py-2 text-white"
+                      className="rounded-full bg-[#D8BA74] px-4 py-2 text-white"
                     >
                       Update
                     </Button>
@@ -213,9 +264,9 @@ export default function Profile() {
                     <Button
                       type="button"
                       onClick={() => setDisabled(false)}
-                      className="m-4 bg-black px-4 py-2 text-white"
+                      className="rounded-full bg-[#D8BA74] px-4 py-2 text-white"
                     >
-                      Edit
+                      Edit Profile
                     </Button>
                   )}
                 </div>
