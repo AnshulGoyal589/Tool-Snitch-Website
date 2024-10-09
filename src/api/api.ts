@@ -16,7 +16,7 @@ export const api = axios.create({
   // baseURL: 'http://localhost:8000',
   // baseURL: 'https://toolsnitch.ninja',
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
-  headers: {
+  headers: { 
     'Content-Type': 'application/json',
   },
 });
