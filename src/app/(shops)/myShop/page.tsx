@@ -36,18 +36,14 @@ import pincodes from "indian-pincodes";
 
 const ShopProfileSchema = z.object({
   shopName: z.string(),
-  ownerName: z.string(),
-  shopDescription: z.string(),
+  email: z.string().email(),
+  name: z.string(),
   shopLocation: z.string(),
-  shopAddress: z.string(),
+  address: z.string(),
   shopSpecs: z.string(),
-  shopDesc: z.string(),
-  shopOpenTime: z.string(),
-  shopCloseTime: z.string(),
-  shopMail: z.string().email(),
-  shopPhone: z.string().min(10).max(10),
-  address: z.string().min(3, "Address Required"),
+  desc: z.string(),
   pincode: z.string().min(6).max(6),
+  shopPhone: z.string().min(10).max(10),
   images: z.array(z.string()).max(5).optional(),
   status: z.string().optional(),
 });
@@ -60,28 +56,23 @@ const MyShop = () => {
   const [shopDetails, setShopDetails] = useState<null | z.infer<typeof ShopProfileSchema> | undefined>(null);
   const [activeImage, setActiveImage] = useState<string | undefined | null>(null);
   const [image, setImage] = useState<string[] | undefined | null>([
-    "https://images.unsplash.com/photo-1719937206255-cc337bccfc7d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1719937206255-cc337bccfc7d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    // "https://images.unsplash.com/photo-1719937206255-cc337bccfc7d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   ]);
 
   const form = useForm({
     resolver: zodResolver(ShopProfileSchema),
     defaultValues: {
-      shopName: "Test Shop",
-      ownerName: "",
-      shopDescription: "Test Description",
+      shopName: "",
+      email: "",
+      name: "",
       shopLocation: "",
-      shopAddress: "",
+      address: "",
       shopSpecs: "",
-      shopDesc: "",
-      shopOpenTime: "",
-      shopCloseTime: "",
-      shopMail: "test@test.com",
-      shopPhone: "+91 XXXXXXXXXX",
-      address: "Test Address",
-      pincode: "000000",
-      status: "review",
+      desc: "",
+      pincode: "",
+      shopPhone: "",
       images: [],
+      status: "Not Available",
     },
   });
 
@@ -112,14 +103,18 @@ const MyShop = () => {
     if (shopDetails) {
       form.reset({
         shopName: shopDetails.shopName,
-        shopMail: shopDetails.shopMail,
-        shopDescription: shopDetails.shopDescription,
-        shopPhone: shopDetails.shopPhone,
+        email: shopDetails.email,
+        name: shopDetails.name,
+        shopLocation: shopDetails.shopLocation,
         address: shopDetails.address,
+        shopSpecs: shopDetails.shopSpecs,
+        desc: shopDetails.desc,
         pincode: shopDetails.pincode,
-        status: shopDetails.status || "review",
+        shopPhone: shopDetails.shopPhone,
+        // images: shopDetails?.images || [],
+        status: shopDetails.status,
       });
-      setImage(shopDetails.images);
+      // setImage(shopDetails.images);
     }
   }, [shopDetails, form]);
 
@@ -127,6 +122,7 @@ const MyShop = () => {
   useEffect(() => {
     if (image) {
       setActiveImage(image.at(0));
+      
     }
   }, [image]);
 
@@ -159,13 +155,14 @@ const MyShop = () => {
       }
       const POST_DATA = {
         shopName: data.shopName,
-        shopPhone: data.shopPhone,
+        name: data.name,
+        shopLocation: data.shopLocation,
         address: data.address,
+        shopSpecs: data.shopSpecs,
+        desc: data.desc,
         pincode: data.pincode,
-        desc: data.shopDescription,
-        status: "Visible",
+        shopPhone: data.shopPhone,
         images: image,
-        state: details.state,
       };
       await api.put(`/shop/${cognitoId}`, POST_DATA);
       setDisabled(true);
@@ -189,7 +186,7 @@ const MyShop = () => {
       <Form {...form}>
         <form
           className="space-y-4"
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit((data) => onSubmit(data))}
           method="POST"
         >
           <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
@@ -226,34 +223,32 @@ const MyShop = () => {
                               )}
                             />
                           </div>
-                          <div className="grid gap-3">
-                            <FormField
-                              control={form.control}
-                              name="shopDescription"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Description</FormLabel>
-                                  <FormControl>
-                                    <Textarea
-                                      className="h-32 resize-none"
-                                      {...field}
-                                      disabled={disabled}
-                                    />
-                                  </FormControl>
-                                  <FormDescription>
-                                    Please provide a brief description of your
-                                    shop.
-                                  </FormDescription>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
+                          <div className="gird gap-3">
+                              <FormField
+                                control={form.control}
+                                name="name"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Owner Name</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="Owner Name"
+                                        {...field}
+                                        disabled={disabled}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            
                           </div>
+                          
                           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                             <div>
                             <FormField
                               control={form.control}
-                              name="shopMail"
+                              name="email"
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel>Email</FormLabel>
@@ -292,6 +287,51 @@ const MyShop = () => {
                           <div className="grid gap-3">
                             <FormField
                               control={form.control}
+                              name="desc"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Description</FormLabel>
+                                  <FormControl>
+                                    <Textarea
+                                      className="h-32 resize-none"
+                                      {...field}
+                                      disabled={disabled}
+                                    />
+                                  </FormControl>
+                                  <FormDescription>
+                                    Please provide a brief description of your
+                                    shop.
+                                  </FormDescription>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="grid gap-3">
+                            <FormField
+                              control={form.control}
+                              name="shopSpecs"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Specialities</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="Specialities"
+                                      {...field}
+                                      disabled={disabled}
+                                    />
+                                  </FormControl>
+                                  <FormDescription>
+                                    Please provide the specialities of your shop.
+                                  </FormDescription>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="grid gap-3">
+                            <FormField
+                              control={form.control}
                               name="address"
                               render={({ field }) => (
                                 <FormItem>
@@ -299,6 +339,25 @@ const MyShop = () => {
                                   <FormControl>
                                     <Input
                                       placeholder="Address"
+                                      {...field}
+                                      disabled={disabled}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="grid gap-3">
+                            <FormField
+                              control={form.control}
+                              name="shopLocation"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Location</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="Location"
                                       {...field}
                                       disabled={disabled}
                                     />
@@ -343,7 +402,7 @@ const MyShop = () => {
                           <div className="grid gap-3">
                             <Label htmlFor="status">Status</Label>
                             <span className="rounded-md border-1 border-y-gray-300 px-2 py-1 text-muted-foreground">
-                              {form.getValues("status").toLocaleUpperCase()}
+                              {form.getValues("status")?.toUpperCase() || "Not Available"}
                             </span>
                            
                           </div>
@@ -406,7 +465,7 @@ const MyShop = () => {
                               height="300"
                               src={
                                 activeImage ||
-                                "https://images.unsplash.com/photo-1719937206255-cc337bccfc7d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII="
                               }
                               width="300"
                               unoptimized

@@ -9,6 +9,8 @@ import { useForm } from "react-hook-form";
 
 import { CldUploadWidget } from "next-cloudinary";
 import { z } from "zod";
+import { getUserSession } from '@/utils/auth'
+
 
 import {
   Form,
@@ -24,8 +26,8 @@ import { Button } from "@nextui-org/react";
 const ProfileSchema = z.object({
   name: z.string().min(3).max(255),
   email: z.string().email(),
-  phone: z.string().length(10).regex(/^\d+$/),
-  address: z.string().min(3).max(255),
+  phone: z.string().length(10, "Phone number is Required").regex(/^\d+$/),
+  address: z.string().min(3, "Address is Required").max(255),
   profilePic: z.string().optional(),
 });
 
@@ -33,27 +35,29 @@ export default function Profile() {
   const { toast } = useToast();
 
   const [disabled, setDisabled] = useState(true);
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState<z.infer<typeof ProfileSchema> | null>(null);
 
   const form = useForm({
     resolver: zodResolver(ProfileSchema),
     defaultValues: {
-      name: "Dhruv Patel",
-      email: "dhruvpatel@test.com",
-      phone: "1234567890",
-      address: "Ahmedabad, Gujarat",
-      profilePic: "https://randomuser.me/api/portraits",
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      profilePic: "",
     },
   });
 
   const getUserData = useCallback(async () => {
     try {
-      const JwtToken = localStorage.getItem("JwtToken");
-      const response = await api.get("/auth/customer-my-profile", {
-        headers: {
-          Authorization: `Bearer ${JwtToken}`,
-        },
+      const cognitoId = await getUserSession();
+      if (!cognitoId) {
+         throw new Error("User not authenticated");
+      }
+      const response = await api.post(`/auth/getProfile/`, {
+        cognitoId : cognitoId
       });
+
       console.log(response);
       setUserData(response.data);
     } catch (error: any) {
@@ -71,13 +75,33 @@ export default function Profile() {
   }, []);
 
   useEffect(() => {
-    form.reset(userData);
+    if (userData) {
+      form.reset({
+        name: userData.name,
+        email: userData.email,
+        phone: userData.phone,
+        address: userData.address,
+        profilePic: userData.profilePic,
+      });
+    }
   }, [userData, form]);
 
   const onSubmit = async (data: z.infer<typeof ProfileSchema>) => {
     console.log(data);
     try {
-      await api.put("/auth/updateProfile", data);
+      const cognitoId = await getUserSession();
+      if (!cognitoId) {
+         throw new Error("User not authenticated");
+      }
+      const PUT_DATA = {
+        cognitoId: cognitoId,
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        address: data.address,
+        profilePic: data.profilePic,
+      }
+      await api.put("/auth/updateProfile", PUT_DATA);
       toast({
         title: "Success",
         description: "Profile updated successfully",
@@ -156,6 +180,7 @@ export default function Profile() {
                         type="button"
                         className="rounded-full bg-red-500 px-3 py-1 text-sm text-white transition-colors duration-300 hover:bg-red-500/80 disabled:cursor-not-allowed disabled:bg-red-500/70"
                         disabled={disabled}
+                        onClick={() => form.setValue("profilePic", "")}
                       >
                         Remove
                       </button>
