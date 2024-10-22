@@ -85,6 +85,7 @@ export default function ShopsPage() {
   }
   , [dataScraped]);
 
+
   return (
     <div className="mx-4 my-8 md:mx-8 lg:mx-16" suppressHydrationWarning>
       <div className="flex max-w-md">

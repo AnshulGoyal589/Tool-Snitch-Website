@@ -1,13 +1,27 @@
-'use client'
+"use client";
 
-import { CognitoUserPool, CognitoUserAttribute } from "amazon-cognito-identity-js";
+import {
+  CognitoUserPool,
+  CognitoUserAttribute,
+} from "amazon-cognito-identity-js";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { api } from "@/api/api";
-import Image from 'next/image';
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const poolData = {
   UserPoolId: "ap-south-1_VKjbitmCA",
@@ -18,7 +32,11 @@ const userPool = new CognitoUserPool(poolData);
 const CUSTOMER_API = "/auth/customer-profile";
 const SHOPKEEPER_API = "/auth/shopkeeper-profile";
 
-function signUp(email: string, password: string, attributes: { [key: string]: string }) {
+function signUp(
+  email: string,
+  password: string,
+  attributes: { [key: string]: string }
+) {
   return new Promise((resolve, reject) => {
     const attributeList = Object.entries(attributes).map(
       ([key, value]) => new CognitoUserAttribute({ Name: key, Value: value })
@@ -45,6 +63,7 @@ export default function RegisterPage() {
   const [shopLocation, setShopLocation] = useState("");
   const [shopSpecs, setShopSpecs] = useState("");
   const [shopPhone, setShopPhone] = useState("");
+  const [yearofEstablishment, setYearofEstablishment] = useState("");
 
   const handleSignUp = async () => {
     if (!email || !password || !confirmPassword || !name) {
@@ -56,17 +75,25 @@ export default function RegisterPage() {
       alert("Passwords do not match. Please try again.");
       return;
     }
+    if (selected && !yearofEstablishment) {
+      alert("Please enter year of establishment");
+      return;
+    }
+    if (selected && yearofEstablishment.length !== 4 || !Number(yearofEstablishment) || Number(yearofEstablishment) < 1900 || Number(yearofEstablishment) > new Date().getFullYear()) {
+      alert("Please enter a valid year of establishment");
+      return;
+    }
 
     try {
       const cognitoResult: any = await signUp(email, password, {
-        "name": name,
-        "email": email
+        name: name,
+        email: email,
       });
 
       const commonData = {
         cognitoId: cognitoResult.userSub,
         email,
-        name
+        name,
       };
 
       let mongoDbResult;
@@ -80,6 +107,7 @@ export default function RegisterPage() {
           shopLocation,
           shopSpecs,
           shopPhone,
+          yearofEstablishment,
         });
       } else {
         mongoDbResult = await api.post(CUSTOMER_API, commonData);
@@ -88,7 +116,7 @@ export default function RegisterPage() {
       console.log("User signed up successfully:", cognitoResult);
       console.log("User data stored in MongoDB:", mongoDbResult.data);
 
-      if (selected && typeof window !== 'undefined') {
+      if (selected && typeof window !== "undefined") {
         const shopData = {
           shopName: shopName,
           shopMail: email,
@@ -103,7 +131,9 @@ export default function RegisterPage() {
     } catch (error: any) {
       console.error("Error during sign up:", error);
       if (error.response) {
-        alert(`Error signing up: ${error.response.data.message || error.response.data}`);
+        alert(
+          `Error signing up: ${error.response.data.message || error.response.data}`
+        );
       } else if (error.request) {
         alert("Error signing up: No response received from server");
       } else {
@@ -197,6 +227,17 @@ export default function RegisterPage() {
                   value={shopPhone}
                   onChange={(e) => setShopPhone(e.target.value)}
                 />
+                <Input
+                  className="my-4 h-12 w-[20rem] rounded-3xl bg-[transparent] md:w-[30rem]"
+                  placeholder="Enter year of establishment"
+                  pattern="[0-9]{4}"
+                  maxLength={4}
+                  minLength={4}
+                  min={1900}
+                  max={new Date().getFullYear()}
+                  value={yearofEstablishment}
+                  onChange={(e) => setYearofEstablishment(e.target.value)}
+                />
               </div>
             )}
 
@@ -218,14 +259,14 @@ export default function RegisterPage() {
           </div>
 
           <div className="mt-10 hidden lg:col-span-4 lg:mt-0 lg:flex">
-          <Image
-            src="/login.png"
-            alt="Hero Image"
-            width={500}
-            height={300}
-            layout="responsive"
-            className="rounded-xl"
-          />
+            <Image
+              src="/login.png"
+              alt="Hero Image"
+              width={500}
+              height={300}
+              layout="responsive"
+              className="rounded-xl"
+            />
           </div>
         </div>
       </div>

@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getUserSession } from '@/utils/auth'
+import { getUserSession } from "@/utils/auth";
 import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -46,15 +46,19 @@ const ShopProfileSchema = z.object({
   shopPhone: z.string().min(10).max(10),
   images: z.array(z.string()).max(5).optional(),
   status: z.string().optional(),
+  yearofEstablishment: z.string().min(4).max(4).regex(/^\d{4}$/).optional(),
 });
-
 
 const MyShop = () => {
   const { toast } = useToast();
 
   const [disabled, setDisabled] = useState(true);
-  const [shopDetails, setShopDetails] = useState<null | z.infer<typeof ShopProfileSchema> | undefined>(null);
-  const [activeImage, setActiveImage] = useState<string | undefined | null>(null);
+  const [shopDetails, setShopDetails] = useState<
+    null | z.infer<typeof ShopProfileSchema> | undefined
+  >(null);
+  const [activeImage, setActiveImage] = useState<string | undefined | null>(
+    null
+  );
   const [image, setImage] = useState<string[] | undefined | null>([
     // "https://images.unsplash.com/photo-1719937206255-cc337bccfc7d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   ]);
@@ -73,6 +77,7 @@ const MyShop = () => {
       shopPhone: "",
       images: [],
       status: "Not Available",
+      yearofEstablishment: "",
     },
   });
 
@@ -83,7 +88,7 @@ const MyShop = () => {
         throw new Error("User not authenticated");
       }
       const response = await api.get(`/shop/${cognitoId}`);
-      console.log("Shop Profile Data: ",response.data);
+      console.log("Shop Profile Data: ", response.data);
       setShopDetails(response.data);
     } catch (error: any) {
       console.error(error);
@@ -113,16 +118,15 @@ const MyShop = () => {
         shopPhone: shopDetails.shopPhone,
         // images: shopDetails?.images || [],
         status: shopDetails.status,
+        yearofEstablishment: shopDetails.yearofEstablishment,
       });
       // setImage(shopDetails.images);
     }
   }, [shopDetails, form]);
 
-
   useEffect(() => {
     if (image) {
       setActiveImage(image.at(0));
-      
     }
   }, [image]);
 
@@ -137,7 +141,7 @@ const MyShop = () => {
     if (!ImageValid || !isValid) {
       return;
     }
-  
+
     const details = pincodes.getPincodeDetails(Number(data.pincode));
     if (!details) {
       form.setError("pincode", {
@@ -146,7 +150,7 @@ const MyShop = () => {
       });
       return;
     }
-  
+
     try {
       setDisabled(true);
       const cognitoId = await getUserSession();
@@ -224,45 +228,44 @@ const MyShop = () => {
                             />
                           </div>
                           <div className="gird gap-3">
-                              <FormField
-                                control={form.control}
-                                name="name"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Owner Name</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        placeholder="Owner Name"
-                                        {...field}
-                                        disabled={disabled}
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            
-                          </div>
-                          
-                          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                            <div>
                             <FormField
                               control={form.control}
-                              name="email"
+                              name="name"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Email</FormLabel>
+                                  <FormLabel>Owner Name</FormLabel>
                                   <FormControl>
                                     <Input
-                                      placeholder="Email"
+                                      placeholder="Owner Name"
                                       {...field}
-                                      disabled={true}
+                                      disabled={disabled}
                                     />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
                               )}
                             />
+                          </div>
+
+                          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                            <div>
+                              <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Email</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="Email"
+                                        {...field}
+                                        disabled={true}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
                             </div>
                             <div>
                               <FormField
@@ -322,7 +325,8 @@ const MyShop = () => {
                                     />
                                   </FormControl>
                                   <FormDescription>
-                                    Please provide the specialities of your shop.
+                                    Please provide the specialities of your
+                                    shop.
                                   </FormDescription>
                                   <FormMessage />
                                 </FormItem>
@@ -388,6 +392,25 @@ const MyShop = () => {
                               />
                             </div>
                           </div>
+                          <div className="grid gap-3">
+                            <FormField
+                              control={form.control}
+                              name="yearofEstablishment"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Year of Establishment</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="Year of Establishment"
+                                      {...field}
+                                      disabled={disabled}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
@@ -402,9 +425,9 @@ const MyShop = () => {
                           <div className="grid gap-3">
                             <Label htmlFor="status">Status</Label>
                             <span className="rounded-md border-1 border-y-gray-300 px-2 py-1 text-muted-foreground">
-                              {form.getValues("status")?.toUpperCase() || "Not Available"}
+                              {form.getValues("status")?.toUpperCase() ||
+                                "Not Available"}
                             </span>
-                           
                           </div>
                           <div className="flex items-center gap-4">
                             {!disabled && (
@@ -447,8 +470,10 @@ const MyShop = () => {
                             type="button"
                             onClick={() => {
                               if (activeImage) {
-                                setImage((prev:any) =>
-                                  prev?.filter((img:any) => img !== activeImage)
+                                setImage((prev: any) =>
+                                  prev?.filter(
+                                    (img: any) => img !== activeImage
+                                  )
                                 );
                               }
                             }}
@@ -499,13 +524,13 @@ const MyShop = () => {
                                     .NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
                                 }
                                 signatureEndpoint="/api/sign-cloudinary-params"
-                                onSuccess={(result:any) => {
+                                onSuccess={(result: any) => {
                                   console.log(result);
                                   if (
                                     typeof result.info === "object" &&
                                     "secure_url" in result.info
                                   ) {
-                                    setImage((prev:any) => {
+                                    setImage((prev: any) => {
                                       if (prev) {
                                         return [
                                           ...prev,
@@ -563,7 +588,6 @@ const MyShop = () => {
                             <span className="text-red-600">*</span> Maximum 5
                             images allowed, 2MB each
                           </span>
-                          
                         </div>
                       </CardContent>
                     </Card>
@@ -648,8 +672,6 @@ const MyShop = () => {
       </Form>
     </div>
   );
-}
-
-
+};
 
 export default MyShop;

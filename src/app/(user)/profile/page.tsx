@@ -58,6 +58,12 @@ export default function Profile() {
         cognitoId : cognitoId
       });
 
+      const profileData = response.data;
+      if(typeof window !== 'undefined'){
+        localStorage.setItem('profile', JSON.stringify({ name: profileData.name, profilePic: profileData?.profilePic }));
+      }
+      
+    
       console.log(response);
       setUserData(response.data);
     } catch (error: any) {

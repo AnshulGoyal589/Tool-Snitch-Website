@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 
+
 export function NavigationBar() {
   const [nav, setNav] = useState(false);
   const [animationClass, setAnimationClass] = useState('');
@@ -17,11 +18,16 @@ export function NavigationBar() {
   const [loggedIn , setIsLoggedIn] = useState< string | null >(null);
   const [isShopkeeper , setIsShopkeeper] = useState< string | null >(null);
   const router = useRouter();
+  const [profile, setProfile] = useState<null | {
+    name: string;
+    profilePic : string;
+  }>(null);
   
   useEffect(() => {
       if (typeof window === "undefined") return;
       setIsLoggedIn(localStorage.getItem('JwtToken'));
       setIsShopkeeper(localStorage.getItem('isShopkeeper'));
+      setProfile(JSON.parse(localStorage.getItem('profile') || '{}'));
   },[])
 
   useEffect(() => {
@@ -160,8 +166,8 @@ export function NavigationBar() {
                     <NavigationMenuItem>
                       <NavigationMenuTrigger>
                         <Avatar>
-                          <AvatarImage src="https://github.com/shadcn.png" />
-                          <AvatarFallback>CN</AvatarFallback>
+                          <AvatarImage src={profile?.profilePic} alt={profile?.name} />
+                          <AvatarFallback>{profile?.name?.split(' ').slice(0, 2).map((n) => n[0]).join('')}</AvatarFallback>
                         </Avatar>
                       </NavigationMenuTrigger>
                       <NavigationMenuContent>

@@ -18,10 +18,10 @@ import Link from "next/link";
 
 import useWindowSize from "react-use/lib/useWindowSize";
 
-export default function ShopsSection({shops}: {shops: Shop[]}) {
+export default function ShopsSection({ shops }: { shops: Shop[] }) {
   return (
     <div className="mt-4">
-      <ShopsTable shops={shops}/>
+      <ShopsTable shops={shops} />
     </div>
   );
 }
@@ -81,44 +81,43 @@ const INITIAL_VISIBLE_COLUMNS = [
   "picture",
   "location",
   "aproximateDistance",
-    "yearOfService",
+  "yearOfService",
 ];
 
 const MOBILE_COLUMNS = [
-    "shopName",
-    "rating",
-    "picture",
-    // "location",
-    "aproximateDistance"
+  "shopName",
+  "rating",
+  "picture",
+  // "location",
+  "aproximateDistance",
 ];
 
-function ShopsTable({shops}: {shops: Shop[]}) {
+function ShopsTable({ shops }: { shops: Shop[] }) {
+  const [visibleColumns, setVisibleColumns] = useState<Selection>(
+    new Set(INITIAL_VISIBLE_COLUMNS)
+  );
 
-    
-    
-    
-    
-    const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
-    
-    const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-        column: "rating",
-        direction: "ascending",
-    });
-    
-    const { width } = useWindowSize();
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
+    column: "rating",
+    direction: "ascending",
+  });
 
-    useEffect(() => {
-        if (width < 768) {
-            setVisibleColumns(new Set(MOBILE_COLUMNS));
-        } else {
-            setVisibleColumns(new Set(INITIAL_VISIBLE_COLUMNS));
-        }
-    }, [width]);
+  const { width } = useWindowSize();
+
+  useEffect(() => {
+    if (width < 768) {
+      setVisibleColumns(new Set(MOBILE_COLUMNS));
+    } else {
+      setVisibleColumns(new Set(INITIAL_VISIBLE_COLUMNS));
+    }
+  }, [width]);
 
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
 
-    return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
+    return columns.filter((column) =>
+      Array.from(visibleColumns).includes(column.uid)
+    );
   }, [visibleColumns]);
 
   const renderCell = useCallback((data: any, columnKey: React.Key) => {
@@ -128,7 +127,7 @@ function ShopsTable({shops}: {shops: Shop[]}) {
       case "rating":
         return (
           <>
-            <span className="hidden items-center gap-1 lg:flex justify-center">
+            <span className="hidden items-center justify-center gap-1 lg:flex">
               {Array.from({ length: 5 }).map((_, index) => (
                 <FaStar
                   key={index}
@@ -151,26 +150,22 @@ function ShopsTable({shops}: {shops: Shop[]}) {
         );
       case "picture":
         return (
-          <div className="relative aspect-video w-32 overflow-hidden rounded-md bg-gray-300 mb-2">
+          <div className="relative mb-2 aspect-video w-32 overflow-hidden rounded-md bg-gray-300">
             <Image
-                src={cellValue}
-                alt="Shop Picture"
-                layout="fill"
-                objectFit="cover"
-                unoptimized
+              src={cellValue}
+              alt="Shop Picture"
+              layout="fill"
+              objectFit="cover"
+              unoptimized
             />
           </div>
         );
+      case "yearOfService":
+        return `${new Date().getFullYear() - data.yearOfService} years`;
       default:
         return cellValue;
     }
   }, []);
-
-
-
-
-
-       
 
   return (
     <Table
@@ -195,16 +190,28 @@ function ShopsTable({shops}: {shops: Shop[]}) {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"Shops are loading... Please wait"} items={shops}>
+      <TableBody
+        emptyContent={"Shops are loading... Please wait"}
+        items={shops}
+      >
         {(item) => (
-          <TableRow key={item.id} className="hover:bg-gray-100 cursor-pointer" as={Link} href={`/shops/${item.id}`}>
-            {(columnKey) => <TableCell
-            className={cn(
-                "mx-3",
-                columnKey === "picture" ? "w-32" : "",
-                columnKey === "rating" ? "" : ""
+          <TableRow
+            key={item.id}
+            className="cursor-pointer hover:bg-gray-100"
+            as={Link}
+            href={`/shops/${item.id}`}
+          >
+            {(columnKey) => (
+              <TableCell
+                className={cn(
+                  "mx-3",
+                  columnKey === "picture" ? "w-32" : "",
+                  columnKey === "rating" ? "" : ""
+                )}
+              >
+                {renderCell(item, columnKey)}
+              </TableCell>
             )}
-            >{renderCell(item, columnKey)}</TableCell>}
           </TableRow>
         )}
       </TableBody>

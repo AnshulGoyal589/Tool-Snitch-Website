@@ -22,11 +22,14 @@ async function checkShopkeeper(email: string): Promise<boolean> {
     if (shopkeeperResponse.data.isShopkeeper) {
       return true;
     }
+    console.log("shopkeeperResponse: ",shopkeeperResponse.data);
     
     const customerResponse = await api.post("/read/customer-profile", { email });
     if ( !customerResponse.data.isShopkeeper) {
       return false;
     }
+
+    console.log("customerResponse: ",customerResponse.data);
 
     throw new Error("User profile not found");
   } catch (error) {
@@ -84,11 +87,17 @@ export default function LoginPage() {
     if (email && password) {
       setIsLoading(true);
       try {
-        const session = await signIn(email, password);
+        const session:any = await signIn(email, password);
         const isShopkeeper = await checkShopkeeper( email );
         console.log("isShopkeeper: ",isShopkeeper);
         console.log("Login successful!", session);
-
+        const response = await api.post(`/auth/getProfile/`, {
+          cognitoId : session.idToken.payload.sub
+        });
+        const profile = response.data;
+        if(typeof window !== 'undefined') {
+          localStorage.setItem('profile', JSON.stringify({ name: profile.name, profilePic: profile?.profilePic }));
+        }
         const token = await getJwtToken(email, password);
         if (typeof window !== 'undefined') {
           const jwt = token.accessToken;
