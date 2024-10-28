@@ -79,7 +79,7 @@ export default function RegisterPage() {
       alert("Please enter year of establishment");
       return;
     }
-    if (selected && yearofEstablishment.length !== 4 || !Number(yearofEstablishment) || Number(yearofEstablishment) < 1900 || Number(yearofEstablishment) > new Date().getFullYear()) {
+    if (selected && (yearofEstablishment.length !== 4 || !Number(yearofEstablishment) || Number(yearofEstablishment) < 1900 || Number(yearofEstablishment) > new Date().getFullYear())) {
       alert("Please enter a valid year of establishment");
       return;
     }
@@ -190,9 +190,9 @@ export default function RegisterPage() {
 
             <div
               className="flex items-center gap-2"
-              onClick={() => setSelected(!selected)}
+              
             >
-              <Checkbox id="terms" />
+              <Checkbox id="terms" onClick={() => setSelected(!selected)} />
               <label
                 htmlFor="terms"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
