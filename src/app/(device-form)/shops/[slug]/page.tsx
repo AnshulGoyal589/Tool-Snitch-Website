@@ -46,7 +46,7 @@ export default async function ShopDetailsPage({params} : {params: {slug: string}
             <ReviewSection/>
             </>
         )
-    }
+    } 
 
     return (
         
