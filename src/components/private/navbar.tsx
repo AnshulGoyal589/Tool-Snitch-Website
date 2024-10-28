@@ -104,7 +104,7 @@ export function NavigationBar() {
           {isShopkeeper=='true' ? 
             <>
               <NavigationMenuItem>
-                <Link href="/" legacyBehavior passHref>
+                <Link href="/order-history" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Order History
                   </NavigationMenuLink>
