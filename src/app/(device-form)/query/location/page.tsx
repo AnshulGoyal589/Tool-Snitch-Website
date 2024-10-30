@@ -3,6 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import Image from 'next/image';
+import Minimap from "@/components/private/Minimap";
 
 const OLA_API_KEY = 'wK829Ehvq1i7fVyVQTyDJfsHfRNPEfy9n34xh7kH';
 const STYLE_NAME = 'default-light-standard';
@@ -98,6 +99,11 @@ const Page = () => {
     return `https://api.olamaps.io/tiles/v1/styles/${STYLE_NAME}/static/${location.longitude},${location.latitude},${MAP_ZOOM}/${MAP_WIDTH}x${MAP_HEIGHT}.${MAP_FORMAT}?api_key=${OLA_API_KEY}`;
   };
 
+  const getMapImageCoord = (location: Location | null) => {
+    if (!location) return [0,0]
+    return [location.latitude,location.longitude]
+  };
+
   return (
     <div className='flex flex-col justify-center items-center'>
       <div className="max-w-xl px-4 w-full">
@@ -131,12 +137,10 @@ const Page = () => {
 
         {selectedLocation && (
           <div className="mt-4">
-            <Image 
-              src={getMapImageUrl(selectedLocation)} 
-              alt={`Map of ${selectedLocation.display_name}`}
+            <Minimap 
+              position={getMapImageCoord(selectedLocation)}
               width={MAP_WIDTH}
               height={MAP_HEIGHT}
-              style={{ maxWidth: '100%', height: 'auto' }}
             />
           </div>
         )}
