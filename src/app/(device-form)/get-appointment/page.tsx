@@ -8,7 +8,7 @@ import { getUserSession } from '@/utils/auth'
 import { api } from "@/api/api";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react"
-
+// Disabling closed dates
 interface DeviceInfo {
   deviceName: string;
   shopName: string;
