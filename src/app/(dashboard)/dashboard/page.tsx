@@ -82,7 +82,7 @@ const Dashboard = () => {
     try {
       const shopResponse = await api.get(`/shop/${userId}`);
       const shopData = shopResponse.data;
-      
+  
       setOpeningTime(shopData.openingTime || '09:00');
       setClosingTime(shopData.closingTime || '18:00');
       setShopname(shopData.shopName || 'My Shop' );
@@ -95,6 +95,7 @@ const Dashboard = () => {
       const closingRangesResponse = await api.get(`/shop/${userId}/closingRanges`);
       setClosingDateRanges(closingRangesResponse.data.map((range: any) => ({
         ...range,
+        id:range._id,
         startDate: new Date(range.startDate),
         endDate: new Date(range.endDate)
       })));
@@ -561,11 +562,11 @@ const convertTo24Hour = (time: { hour: string; minute: string; period: string })
                   <p className="mt-2 text-gray-600">{range.notice}</p>
                   <Button 
                     variant="destructive" 
-                    onClick={() => handleRemoveClosingDateRange(range.id)}
+                    onClick={() => {console.log(range);handleRemoveClosingDateRange(range.id)}}
                     className="mt-2"
                     size="sm"
                   >
-                    Remove
+                    Remove 
                   </Button>
                 </div>
               ))}

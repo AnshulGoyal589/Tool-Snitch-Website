@@ -8,6 +8,7 @@ import { getUserSession } from '@/utils/auth'
 import { api } from "@/api/api";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react"
+import { toDate } from 'date-fns';
 // Disabling closed dates
 interface DeviceInfo {
   deviceName: string;
@@ -23,6 +24,11 @@ interface DateObject {
   date: Date;
 }
 
+interface ClosedPeriod{
+  start: Date;
+  end: Date;
+}
+
 const Page = () => {
   const router = useRouter();
   
@@ -30,6 +36,7 @@ const Page = () => {
   const [selectedDay, setSelectedDay] = useState<DateObject | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [dates, setDates] = useState<DateObject[]>([]);
+  const [closedPeriods,setClosedPeriods]=useState<ClosedPeriod[]|null>(null);
   const [deviceInfo, setDeviceInfo] = useState<DeviceInfo>({
     deviceName: '',
     shopName: '',
@@ -44,50 +51,121 @@ const Page = () => {
   const [toastMessage, setToastMessage] = useState('');
 
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const times = ['10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM'];
-
+  const [times,setTimes] = useState<string[] | null>(null);
   // Initialize dates and fetch device info
-  useEffect(() => {
-    try {
-      // Calculate dates
-      const today = new Date();
-      const nextSevenDays = Array.from({ length: 7 }, (_, i) => {
-        const date = new Date(today);
-        date.setDate(today.getDate() + i);
-        return {
-          day: days[date.getDay()],
-          date: date
-        };
-      });
-      setDates(nextSevenDays);
-      setSelectedDay(nextSevenDays[0]);
-
-      // Fetch data from localStorage
-      const deviceName = localStorage.getItem('selectedBrand') || '';
-      const shopName = localStorage.getItem('shopName') || '';
-      const repairSummary = JSON.parse(localStorage.getItem('selectedProblems') || '[]');
-      const totalPrice = localStorage.getItem('totalPrice') || '';
-      const userLocation = localStorage.getItem('selectedLocation') || '';
-      const shopLocation = localStorage.getItem('shopLocation') || '';
-
-      // Validate required data
-      if (!deviceName || !shopName) {
-        throw new Error('Missing required device information');
+  const isOptable=(inputDate: Date)=>{
+  if(closedPeriods){
+    for(var i=0;i<closedPeriods.length;i++){
+      if(closedPeriods[i].start<=inputDate && closedPeriods[i].end>=inputDate){
+        return true;
       }
-
-      setDeviceInfo({
-        deviceName,
-        shopName,
-        repairSummary,
-        totalPrice,
-        userLocation,
-        shopLocation
-      });
-    } catch (error) {
-      console.error('Initialization error:', error);
-      setError('Failed to load appointment information. Please try again.');
-      showToastMessage('Error loading appointment information');
     }
+  }
+  return false;
+  }
+  const timeFrame=(startTime:string,endTime:string)=>{
+    let times=[]
+    if(startTime.slice(6,9)!=endTime.slice(6,9)){
+      let f=parseInt(startTime.slice(0,2));
+      if(f==12){
+        times.push(`12:00 ${startTime.slice(6,9)}`)
+        f=1;
+      }
+      for(var i=f;i<10;i++){
+        times.push(`0${i}:00 ${startTime.slice(6,9)}`)
+      }
+      if(f<=10){
+        times.push(`10:00 ${startTime.slice(6,9)}`)
+      }
+      times.push(`11:00 ${startTime.slice(6,9)}`)
+      times.push(`12:00 ${endTime.slice(6,9)}`)
+      f=parseInt(endTime.slice(0,2));
+      if(f!=12){
+      for(var i=1;i<=f && i<10;i++){
+        times.push(`0${i}:00 ${endTime.slice(6,9)}`)
+      }
+      for(var i=10;i<=f;i++){
+        times.push(`${i}:00 ${endTime.slice(6,9)}`)
+      }
+    }
+    }
+    else{
+      let f=parseInt(startTime.slice(0,2));
+      if(f==12){
+        times.push(`12:00 ${startTime.slice(6,9)}`)
+        f=1;
+      }
+      for(var i=f;i<10 && i<=parseInt(endTime.slice(0,2));i++){
+        times.push(`0${i}:00 ${startTime.slice(6,9)}`)
+      }
+      for(var i=10;i<=parseInt(endTime.slice(0,2));i++){
+        times.push(`${i}:00 ${endTime.slice(6,9)}`)
+      }
+    }
+    return times
+  }
+  useEffect(() => {
+    async function settingPeriods(){
+     try{ 
+      const shopId = localStorage.getItem('shopID');
+      const response=await api.get(`/sample/${shopId}`)
+      const data=response.data
+      const closedP=data.closingDateRanges.map((element: { startDate: string; endDate: string })=>{
+        return {
+          start:new Date(element.startDate),
+          end:new Date(element.endDate)
+        }
+      })
+      setClosedPeriods(closedP);
+      setTimes(timeFrame(data.openingTime,data.closingTime));
+      try {
+        // Calculate dates
+        const today = new Date();
+        const nextSevenDays = Array.from({ length: 7 }, (_, i) => {
+          const date = new Date(today);
+          date.setDate(today.getDate() + i);
+          return {
+            day: days[date.getDay()],
+            date: date
+          };
+        });
+        setDates(nextSevenDays);
+        
+        // setSelectedDay(nextSevenDays[0]);
+  
+        // Fetch data from localStorage
+        const deviceName = localStorage.getItem('selectedBrand') || '';
+        const shopName = localStorage.getItem('shopName') || '';
+        const repairSummary = JSON.parse(localStorage.getItem('selectedProblems') || '[]');
+        const totalPrice = localStorage.getItem('totalPrice') || '';
+        const userLocation = localStorage.getItem('selectedLocation') || '';
+        const shopLocation = localStorage.getItem('shopLocation') || '';
+  
+        // Validate required data
+        if (!deviceName || !shopName) {
+          throw new Error('Missing required device information');
+      }
+  
+        setDeviceInfo({
+          deviceName,
+          shopName,
+          repairSummary,
+          totalPrice,
+          userLocation,
+          shopLocation
+        });
+      } catch (error) {
+        console.error('Initialization error:', error);
+        setError('Failed to load appointment information. Please try again.');
+        showToastMessage('Error loading appointment information');
+      }
+    } catch(err){
+      console.error('Initialization error:', error);
+      setError('Failed to load availability details');
+      showToastMessage('Error loading avaialbility details');
+    }
+    }
+    settingPeriods();
   }, []);
 
   const showToastMessage = (message: string) => {
@@ -188,13 +266,12 @@ const Page = () => {
             {dates.map((dateObj, index) => (
               <Button
                 key={index}
+                isDisabled={isOptable(dateObj.date) || isLoading}
                 className={`${selectedDay && selectedDay.day === dateObj.day
                   ? 'bg-[#C6A86B] text-white'
                   : 'bg-[transparent] hover:bg-[#C6A86B] hover:text-white'
                   } border border-[#C6A86B] w-full h-[60px] lg:h-[120px]`}
-                onClick={() => setSelectedDay(dateObj)}
-                disabled={isLoading}
-              >
+                onClick={() => setSelectedDay(dateObj)}>
                 {dateObj.day}
               </Button>
             ))}
@@ -208,7 +285,7 @@ const Page = () => {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {times.map((time) => (
+            {times?times.map((time) => (
               <Button
                 key={time}
                 className={`${selectedTime === time
@@ -220,7 +297,7 @@ const Page = () => {
               >
                 {time}
               </Button>
-            ))}
+            )):null}
           </div>
         </div>
 

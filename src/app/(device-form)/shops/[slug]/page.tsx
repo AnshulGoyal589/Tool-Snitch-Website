@@ -38,7 +38,7 @@ export default async function ShopDetailsPage({params} : {params: {slug: string}
             closingTime : data.closingTime,
             services: [data.devicesDeal],
             description: data.desc,
-            images: data.images.map((image:string, index:number) => ({id: index, url: image, name: `image-${index}`})),
+            images: data.images?data.images.map((image:string, index:number) => ({id: index, url: image, name: `image-${index}`})):null,
         }
         return (
             <>
