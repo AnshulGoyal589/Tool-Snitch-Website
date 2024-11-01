@@ -99,7 +99,7 @@ const InventoryManagement = () => {
       setShowAddDialog(false);
       setNewItem({
         name: '',
-        category: '',
+        category: '', 
         quantity: 0,
         minQuantity: 0,
         price: 0,
