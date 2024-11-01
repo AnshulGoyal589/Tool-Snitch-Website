@@ -103,7 +103,7 @@ const InventoryManagement = () => {
         quantity: 0,
         minQuantity: 0,
         price: 0,
-        supplier: '',
+        supplier: '', 
       });
       await fetchInventory(cognitoId);
     } catch (error) {
