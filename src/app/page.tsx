@@ -12,7 +12,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import AnimatedFixSection from './AnimatedFixSection';
-
+import { api } from "@/api/api";
 
 export default function Home() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -63,7 +63,15 @@ export default function Home() {
     const walk = (x - startX) * 2;
     scrollContainerRef.current.scrollLeft = scrollLeft - walk;
   };
-
+  //
+  // useEffect(()=>{
+  //   async function sampleCall(){
+  //   const response=await api.get("/sample")
+  //   console.log(response.data);
+  // }
+  // sampleCall();
+  // },[])
+  //
   return (
     <div className="">
 
