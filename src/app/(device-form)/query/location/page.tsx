@@ -4,6 +4,10 @@ import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import Image from 'next/image';
 import Minimap from "@/components/private/Minimap";
+import { posix } from "path";
+import { ListVideo } from "lucide-react";
+import { TbCurrentLocation } from "react-icons/tb";
+import { IoLocationOutline } from "react-icons/io5";
 
 const OLA_API_KEY = 'wK829Ehvq1i7fVyVQTyDJfsHfRNPEfy9n34xh7kH';
 const STYLE_NAME = 'default-light-standard';
@@ -24,6 +28,8 @@ const Page = () => {
   const [inputValue, setInputValue] = useState("");
   const [isNextDisabled, setIsNextDisabled] = useState(true);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+  const [state,setState] = useState(true)
+  const [livecoords,setLivecoords]=useState([0,0])
 
   const olaSearchLocation = async (query: string) => {
     if (query.length < 3) {
@@ -58,6 +64,23 @@ const Page = () => {
       console.error('Error searching location:', error);
     }
   };
+
+  function gotlocation(positions: any){
+    setLivecoords([positions.coords.latitude,positions.coords.longitude])
+    // console.log({livecoords})
+    setState(false)
+    setInputValue("Your Location")
+    setIsNextDisabled(false)
+  }
+
+  function failed(){
+    console.log("there was some issue")
+  }
+
+  function handelclick(){
+    navigator.geolocation.getCurrentPosition(gotlocation,failed)
+    setState(false);
+  }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
@@ -94,13 +117,14 @@ const Page = () => {
     }
   }, [inputValue]);
 
-  const getMapImageUrl = (location: Location | null) => {
-    if (!location) return '';
-    return `https://api.olamaps.io/tiles/v1/styles/${STYLE_NAME}/static/${location.longitude},${location.latitude},${MAP_ZOOM}/${MAP_WIDTH}x${MAP_HEIGHT}.${MAP_FORMAT}?api_key=${OLA_API_KEY}`;
-  };
+  // const getMapImageUrl = (location: Location | null) => {
+  //   if (!location) return '';
+  //   return `https://api.olamaps.io/tiles/v1/styles/${STYLE_NAME}/static/${location.longitude},${location.latitude},${MAP_ZOOM}/${MAP_WIDTH}x${MAP_HEIGHT}.${MAP_FORMAT}?api_key=${OLA_API_KEY}`;
+  // };
 
   const getMapImageCoord = (location: Location | null) => {
     if (!location) return [0,0]
+    console.log(location.latitude,location.longitude)
     return [location.latitude,location.longitude]
   };
 
@@ -135,10 +159,30 @@ const Page = () => {
           </ul>
         )}
 
-        {selectedLocation && (
+        
+        <div className='flex justify-center items-center my-5'>
+          <button className="flex justify-center items-center h-11 px-14 mb-10 sm:h-14 rounded-3xl bg-[#C6A86B] text-neutral-100" onClick={handelclick}>
+            <div className="flex flex-row">
+              <div className="relative top-1"><TbCurrentLocation/></div><h2 className="pl-1">Your Location</h2>
+            </div>
+          </button>
+        </div> 
+        
+        
+        {selectedLocation && state && (
           <div className="mt-4">
             <Minimap 
               position={getMapImageCoord(selectedLocation)}
+              width={MAP_WIDTH}
+              height={MAP_HEIGHT}
+            />
+          </div>
+        )}
+
+        {!state && (
+          <div className="mt-4">
+            <Minimap 
+              position={livecoords}
               width={MAP_WIDTH}
               height={MAP_HEIGHT}
             />
