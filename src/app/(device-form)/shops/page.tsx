@@ -5,7 +5,7 @@ import { FaSearch } from "react-icons/fa";
 import { Button } from "@nextui-org/react";
 import { IoFilter } from "react-icons/io5";
 import { FaStar } from "react-icons/fa";
-import { use, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SortDescriptor } from "@nextui-org/react";
 import { api } from "@/api/api";
 
@@ -20,45 +20,43 @@ export default function ShopsPage() {
     direction: "ascending",
   });
 
-  const featchShopsByRating = async () => {
+  const fetchShopsByRating = async () => {
     try {
       setMessage("");
       const response = await api.get("/read/shopsData");
-      // console.log(response.data);
       let localData;
-      if(typeof window !== 'undefined') {
+      if (typeof window !== 'undefined') {
         localData = JSON.parse(localStorage.getItem("shopData") || "{}");
-        if(localData?.status === "Visible") {
+        if (localData?.status === "Visible") {
           setDataScraped([...response.data, {
-            _id : "ab-rb-er-21",
-            ...localData
+            _id: "ab-rb-er-21",
+            ...localData,
           }]);
         }
       }
       setDataScraped(response.data);
-    } catch (error:any) {
-      if(typeof window !== 'undefined') {
+    } catch (error: any) {
+      if (typeof window !== 'undefined') {
         const localData = JSON.parse(localStorage.getItem("shopData") || "{}");
-        if(localData?.status === "Visible") {
+        if (localData?.status === "Visible") {
           setDataScraped([{
-            _id : "ab-rb-er-21",
-            ...localData
+            _id: "ab-rb-er-21",
+            ...localData,
           }]);
         }
       }
       console.error(error?.response?.data?.message);
       setMessage(error?.response?.data?.message);
     }
-  }
-  
+  };
 
   useEffect(() => {
-    featchShopsByRating();
+    fetchShopsByRating();
   }, []);
 
   useEffect(() => {
     setFilteredShops(
-      shops.filter((shop:any) =>
+      shops.filter((shop: any) =>
         shop.shopName.toLowerCase().includes(search.toLowerCase())
       )
     );
@@ -67,24 +65,22 @@ export default function ShopsPage() {
   useEffect(() => {
     let shop;
     if (dataScraped.length > 0) {
-      shop = dataScraped.map((shop:any) => {
+      shop = dataScraped.map((shop: any) => {
         return {
-          id : shop._id,
+          id: shop._id,
           shopName: shop.shopName,
           rating: shop.rating,
-          location : shop.shopLocation,
+          location: shop.shopLocation,
           picture: shop.images[0],
           yearOfService: shop?.yearOfService || "10 Year",
           aproximateDistance: "1.2 km",
+          price: shop.price || "N/A", // Adding price field in the db
         };
       });
-      console.log(shop);
       setShops(shop);
       setFilteredShops(shop);
     }
-  }
-  , [dataScraped]);
-
+  }, [dataScraped]);
 
   return (
     <div className="mx-4 my-8 md:mx-8 lg:mx-16" suppressHydrationWarning>
@@ -110,7 +106,8 @@ export default function ShopsPage() {
           <span className="text-gray-500">Filter</span>
         </Button>
       </div>
-      <div className="mt-4 flex gap-4">
+      {/* This buttons have been added to the main page */}
+      {/* <div className="mt-4 flex gap-4">
         <FilterButton>
           <FaStar className="text-yellow-500" />
           <span>Top Rated</span>
@@ -121,7 +118,7 @@ export default function ShopsPage() {
         <FilterButton>
           <span>Price: High to Low</span>
         </FilterButton>
-      </div>
+      </div> */}
       <ShopsSection shops={filteredShops} />
     </div>
   );
