@@ -109,6 +109,11 @@ export function NavigationBar() {
                   Order History
                   </NavigationMenuLink>
                 </Link>
+                <Link href="/inventory" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Inventory
+                  </NavigationMenuLink>
+                </Link>
               </NavigationMenuItem>
             </>:
             <>
