@@ -17,6 +17,7 @@ export function NavigationBar() {
   const pathname = usePathname();
   const [loggedIn , setIsLoggedIn] = useState< string | null >(null);
   const [isShopkeeper , setIsShopkeeper] = useState< string | null >(null);
+  const [isAdmin , setIsAdmin] = useState< string | null >(null);
   const router = useRouter();
   const [profile, setProfile] = useState<null | {
     name: string;
@@ -27,6 +28,7 @@ export function NavigationBar() {
       if (typeof window === "undefined") return;
       setIsLoggedIn(localStorage.getItem('JwtToken'));
       setIsShopkeeper(localStorage.getItem('isShopkeeper'));
+      setIsAdmin(localStorage.getItem('isAdmin'));
       setProfile(JSON.parse(localStorage.getItem('profile') || '{}'));
   },[])
 
@@ -68,99 +70,116 @@ export function NavigationBar() {
 
   return (
     <>
-      <div className="hidden md:flex justify-around items-center pt-[24px]">
-      <Link href="./">
-        <Image
-          src="/toolsnitchlogo.png"
-          alt="ToolSnitch Logo"
-          width={150}
-          height={50}
-          className="object-cover z-50"
-        />
-      </Link>
-        <NavigationMenu>
-          <NavigationMenuList>
-          {isShopkeeper=='true' ? 
-            <>
-            <NavigationMenuItem>
-              <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Dashboard
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-            </>
-            :
-            <>
-            <NavigationMenuItem>
-              <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Home
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-            </>
-            }  
-          {isShopkeeper=='true' ? 
-            <>
-              <NavigationMenuItem>
-                <Link href="/order-history" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Order History
-                  </NavigationMenuLink>
-                </Link>
-                <Link href="/inventory" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Inventory
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-            </>:
-            <>
+      <div className="hidden items-center justify-around pt-[24px] md:flex">
+        <Link href="./">
+          <Image
+            src="/toolsnitchlogo.png"
+            alt="ToolSnitch Logo"
+            width={150}
+            height={50}
+            className="z-50 object-cover"
+          />
+        </Link>
+        {isAdmin !== "true" && (
+          <NavigationMenu>
+            <NavigationMenuList>
+              {isShopkeeper == "true" ? (
+                <>
+                  <NavigationMenuItem>
+                    <Link href="/" legacyBehavior passHref>
+                      <NavigationMenuLink
+                        className={navigationMenuTriggerStyle()}
+                      >
+                        Dashboard
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                </>
+              ) : (
+                <>
+                  <NavigationMenuItem>
+                    <Link href="/" legacyBehavior passHref>
+                      <NavigationMenuLink
+                        className={navigationMenuTriggerStyle()}
+                      >
+                        Home
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                </>
+              )}
+              {isShopkeeper == "true" ? (
+                <>
+                  <NavigationMenuItem>
+                    <Link href="/order-history" legacyBehavior passHref>
+                      <NavigationMenuLink
+                        className={navigationMenuTriggerStyle()}
+                      >
+                        Order History
+                      </NavigationMenuLink>
+                    </Link>
+                    <Link href="/inventory" legacyBehavior passHref>
+                      <NavigationMenuLink
+                        className={navigationMenuTriggerStyle()}
+                      >
+                        Inventory
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                </>
+              ) : (
+                <>
+                  <NavigationMenuItem>
+                    <Link href="/" legacyBehavior passHref>
+                      <NavigationMenuLink
+                        className={navigationMenuTriggerStyle()}
+                      >
+                        About
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <Link href="/query" legacyBehavior passHref>
+                      <NavigationMenuLink
+                        className={navigationMenuTriggerStyle()}
+                      >
+                        Find Repair Shop
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <Link href="/" legacyBehavior passHref>
+                      <NavigationMenuLink
+                        className={navigationMenuTriggerStyle()}
+                      >
+                        Track Order
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                </>
+              )}
               <NavigationMenuItem>
                 <Link href="/" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    About
+                    Contact Us
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link href="/query" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Find Repair Shop
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link href="/" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Track Order
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-            </>
-                }
-            <NavigationMenuItem>
-              <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Contact Us
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+            </NavigationMenuList>
+          </NavigationMenu>
+        )}
         <div>
           <NavigationMenu>
             <NavigationMenuList>
-              { loggedIn==null ? (
+              {loggedIn == null ? (
                 <NavigationMenuItem className="flex gap-2">
                   <Link href="/register" legacyBehavior passHref>
-                    <NavigationMenuLink className="border-2 flex justify-center items-center rounded-full h-10 px-5 bg-[#C6A86B] border-[#C6A86B] text-white">
+                    <NavigationMenuLink className="flex h-10 items-center justify-center rounded-full border-2 border-[#C6A86B] bg-[#C6A86B] px-5 text-white">
                       Sign up
                     </NavigationMenuLink>
                   </Link>
                   <Link href="/login" legacyBehavior passHref>
-                    <NavigationMenuLink className="border-2 flex justify-center items-center rounded-full h-10 px-5 text-[#C6A86B] border-[#C6A86B]">
+                    <NavigationMenuLink className="flex h-10 items-center justify-center rounded-full border-2 border-[#C6A86B] px-5 text-[#C6A86B]">
                       Login
                     </NavigationMenuLink>
                   </Link>
@@ -171,18 +190,37 @@ export function NavigationBar() {
                     <NavigationMenuItem>
                       <NavigationMenuTrigger>
                         <Avatar>
-                          <AvatarImage src={profile?.profilePic} alt={profile?.name} />
-                          <AvatarFallback>{profile?.name?.split(' ').slice(0, 2).map((n) => n[0]).join('')}</AvatarFallback>
+                          <AvatarImage
+                            src={profile?.profilePic}
+                            alt={profile?.name}
+                          />
+                          <AvatarFallback>
+                            {profile?.name
+                              ?.split(" ")
+                              .slice(0, 2)
+                              .map((n) => n[0])
+                              .join("")}
+                          </AvatarFallback>
                         </Avatar>
                       </NavigationMenuTrigger>
                       <NavigationMenuContent>
-                        <ul className="grid gap-1 p-3 md:w-[400px] lg:w-[120px] divide-y divide-neutral-200">
-                          <li>
+                        <ul className="grid gap-1 divide-y divide-neutral-200 p-3 md:w-[400px] lg:w-[120px]">
+                          
+                          {isAdmin === "true" ? (
+                            <li>
+                              <ListItem href="/admin" title="Admin Panel" />
+                            </li>
+                          ) : (
+                            <>
+                            <li>
                             <ListItem href="/profile" title="Account" />
                           </li>
-                          <li>
-                            <ListItem href="/" title="Orders" />
-                          </li>
+                            <li>
+                              <ListItem href="/" title="Orders" />
+                            </li>
+                            </>
+                          )}
+
                           <li>
                             <ListItem onClick={handleLogout} title="Logout" />
                           </li>
@@ -196,10 +234,10 @@ export function NavigationBar() {
           </NavigationMenu>
         </div>
       </div>
-      <div className="flex justify-between md:hidden z-50 pt-3 px-3">
+      <div className="z-50 flex justify-between px-3 pt-3 md:hidden">
         <div
           onClick={handleNavToggle}
-          className="cursor-pointer text-gray-500 z-50"
+          className="z-50 cursor-pointer text-gray-500"
         >
           {nav ? (
             <FaTimes size={30} color="black" />
@@ -217,24 +255,49 @@ export function NavigationBar() {
           />
         </Link>
       </div>
-      {(nav || animationClass === 'nav-menu-exit') && (
+      {(nav || animationClass === "nav-menu-exit") && (
         <div
-          className={`${animationClass} flex flex-col ps-6 pe-8 pt-16 py-4 gap-3 text-2xl w-full font-medium text-gray-900 z-10 absolute top-0 text-right right-0 
-          bg-gradient-to-br from-white to-gray-50 transform`}
+          className={`${animationClass} absolute right-0 top-0 z-10 flex w-full transform flex-col gap-3 bg-gradient-to-br from-white to-gray-50 py-4 pe-8 ps-6 pt-16 text-right text-2xl font-medium text-gray-900`}
           onAnimationEnd={() => {
-            if (animationClass === 'nav-menu-exit') {
-              setAnimationClass('hidden');
+            if (animationClass === "nav-menu-exit") {
+              setAnimationClass("hidden");
             }
           }}
         >
-          <a href="/" className="">Home</a>
-          <a href="/" className="">About</a>
-          <a href="/query" className="">Find Repair Shop</a>
-          <a href="/" className="">Track Order</a>
-          <a href="/" className="">Contact Us</a>
-          { loggedIn == null && <a href="/login" className="">Login</a> }
-          { loggedIn == null && <a href="/register" className="">Register</a>}
-          { loggedIn !== null && <a href="/register"  onClick={handleLogout} className="">Logout</a> }
+          <a href="/" className="">
+            Home
+          </a>
+          <a href="/" className="">
+            About
+          </a>
+          {isAdmin !== "true" && (
+            <>
+              <a href="/query" className="">
+                Find Repair Shop
+              </a>
+              <a href="/" className="">
+                Track Order
+              </a>
+              <a href="/" className="">
+                Contact Us
+              </a>
+            </>
+          )}
+          {loggedIn == null && (
+            <a href="/login" className="">
+              Login
+            </a>
+          )}
+          {loggedIn == null && (
+            <a href="/register" className="">
+              Register
+            </a>
+          )}
+          {loggedIn !== null && (
+            <a href="/register" onClick={handleLogout} className="">
+              Logout
+            </a>
+          )}
         </div>
       )}
     </>

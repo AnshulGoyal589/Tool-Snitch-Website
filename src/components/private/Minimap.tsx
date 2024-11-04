@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 import React from "react";
 import {GoogleMap, Marker, useJsApiLoader} from '@react-google-maps/api'
@@ -13,7 +12,7 @@ const Minimap = ({
   height: number;
 }) => {
   const {isLoaded} = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY,
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!,
     libraries:['places']
   })
   const center= {lat:position[0], lng:position[1]}

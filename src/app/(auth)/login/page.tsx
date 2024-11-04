@@ -38,6 +38,19 @@ async function checkShopkeeper(email: string): Promise<boolean> {
   }
 }
 
+async function checkAdmin(email: string): Promise<boolean> {
+  try {
+    const response = await api.post("/read/admin-profile", {
+      cognitoId: null,
+      email,
+    });
+    return response.data.isAdmin;
+  } catch (error) {
+    console.error("Error checking admin profile:", error);
+    return false;
+  }
+}
+
 function signIn(ID: string, password: string) {
   console.log("Signing in");
   const authenticationDetails = new AuthenticationDetails({
@@ -50,11 +63,11 @@ function signIn(ID: string, password: string) {
     Pool: userPool,
   };
 
-  const cognitoUser = new CognitoUser(userData);   
+  const cognitoUser = new CognitoUser(userData);
 
   return new Promise((resolve, reject) => {
     cognitoUser.authenticateUser(authenticationDetails, {
-      onSuccess:   
+      onSuccess:
  (session) => {
         const expirationDate = new Date();
         expirationDate.setMonth(expirationDate.getMonth() + 1);
@@ -89,6 +102,7 @@ export default function LoginPage() {
       try {
         const session:any = await signIn(email, password);
         const isShopkeeper = await checkShopkeeper( email );
+        const isAdmin = await checkAdmin( email );
         console.log("isShopkeeper: ",isShopkeeper);
         console.log("Login successful!", session);
         const response = await api.post(`/auth/getProfile/`, {
@@ -105,11 +119,14 @@ export default function LoginPage() {
           const farFuture = new Date(2099, 11, 31).toUTCString();
           document.cookie = `jwtToken=${jwt}; path=/; expires=${farFuture}; secure; samesite=strict`;
           document.cookie = `isShopkeeper=${isShopkeeper}; path=/; expires=${farFuture}; secure; samesite=strict`;
+          document.cookie = `isAdmin=${isAdmin}; path=/; expires=${farFuture}; secure; samesite=strict`;
           localStorage.setItem('JwtToken', jwt);
           localStorage.setItem('isShopkeeper', isShopkeeper ? 'true' : 'false');
+          localStorage.setItem('isAdmin', isAdmin ? 'true' : 'false');
         }
 
         setLoginSuccess(true);
+        if (isAdmin) window.location.href = '/admin'
         if ( !isShopkeeper ) window.location.href = '/'; 
         else window.location.href = '/dashboard'; 
       } catch (err) {

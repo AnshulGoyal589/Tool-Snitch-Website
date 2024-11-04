@@ -55,7 +55,7 @@ const Page = () => {
   // Initialize dates and fetch device info
   const isOptable=(inputDate: Date)=>{
   if(closedPeriods){
-    for(var i=0;i<closedPeriods.length;i++){
+    for(let i=0;i<closedPeriods.length;i++){
       if(closedPeriods[i].start<=inputDate && closedPeriods[i].end>=inputDate){
         return true;
       }
@@ -64,14 +64,14 @@ const Page = () => {
   return false;
   }
   const timeFrame=(startTime:string,endTime:string)=>{
-    let times=[]
+    const times=[]
     if(startTime.slice(6,9)!=endTime.slice(6,9)){
       let f=parseInt(startTime.slice(0,2));
       if(f==12){
         times.push(`12:00 ${startTime.slice(6,9)}`)
         f=1;
       }
-      for(var i=f;i<10;i++){
+      for(let i=f;i<10;i++){
         times.push(`0${i}:00 ${startTime.slice(6,9)}`)
       }
       if(f<=10){
@@ -81,10 +81,10 @@ const Page = () => {
       times.push(`12:00 ${endTime.slice(6,9)}`)
       f=parseInt(endTime.slice(0,2));
       if(f!=12){
-      for(var i=1;i<=f && i<10;i++){
+      for(let i=1;i<=f && i<10;i++){
         times.push(`0${i}:00 ${endTime.slice(6,9)}`)
       }
-      for(var i=10;i<=f;i++){
+      for(let i=10;i<=f;i++){
         times.push(`${i}:00 ${endTime.slice(6,9)}`)
       }
     }
@@ -95,10 +95,10 @@ const Page = () => {
         times.push(`12:00 ${startTime.slice(6,9)}`)
         f=1;
       }
-      for(var i=f;i<10 && i<=parseInt(endTime.slice(0,2));i++){
+      for(let i=f;i<10 && i<=parseInt(endTime.slice(0,2));i++){
         times.push(`0${i}:00 ${startTime.slice(6,9)}`)
       }
-      for(var i=10;i<=parseInt(endTime.slice(0,2));i++){
+      for(let i=10;i<=parseInt(endTime.slice(0,2));i++){
         times.push(`${i}:00 ${endTime.slice(6,9)}`)
       }
     }

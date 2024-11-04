@@ -58,19 +58,18 @@ const Shops = () => {
   const [selectedShop, setSelectedShop] = useState<ShopType>();
 
   useEffect(() => {
-    const initializeAuth = async () => {
+    const initializeShops = async () => {
       try {
         setIsLoading(true);
         await fetchShopsData();
       } catch (error) {
-        console.error("Authentication error:", error);
-        router.push("/login");
+        console.error("Error while fetching shops data:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    initializeAuth();
+    initializeShops();
   }, [router]);
 
   const fetchShopsData = async () => {
