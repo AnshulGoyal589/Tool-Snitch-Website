@@ -1,9 +1,6 @@
-// @ts-nocheck
 
 import React from "react";
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
+import {GoogleMap, Marker, useJsApiLoader} from '@react-google-maps/api'
 
 const Minimap = ({
   position,
@@ -14,13 +11,19 @@ const Minimap = ({
   width: number;
   height: number;
 }) => {
-  const icon = L.icon({ iconUrl: "/marker-icon.png" });
+  const {isLoaded} = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!,
+    libraries:['places']
+  })
+  const center= {lat:position[0], lng:position[1]}
+
+  if (!isLoaded) return <h1>Loading...</h1>;
+
   return (
     <>
-      <MapContainer style={{ width, height }} center={position} zoom={20}>
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <Marker position={position} icon={icon}></Marker>
-      </MapContainer>
+      <GoogleMap center={center} zoom={15} mapContainerStyle={{width,height}}>
+          <Marker position={center} />
+      </GoogleMap>
     </>
   );
 };

@@ -31,6 +31,7 @@ const userPool = new CognitoUserPool(poolData);
 
 const CUSTOMER_API = "/auth/customer-profile";
 const SHOPKEEPER_API = "/auth/shopkeeper-profile";
+const ADMIN_API = "/auth/admin-profile";
 
 function signUp(
   email: string,
@@ -112,6 +113,9 @@ export default function RegisterPage() {
       } else {
         mongoDbResult = await api.post(CUSTOMER_API, commonData);
       }
+      
+      // If new admin account need to be made
+      // mongoDbResult = await api.post(ADMIN_API, commonData);
 
       console.log("User signed up successfully:", cognitoResult);
       console.log("User data stored in MongoDB:", mongoDbResult.data);
@@ -132,7 +136,7 @@ export default function RegisterPage() {
       console.error("Error during sign up:", error);
       if (error.response) {
         alert(
-          `Error signing up: ${error.response.data.message || error.response.data}`
+          `Error signing up:  ${error.response.data.message || error.response.data}`
         );
       } else if (error.request) {
         alert("Error signing up: No response received from server");
