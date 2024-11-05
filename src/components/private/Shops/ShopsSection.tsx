@@ -136,7 +136,8 @@ function ShopsTable({ shops }: { shops: Shop[] }) {
           </>
         );
       case "price":
-        return cellValue !== undefined ? `₹${cellValue.toFixed(2)}` : "N/A";
+        // return cellValue !== undefined ? `₹${cellValue.toFixed(2)}` : "N/A";
+        return typeof cellValue === 'number' ? `₹${cellValue.toFixed(2)}` : "N/A";
       case "picture":
         return (
           <div className="relative mb-2 aspect-video w-32 overflow-hidden rounded-md bg-gray-300">
