@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
-  const isNotAuthPage = pathname.startsWith('/shops') || pathname.startsWith('/query') || pathname.startsWith('/order-history') || pathname.startsWith('/dashboard')  || pathname.startsWith('/myShop');
+  const isNotAuthPage = pathname.startsWith('/shops') || pathname.startsWith('/query') || pathname.startsWith('/order-history') || pathname.startsWith('/dashboard')  || pathname.startsWith('/myShop') || pathname.startsWith('/orders');
   const jwtToken = request.cookies.get('jwtToken')?.value;
   const isShopkeeper = request.cookies.get('isShopkeeper')?.value;
   const shopAuth = pathname.startsWith('/login') || pathname.startsWith('/register') || pathname.startsWith('/profile') || pathname.startsWith('/shops')|| pathname=='/';
