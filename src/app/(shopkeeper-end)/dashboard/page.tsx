@@ -282,11 +282,13 @@ const convertTo24Hour = (time: { hour: string; minute: string; period: string })
 
   const handleAddClosingDateRange = async () => {
     if (!cognitoId || !startDate || !endDate || !notice) return;
-
+    const endDateObj:Date=endDate;
+    endDateObj.setHours(23,59,59,999)
+    console.log(startDate,endDateObj)
     try {
       const response = await api.post(`/shop/${cognitoId}/closingRanges`, {
         startDate,
-        endDate,
+        endDate:endDateObj,
         notice
       });
 
@@ -294,7 +296,7 @@ const convertTo24Hour = (time: { hour: string; minute: string; period: string })
         const newRange: ClosingDateRange = {
           id: response.data.id,
           startDate,
-          endDate,
+          endDate:endDateObj,
           notice
         };
         setClosingDateRanges([...closingDateRanges, newRange]);

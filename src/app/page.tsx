@@ -13,13 +13,14 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import AnimatedFixSection from './AnimatedFixSection';
 import { api } from "@/api/api";
+import { getUserSession } from '@/utils/auth';
 
 export default function Home() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-
+  const [notifyMe,setNotifyMe]=useState<boolean>(false);
   useEffect(() => {
     let intervalId: number | null = null;
     if (isAutoScrolling) {
@@ -41,7 +42,18 @@ export default function Home() {
       }
     };
   }, [isAutoScrolling]);
-
+  useEffect(()=>{
+    async function fetchNotif(){
+    try{
+      const cognitoId=await getUserSession();
+      const response=await api.get(`/is-to-be-notified/${cognitoId}`)
+      setNotifyMe(response.data)
+    }
+    catch(err){
+      setNotifyMe(false);
+    }}
+    fetchNotif();
+  },[])
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsAutoScrolling(false);
     setStartX(e.pageX - scrollContainerRef.current!.offsetLeft);
@@ -74,7 +86,21 @@ export default function Home() {
   //
   return (
     <div className="">
-
+      {notifyMe?(
+        <div style={{
+          width:"100%",
+          textAlign:"center",
+          backgroundColor:"red",
+          height:"5vh",
+          color:"white",
+          display:"flex",
+          alignItems:"center",
+          justifyContent:"center"
+        }}>
+          Some appointments have been cancelled, please review your &nbsp;<a href="/orders" style={{textDecoration:"underline"}}>Order History</a>
+        </div>):
+        null
+        }
       <div className="flex flex-col items-center justify-center text-[#212121] text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold my-6">
         <h1>Have a broken device?</h1>
         <h1>We&apos;ll find stores to fix it</h1>
@@ -204,7 +230,7 @@ export default function Home() {
         <div className="text-sm sm:text-lg md:text-xl lg:text-2xl xl:text-3xl flex justify-around items-center text-white w-[90%] lg:w-[80%] py-8 font-thin">
           <a href="">About Us</a>
           <a href="/query">Repair</a>
-          <a href="">Track Order</a>
+          <a href="/orders">Track Order</a>
           <a href="">Contact Us</a>
         </div>
 

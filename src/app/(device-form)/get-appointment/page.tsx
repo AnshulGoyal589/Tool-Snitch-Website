@@ -64,7 +64,13 @@ const Page = () => {
   return false;
   }
   const timeFrame=(startTime:string,endTime:string)=>{
-    const times=[]
+    let times=[]
+    if(startTime[0]!='0' && startTime[0]!='1'){
+      startTime='0'+startTime;
+    }
+    if(endTime[0]!='0' && endTime[0]!='1'){
+      endTime='0'+endTime;
+    }
     if(startTime.slice(6,9)!=endTime.slice(6,9)){
       let f=parseInt(startTime.slice(0,2));
       if(f==12){
