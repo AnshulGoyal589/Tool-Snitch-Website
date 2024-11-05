@@ -7,6 +7,7 @@ export function middleware(request: NextRequest) {
   const isNotAuthPage = pathname.startsWith('/shops') || pathname.startsWith('/query') || pathname.startsWith('/order-history') || pathname.startsWith('/dashboard')  || pathname.startsWith('/myShop');
   const jwtToken = request.cookies.get('jwtToken')?.value;
   const isShopkeeper = request.cookies.get('isShopkeeper')?.value;
+  const isAdmin = request.cookies.get('isAdmin')?.value;
   const shopAuth = pathname.startsWith('/login') || pathname.startsWith('/register') || pathname.startsWith('/profile') || pathname.startsWith('/shops')|| pathname=='/';
   const custAuth = pathname.startsWith('/dashboard') || pathname.startsWith('/myShop') || pathname.startsWith('/login') || pathname.startsWith('/register');
 
@@ -17,7 +18,10 @@ export function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/dashboard', request.url));
       }
       return NextResponse.next();
-    }else{
+    }else if( isAdmin==='true' ){
+      if( pathname!=='/admin' )return NextResponse.redirect(new URL('/admin',request.url));
+    }
+    else{
       if (custAuth) {
         return NextResponse.redirect(new URL('/', request.url));
       }

@@ -74,7 +74,7 @@ const Shops = () => {
 
   const fetchShopsData = async () => {
     try {
-      const response = await api.get(`/read/shopsData`);
+      const response = await api.get(`/read/allshopsData`);
       setShops(response.data);
     } catch (error) {
       console.error("Error fetching shops:", error);
