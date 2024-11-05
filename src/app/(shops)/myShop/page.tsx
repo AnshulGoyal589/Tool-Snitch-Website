@@ -116,7 +116,7 @@ const MyShop = () => {
         desc: shopDetails.desc,
         pincode: shopDetails.pincode,
         shopPhone: shopDetails.shopPhone,
-        images: shopDetails?.images || [],
+        // images: shopDetails?.images || [],
         status: shopDetails.status,
         yearofEstablishment: shopDetails.yearofEstablishment,
       });
