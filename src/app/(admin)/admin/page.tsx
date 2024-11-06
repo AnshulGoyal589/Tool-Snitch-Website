@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -104,9 +105,11 @@ const ImageGallery = ({ images }: { images: string[] }) => {
 
   return (
     <div className="relative h-32 w-full">
-      <img
+      <Image
         src={images[currentImageIndex]}
         alt={`Shop image ${currentImageIndex + 1}`}
+        width={900}
+        height={900}
         className="h-full w-full object-cover rounded-md"
       />
       {images.length > 1 && (
