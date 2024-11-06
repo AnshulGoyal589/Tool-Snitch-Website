@@ -64,7 +64,7 @@ const Page = () => {
   return false;
   }
   const timeFrame=(startTime:string,endTime:string)=>{
-    let times=[]
+    const times=[]
     if(startTime[0]!='0' && startTime[0]!='1'){
       startTime='0'+startTime;
     }
