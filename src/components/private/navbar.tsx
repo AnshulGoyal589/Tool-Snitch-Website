@@ -216,7 +216,7 @@ export function NavigationBar() {
                             <ListItem href="/profile" title="Account" />
                           </li>
                             <li>
-                              <ListItem href="/" title="Orders" />
+                              <ListItem href="/orders" title="Orders" />
                             </li>
                             </>
                           )}
