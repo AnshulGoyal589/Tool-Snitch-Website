@@ -35,18 +35,31 @@ import {
 import pincodes from "indian-pincodes";
 
 const ShopProfileSchema = z.object({
-  shopName: z.string(),
-  email: z.string().email(),
-  name: z.string(),
-  shopLocation: z.string(),
-  address: z.string(),
+  shopName: z.string().min(1, "Shop name is required"),
+  email: z.string().email("Invalid email address"),
+  name: z.string().min(1, "Name is required"),
+  shopLocation: z.string().min(1, "Shop location is required"),
+  address: z.string().min(1, "Address is required"),
   shopSpecs: z.string(),
   desc: z.string(),
-  pincode: z.string().min(6).max(6),
-  shopPhone: z.string().min(10).max(10),
-  images: z.array(z.string()).max(5).optional(),
+  pincode: z.string()
+    .min(6, "Pincode must be 6 digits")
+    .max(6, "Pincode must be 6 digits")
+    .regex(/^[1-9][0-9]{5}$/, "Invalid pincode format"),
+  shopPhone: z.string()
+    .min(10, "Phone number must be 10 digits")
+    .max(10, "Phone number must be 10 digits")
+    .regex(/^[6-9]\d{9}$/, "Invalid phone number format"),
+  images: z.array(z.string()).nullable().optional(),
   status: z.string().optional(),
-  yearofEstablishment: z.string().min(4).max(4).regex(/^\d{4}$/).optional(),
+  yearofEstablishment: z.string()
+    .regex(/^\d{4}$/, "Must be a 4-digit year")
+    .refine((val) => {
+      const year = parseInt(val);
+      const currentYear = new Date().getFullYear();
+      return year >= 1900 && year <= currentYear;
+    }, "Year must be between 1900 and current year")
+    .optional(),
 });
 
 const MyShop = () => {
@@ -59,9 +72,7 @@ const MyShop = () => {
   const [activeImage, setActiveImage] = useState<string | undefined | null>(
     null
   );
-  const [image, setImage] = useState<string[] | undefined | null>([
-    // "https://images.unsplash.com/photo-1719937206255-cc337bccfc7d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  ]);
+  const [image, setImage] = useState<string[] | undefined | null>([]);
 
   const form = useForm({
     resolver: zodResolver(ShopProfileSchema),
@@ -75,8 +86,8 @@ const MyShop = () => {
       desc: "",
       pincode: "",
       shopPhone: "",
-      images: [],
-      status: "Not Available",
+      images: [] as string[],
+      status: "PENDING",
       yearofEstablishment: "",
     },
   });
@@ -116,11 +127,11 @@ const MyShop = () => {
         desc: shopDetails.desc,
         pincode: shopDetails.pincode,
         shopPhone: shopDetails.shopPhone,
-        // images: shopDetails?.images || [],
+        images: shopDetails.images || [],
         status: shopDetails.status,
         yearofEstablishment: shopDetails.yearofEstablishment,
       });
-      // setImage(shopDetails.images);
+      setImage(shopDetails.images || []);
     }
   }, [shopDetails, form]);
 
@@ -141,15 +152,23 @@ const MyShop = () => {
     if (!ImageValid || !isValid) {
       return;
     }
-
-    const details = pincodes.getPincodeDetails(Number(data.pincode));
-    if (!details) {
+    try{
+      const pincodeDetails = pincodes.getPincodeDetails(parseInt(data.pincode));
+      if (!pincodeDetails) {
+        form.setError("pincode", {
+          type: "manual",
+          message: "Please enter a valid Indian pincode",
+        });
+        return;
+      }
+    } catch (error) {
       form.setError("pincode", {
         type: "manual",
-        message: "Invalid Pincode",
+        message: "Error validating pincode. Please try again.",
       });
       return;
     }
+
 
     try {
       setDisabled(true);
