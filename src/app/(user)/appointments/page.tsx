@@ -35,7 +35,7 @@ export default function OrderHistory() {
         async function getOrders() {
             try{
             const cogI = await getUserSession();
-            const response = await api.get(`/order-history/${cogI}`);
+            const response = await api.get(`/appointment-history/${cogI}`);
             setOrders(response.data);}
             catch(err:any){
                 setError(err.message);

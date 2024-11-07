@@ -148,11 +148,20 @@ export function NavigationBar() {
                     </Link>
                   </NavigationMenuItem>
                   <NavigationMenuItem>
-                    <Link href="/orders" legacyBehavior passHref>
+                    <Link href="/" legacyBehavior passHref>
                       <NavigationMenuLink
                         className={navigationMenuTriggerStyle()}
                       >
                         Track Order
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <Link href="/appointments" legacyBehavior passHref>
+                      <NavigationMenuLink
+                        className={navigationMenuTriggerStyle()}
+                      >
+                        Your Appointments
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
