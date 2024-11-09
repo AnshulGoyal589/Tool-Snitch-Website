@@ -159,7 +159,7 @@ export function NavigationBar() {
                 </>
               )}
               <NavigationMenuItem>
-                <Link href="/" legacyBehavior passHref>
+                <Link href="/contact-us" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     Contact Us
                   </NavigationMenuLink>
@@ -278,7 +278,7 @@ export function NavigationBar() {
               <a href="/orders" className="">
                 Track Order
               </a>
-              <a href="/" className="">
+              <a href="/contact-us" className="">
                 Contact Us
               </a>
             </>
