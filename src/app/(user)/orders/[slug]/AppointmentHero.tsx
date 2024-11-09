@@ -136,7 +136,27 @@ const APPOINTMENT_STAGES: AppointmentStatus[] = [
   'Completed'
 ];
 
+const formatDate = (dateString: string) => {
+  try {
+    return format(new Date(dateString), 'PPP');
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return 'Invalid Date';
+  }
+};
+
 export function AppointmentHero({ data }: AppointmentHeroProps) {
+  // Move useEffect to the top level
+  useEffect(() => {
+    if (data?.success && data.order?.length) {
+      try {
+        localStorage.setItem('appointmentId', data.order[0]._id);
+      } catch (error) {
+        console.error('Error saving to localStorage:', error);
+      }
+    }
+  }, [data]);
+
   if (!data) {
     return <LoadingSkeleton />;
   }
@@ -152,26 +172,7 @@ export function AppointmentHero({ data }: AppointmentHeroProps) {
 
   try {
     const { order_details, order } = data;
-    const appointmentId = order[0]._id;
     const statusConfig = getStatusConfig(order[0].status, order[0].cancelled);
-
-    useEffect(() => {
-      try {
-        localStorage.setItem('appointmentId', appointmentId);
-      } catch (error) {
-        console.error('Error saving to localStorage:', error);
-      }
-    }, [appointmentId]);
-
-    const formatDate = (dateString: string) => {
-      try {
-        return format(new Date(dateString), 'PPP');
-      } catch (error) {
-        console.error('Error formatting date:', error);
-        return 'Invalid Date';
-      }
-    };
-
     const StatusIcon = statusConfig.icon;
 
     return (
@@ -190,7 +191,7 @@ export function AppointmentHero({ data }: AppointmentHeroProps) {
           <div className="space-y-4">
             <div>
               <p className="text-gray-600 font-medium mb-1">Appointment ID</p>
-              <p className="text-gray-900">{appointmentId}</p>
+              <p className="text-gray-900">{order[0]._id}</p>
             </div>
             
             <div>

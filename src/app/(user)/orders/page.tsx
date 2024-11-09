@@ -102,8 +102,8 @@ export default function OrderHistory() {
     {orders ? orders.map((element) => {
         if(element.cancelled){
             return (
-                <Link href={`/orders/${element._id}`}>
                 <div  key={element._id}  className="order w-[80vw] ml-[10vw] h-[250px] mt-[60px] mb-[-20px] rounded-lg shadow-[0px_0px_10px_rgb(255,0,0)]  bg-white flex hover:scale-[1.02] transition-transform duration-150">
+                <Link href={`/orders/${element._id}`}>
                 <div className="shop flex-1 border-b-2 border-l-2 border-t-2 border-[goldenrod] rounded-tl-lg rounded-bl-lg flex items-center justify-center flex-col text-center text-gray-600">
                     <h1 className="text-black text-2xl uppercase font-bold">{element.shopName}</h1>
                     {element.address}
@@ -134,13 +134,13 @@ export default function OrderHistory() {
                         {element.status}
                     </div>
                 </div>
-            </div>
             </Link>
+            </div>
             )
         }
         return (
-            <Link href={`/orders/${element._id}`}>
             <div  key={element._id}  className="order w-[80vw] ml-[10vw] h-[250px] mt-[60px] mb-[-20px] rounded-lg shadow-[0px_0px_15px_rgb(205,205,205)]  bg-white flex hover:scale-[1.02] transition-transform duration-150">
+                <Link href={`/orders/${element._id}`}>
                 
                 <div className="shop flex-1 border-b-2 border-l-2 border-t-2 border-[goldenrod] rounded-tl-lg rounded-bl-lg flex items-center justify-center flex-col text-center text-gray-600">
                     <h1 className="text-black text-2xl uppercase font-bold">{element.shopName}</h1>
@@ -175,8 +175,8 @@ export default function OrderHistory() {
                         {element.status}
                     </div>
                 </div>
-            </div>
             </Link>
+            </div>
         );
     }) : (
         <div>Error fetching Order-History, please try again later</div>
