@@ -230,7 +230,8 @@ export default function Home() {
         <div className="text-sm sm:text-lg md:text-xl lg:text-2xl xl:text-3xl flex justify-around items-center text-white w-[90%] lg:w-[80%] py-8 font-thin">
           <a href="">About Us</a>
           <a href="/query">Repair</a>
-          <a href="/orders">Track Order</a>
+          <a href="/">Track Order</a>
+          <a href="/appointments">Your appointments</a>
           <a href="">Contact Us</a>
         </div>
 
