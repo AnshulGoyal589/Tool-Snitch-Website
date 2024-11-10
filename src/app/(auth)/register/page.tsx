@@ -4,57 +4,19 @@ import {
   CognitoUserPool,
   CognitoUserAttribute,
 } from "amazon-cognito-identity-js";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { api } from "@/api/api";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
-
-import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
-
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-
-const poolData = {
-  UserPoolId: "ap-south-1_VKjbitmCA",
-  ClientId: "26b9i0nbi58vcq7gqfcdnjt8qo",
-};
-const userPool = new CognitoUserPool(poolData);
-
-const CUSTOMER_API = "/auth/customer-profile";
-const SHOPKEEPER_API = "/auth/shopkeeper-profile";
-const ADMIN_API = "/auth/admin-profile";
-
-function signUp(
-  email: string,
-  password: string,
-  attributes: { [key: string]: string }
-) {
-  return new Promise((resolve, reject) => {
-    const attributeList = Object.entries(attributes).map(
-      ([key, value]) => new CognitoUserAttribute({ Name: key, Value: value })
-    );
-
-    userPool.signUp(email, password, attributeList, [], (err, result) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result);
-      }
-    });
-  });
-}
 
 export default function RegisterPage() {
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
+  
+  // Form states
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -65,6 +27,48 @@ export default function RegisterPage() {
   const [shopSpecs, setShopSpecs] = useState("");
   const [shopPhone, setShopPhone] = useState("");
   const [yearofEstablishment, setYearofEstablishment] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Constants
+  const CUSTOMER_API = "/auth/customer-profile";
+  const SHOPKEEPER_API = "/auth/shopkeeper-profile";
+  const ADMIN_API = "/auth/admin-profile";
+
+  // Initialize Cognito configuration
+  const poolData = {
+    UserPoolId: "ap-south-1_VKjbitmCA",
+    ClientId: "26b9i0nbi58vcq7gqfcdnjt8qo",
+  };
+  const userPool = new CognitoUserPool(poolData);
+
+  // Handle mounting
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  function signUp(
+    email: string,
+    password: string,
+    attributes: { [key: string]: string }
+  ) {
+    return new Promise((resolve, reject) => {
+      const attributeList = Object.entries(attributes).map(
+        ([key, value]) => new CognitoUserAttribute({ Name: key, Value: value })
+      );
+
+      userPool.signUp(email, password, attributeList, [], (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  }
 
   const handleSignUp = async () => {
     if (!email || !password || !confirmPassword || !name) {
@@ -76,14 +80,24 @@ export default function RegisterPage() {
       alert("Passwords do not match. Please try again.");
       return;
     }
+
     if (selected && !yearofEstablishment) {
       alert("Please enter year of establishment");
       return;
     }
-    if (selected && (yearofEstablishment.length !== 4 || !Number(yearofEstablishment) || Number(yearofEstablishment) < 1900 || Number(yearofEstablishment) > new Date().getFullYear())) {
+
+    if (
+      selected &&
+      (yearofEstablishment.length !== 4 ||
+        !Number(yearofEstablishment) ||
+        Number(yearofEstablishment) < 1900 ||
+        Number(yearofEstablishment) > new Date().getFullYear())
+    ) {
       alert("Please enter a valid year of establishment");
       return;
     }
+
+    setIsLoading(true);
 
     try {
       const cognitoResult: any = await signUp(email, password, {
@@ -99,8 +113,6 @@ export default function RegisterPage() {
 
       let mongoDbResult;
 
-      console.log(commonData);
-
       if (selected) {
         mongoDbResult = await api.post(SHOPKEEPER_API, {
           ...commonData,
@@ -110,25 +122,19 @@ export default function RegisterPage() {
           shopPhone,
           yearofEstablishment,
         });
+
+        if (mounted && typeof window !== "undefined") {
+          const shopData = {
+            shopName: shopName,
+            shopMail: email,
+            address: shopLocation,
+            shopPhone: shopPhone,
+            services: shopSpecs,
+          };
+          localStorage.setItem("shopData", JSON.stringify(shopData));
+        }
       } else {
         mongoDbResult = await api.post(CUSTOMER_API, commonData);
-      }
-      
-      // If new admin account need to be made
-      // mongoDbResult = await api.post(ADMIN_API, commonData);
-
-      console.log("User signed up successfully:", cognitoResult);
-      console.log("User data stored in MongoDB:", mongoDbResult.data);
-
-      if (selected && typeof window !== "undefined") {
-        const shopData = {
-          shopName: shopName,
-          shopMail: email,
-          address: shopLocation,
-          shopPhone: shopPhone,
-          services: shopSpecs,
-        };
-        localStorage.setItem("shopData", JSON.stringify(shopData));
       }
 
       router.push("/query");
@@ -136,13 +142,15 @@ export default function RegisterPage() {
       console.error("Error during sign up:", error);
       if (error.response) {
         alert(
-          `Error signing up:  ${error.response.data.message || error.response.data}`
+          `Error signing up: ${error.response.data.message || error.response.data}`
         );
       } else if (error.request) {
         alert("Error signing up: No response received from server");
       } else {
         alert(`Error signing up: ${error.message}`);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -192,10 +200,7 @@ export default function RegisterPage() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
 
-            <div
-              className="flex items-center gap-2"
-              
-            >
+            <div className="flex items-center gap-2">
               <Checkbox id="terms" onClick={() => setSelected(!selected)} />
               <label
                 htmlFor="terms"
@@ -246,10 +251,13 @@ export default function RegisterPage() {
             )}
 
             <Button
-              className="my-4 h-12 w-[20rem] rounded-2xl bg-[#C6A86B] hover:bg-black md:w-[30rem]"
+              className={`my-4 h-12 w-[20rem] rounded-2xl bg-[#C6A86B] hover:bg-black md:w-[30rem] ${
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
               onClick={handleSignUp}
+              disabled={isLoading}
             >
-              Continue with Email
+              {isLoading ? "Signing Up..." : "Continue with Email"}
             </Button>
 
             <div>
@@ -268,8 +276,7 @@ export default function RegisterPage() {
               alt="Hero Image"
               width={500}
               height={300}
-              layout="responsive"
-              className="rounded-xl"
+              className="rounded-xl w-full h-auto"
             />
           </div>
         </div>

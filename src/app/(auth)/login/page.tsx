@@ -4,116 +4,122 @@ import { CognitoUserPool, CognitoUser, AuthenticationDetails } from 'amazon-cogn
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';   
+import { useRouter } from 'next/navigation';   
 import { api } from "@/api/api";
 import { getJwtToken } from '@/action/cognitoUtils';
 import Image from 'next/image';
 
+// Move poolData inside the component to avoid potential hydration issues
 const poolData = {
   UserPoolId: process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID!,
   ClientId: process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID!,
 };
-const userPool = new CognitoUserPool(poolData);
 
-async function checkShopkeeper(email: string): Promise<boolean> {
-  try {
-    
-    const shopkeeperResponse = await api.post("/read/shopkeeper-profile", { email });
-    if (shopkeeperResponse.data.isShopkeeper) {
-      return true;
-    }
-    console.log("shopkeeperResponse: ",shopkeeperResponse.data);
-    
-    const customerResponse = await api.post("/read/customer-profile", { email });
-    if ( !customerResponse.data.isShopkeeper) {
-      return false;
-    }
-
-    console.log("customerResponse: ",customerResponse.data);
-
-    throw new Error("User profile not found");
-  } catch (error) {
-    console.error("Error checking user profile:", error);
-    throw error;
-  }
-}
-
-async function checkAdmin(email: string): Promise<boolean> {
-  try {
-    const response = await api.post("/read/admin-profile", {
-      cognitoId: null,
-      email,
-    });
-    return response.data.isAdmin;
-  } catch (error) {
-    console.error("Error checking admin profile:", error);
-    return false;
-  }
-}
-
-function signIn(ID: string, password: string) {
-  console.log("Signing in");
-  const authenticationDetails = new AuthenticationDetails({
-    Username: ID,
-    Password: password,
-  });
-
-  const userData = {
-    Username: ID,
-    Pool: userPool,
-  };
-
-  const cognitoUser = new CognitoUser(userData);
-
-  return new Promise((resolve, reject) => {
-    cognitoUser.authenticateUser(authenticationDetails, {
-      onSuccess:
- (session) => {
-        const expirationDate = new Date();
-        expirationDate.setMonth(expirationDate.getMonth() + 1);
-        localStorage.setItem('userSession', JSON.stringify(session));
-        localStorage.setItem('isLoggedIn', 'true'); 
-        resolve(session);
-      },
-      onFailure: (err) => {
-        reject(err);
-      },
-    });
-  });
-}
-  
 export default function LoginPage() {
+  const [mounted, setMounted] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);   
+  const [isLoading, setIsLoading] = useState(false);   
   const [loginSuccess, setLoginSuccess] = useState(false);
   const router = useRouter();
   
+  const userPool = new CognitoUserPool(poolData);
+
+  async function checkShopkeeper(email: string): Promise<boolean> {
+    try {
+      const shopkeeperResponse = await api.post("/read/shopkeeper-profile", { email });
+      if (shopkeeperResponse.data.isShopkeeper) {
+        return true;
+      }
+      
+      const customerResponse = await api.post("/read/customer-profile", { email });
+      if (!customerResponse.data.isShopkeeper) {
+        return false;
+      }
+
+      throw new Error("User profile not found");
+    } catch (error) {
+      console.error("Error checking user profile:", error);
+      throw error;
+    }
+  }
+
+  async function checkAdmin(email: string): Promise<boolean> {
+    try {
+      const response = await api.post("/read/admin-profile", {
+        cognitoId: null,
+        email,
+      });
+      return response.data.isAdmin;
+    } catch (error) {
+      console.error("Error checking admin profile:", error);
+      return false;
+    }
+  }
+
+  function signIn(ID: string, password: string) {
+    const authenticationDetails = new AuthenticationDetails({
+      Username: ID,
+      Password: password,
+    });
+
+    const userData = {
+      Username: ID,
+      Pool: userPool,
+    };
+
+    const cognitoUser = new CognitoUser(userData);
+
+    return new Promise((resolve, reject) => {
+      cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: (session) => {
+          const expirationDate = new Date();
+          expirationDate.setMonth(expirationDate.getMonth() + 1);
+          if (mounted) {
+            localStorage.setItem('userSession', JSON.stringify(session));
+            localStorage.setItem('isLoggedIn', 'true'); 
+          }
+          resolve(session);
+        },
+        onFailure: (err) => {
+          reject(err);
+        },
+      });
+    });
+  }
+
   useEffect(() => {
+    setMounted(true);
     if (typeof window !== 'undefined' && localStorage.getItem('isLoggedIn')) {
       setLoginSuccess(true);
       router.replace('/');
     }
   }, [router]);
 
+  if (!mounted) {
+    return null;
+  }
+
   const handleSignIn = async () => {
     if (email && password) {
       setIsLoading(true);
       try {
-        const session:any = await signIn(email, password);
-        const isShopkeeper = await checkShopkeeper( email );
-        const isAdmin = await checkAdmin( email );
-        console.log("isShopkeeper: ",isShopkeeper);
-        console.log("Login successful!", session);
+        const session: any = await signIn(email, password);
+        const isShopkeeper = await checkShopkeeper(email);
+        const isAdmin = await checkAdmin(email);
+        
         const response = await api.post(`/auth/getProfile/`, {
-          cognitoId : session.idToken.payload.sub
+          cognitoId: session.idToken.payload.sub
         });
         const profile = response.data;
-        if(typeof window !== 'undefined') {
-          localStorage.setItem('profile', JSON.stringify({ name: profile.name, profilePic: profile?.profilePic }));
-        }
-        const token = await getJwtToken(email, password);
-        if (typeof window !== 'undefined') {
+        
+        if (mounted && typeof window !== 'undefined') {
+          localStorage.setItem('profile', JSON.stringify({ 
+            name: profile.name, 
+            profilePic: profile?.profilePic 
+          }));
+          
+          const token = await getJwtToken(email, password);
           const jwt = token.accessToken;
           
           const farFuture = new Date(2099, 11, 31).toUTCString();
@@ -124,16 +130,23 @@ export default function LoginPage() {
           localStorage.setItem('isShopkeeper', isShopkeeper ? 'true' : 'false');
           localStorage.setItem('isAdmin', isAdmin ? 'true' : 'false');
         }
-
+        
         setLoginSuccess(true);
-        if (isAdmin) window.location.href = '/admin'
-        if ( !isShopkeeper ) window.location.href = '/'; 
-        else window.location.href = '/dashboard'; 
+        if (isAdmin) {
+          window.location.href = '/admin';
+        } else if (!isShopkeeper) {
+          window.location.href = '/';
+        } else {
+          window.location.href = '/dashboard';
+        }
       } catch (err) {
         console.error("Login failed", err);
         const errorMessage = (err as Error).message;
-        if( errorMessage=="User is not confirmed." ) alert("Login failed: " + "Please verify your E-Mail from the link sent to your E-Mail address." );
-        else alert("Login failed: " + errorMessage );
+        if (errorMessage === "User is not confirmed.") {
+          alert("Login failed: Please verify your E-Mail from the link sent to your E-Mail address.");
+        } else {
+          alert("Login failed: " + errorMessage);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -196,8 +209,7 @@ export default function LoginPage() {
               alt="Hero Image"
               width={500}
               height={300}
-              layout="responsive"
-              className="rounded-xl"
+              className="rounded-xl w-full h-auto" 
             />
           </div>
         </div>

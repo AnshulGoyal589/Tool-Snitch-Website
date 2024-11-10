@@ -22,11 +22,12 @@ const Stages = [{
 }];
 
 export default function DeviceFormLayout({ children }: { children: React.ReactNode }) {
+
   const pathname = usePathname();
   const currentStageIndex = Stages.findIndex((stage) => pathname.startsWith(stage.link));
-
+  
   const canProceedToNextStep = (index: number) => {
-    return index <= currentStageIndex; 
+    return index <= currentStageIndex;
   };
 
   return (
