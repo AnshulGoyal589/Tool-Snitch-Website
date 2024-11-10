@@ -9,6 +9,7 @@ import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMe
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
+import { handleLogout as logoutHandler} from '../private/LogoutButton'
 
 
 export function NavigationBar() {
@@ -60,10 +61,16 @@ export function NavigationBar() {
   };
 
   const handleLogout = () => {
-    document.cookie = 'jwtToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    localStorage.clear();
-    setIsLoggedIn(null);
-    window.location.href = '/login';
+    logoutHandler({ 
+      setIsLoggedIn,
+      onLogoutSuccess: () => {
+        console.log('Logout successful');
+      }
+    });
+    // document.cookie = 'jwtToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    // localStorage.clear();
+    // setIsLoggedIn(null);
+    // window.location.href = '/login';
   };
 
   

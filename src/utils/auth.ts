@@ -38,6 +38,15 @@ export const getUserSession = (): Promise<string> => {
   });
 };
 
+export const clearCookies = () => {
+  const cookies = document.cookie.split(';');
+  
+  for (const cookie of cookies) {
+    const [name] = cookie.split('=');
+    document.cookie = `${name.trim()}=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; domain=${window.location.hostname}; Secure; SameSite=Strict;`;
+  }
+};
+
 
 export const forgotPassword = (email: string): Promise<any> => {
   return new Promise((resolve, reject) => {

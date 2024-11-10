@@ -21,11 +21,11 @@ interface order {
     shopId: string,
     shopName: string,
     status: string,
-    address:string,
+    address: string,
     __v: number,
     _id: string,
-    price:number,
-    cancelled:boolean
+    price: number,
+    cancelled: boolean
 }
 
 const AppointmentTracking = () => {
@@ -62,11 +62,11 @@ const AppointmentTracking = () => {
     }
 
     const steps = [
-        { label: 'Appointment Booked', status: order.status === 'booked' },
-        { label: 'Order Received by Shopkeeper', status: order.status === 'received' },
-        { label: 'Waiting for Spare Part Delivery', status: order.status === 'in-progress' },
-        { label: 'Successfully Completed', status: order.status === 'completed' },
-        { label: 'Cancelled by Customer', status: order.status === 'cancelled' },
+        { label: 'Appointment Booked', status: order!.status === 'booked' },
+        { label: 'Order Received by Shopkeeper', status: order!.status === 'received' },
+        { label: 'Waiting for Spare Part Delivery', status: order!.status === 'in-progress' },
+        { label: 'Successfully Completed', status: order!.status === 'completed' },
+        { label: 'Cancelled by Customer', status: order!.status === 'cancelled' },
     ];
 
     return (
@@ -98,31 +98,31 @@ const AppointmentTracking = () => {
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <p className="text-gray-500">Device:</p>
-                            <p className="font-medium">{order.device}</p>
+                            <p className="font-medium">{order!.device}</p>
                         </div>
                         <div>
                             <p className="text-gray-500">Reported Issues:</p>
                             <ul>
-                                {order.issue.split(',').map((issue, index) => (
+                                {order!.issue.split(',').map((issue, index) => (
                                     <li key={index} className="font-medium">{issue.trim()}</li>
                                 ))}
                             </ul>
                         </div>
                         <div>
                             <p className="text-gray-500">Appointment Date and Time:</p>
-                            <p className="font-medium">{order.appointmentDetails.time}, {new Date(order.appointmentDetails.date).toLocaleDateString()}</p>
+                            <p className="font-medium">{order!.appointmentDetails.time}, {new Date(order!.appointmentDetails.date).toLocaleDateString()}</p>
                         </div>
                         <div>
                             <p className="text-gray-500">Shop Name:</p>
-                            <p className="font-medium">{order.shopName}</p>
+                            <p className="font-medium">{order!.shopName}</p>
                         </div>
                         <div>
                             <p className="text-gray-500">Address:</p>
-                            <p className="font-medium">{order.address}</p>
+                            <p className="font-medium">{order!.address}</p>
                         </div>
                         <div>
                             <p className="text-gray-500">Price:</p>
-                            <p className="font-medium">₹{order.price}</p>
+                            <p className="font-medium">₹{order!.price}</p>
                         </div>
                     </div>
                 </div>

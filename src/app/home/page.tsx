@@ -11,7 +11,7 @@ import { FaInstagram, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import AnimatedFixSection from './AnimatedFixSection';
+import AnimatedFixSection from '../AnimatedFixSection';
 import { api } from "@/api/api";
 import { getUserSession } from '@/utils/auth';
 
