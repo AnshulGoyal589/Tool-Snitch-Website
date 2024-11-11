@@ -62,8 +62,8 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
         className="antialiased min-h-screen flex flex-col"
         suppressHydrationWarning
       >
-        <NavigationBar />
         <Provider>
+        <NavigationBar />
           <main className="flex-1">
             {children}
           </main>

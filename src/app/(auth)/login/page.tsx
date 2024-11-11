@@ -9,7 +9,6 @@ import { api } from "@/api/api";
 import { getJwtToken } from '@/action/cognitoUtils';
 import Image from 'next/image';
 
-// Move poolData inside the component to avoid potential hydration issues
 const poolData = {
   UserPoolId: process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID!,
   ClientId: process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID!,
@@ -24,6 +23,37 @@ export default function LoginPage() {
   const router = useRouter();
   
   const userPool = new CognitoUserPool(poolData);
+
+  // Check authentication status on mount
+  useEffect(() => {
+    setMounted(true);
+    const checkAuth = () => {
+      if (typeof window !== 'undefined') {
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        if (isLoggedIn === 'true') {
+          setLoginSuccess(true);
+          router.replace('/');
+        }
+      }
+    };
+    checkAuth();
+  }, [router]);
+
+  // Handle page visibility changes
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        // Force a re-render of the navigation bar
+        const event = new Event('storage');
+        window.dispatchEvent(event);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   async function checkShopkeeper(email: string): Promise<boolean> {
     try {
@@ -77,7 +107,9 @@ export default function LoginPage() {
           expirationDate.setMonth(expirationDate.getMonth() + 1);
           if (mounted) {
             localStorage.setItem('userSession', JSON.stringify(session));
-            localStorage.setItem('isLoggedIn', 'true'); 
+            localStorage.setItem('isLoggedIn', 'true');
+            // Trigger storage event for navbar update
+            window.dispatchEvent(new Event('storage'));
           }
           resolve(session);
         },
@@ -88,70 +120,77 @@ export default function LoginPage() {
     });
   }
 
-  useEffect(() => {
-    setMounted(true);
-    if (typeof window !== 'undefined' && localStorage.getItem('isLoggedIn')) {
-      setLoginSuccess(true);
-      router.replace('/');
-    }
-  }, [router]);
-
-  if (!mounted) {
-    return null;
-  }
-
   const handleSignIn = async () => {
-    if (email && password) {
-      setIsLoading(true);
-      try {
-        const session: any = await signIn(email, password);
-        const isShopkeeper = await checkShopkeeper(email);
-        const isAdmin = await checkAdmin(email);
+    if (!email || !password || isLoading) return;
+    
+    setIsLoading(true);
+    try {
+      const session: any = await signIn(email, password);
+      const isShopkeeper = await checkShopkeeper(email);
+      const isAdmin = await checkAdmin(email);
+      
+      const response = await api.post(`/auth/getProfile/`, {
+        cognitoId: session.idToken.payload.sub
+      });
+      const profile = response.data;
+      
+      if (mounted && typeof window !== 'undefined') {
+        // Store profile data
+        localStorage.setItem('profile', JSON.stringify({ 
+          name: profile.name, 
+          profilePic: profile?.profilePic 
+        }));
         
-        const response = await api.post(`/auth/getProfile/`, {
-          cognitoId: session.idToken.payload.sub
-        });
-        const profile = response.data;
+        // Handle JWT token
+        const token = await getJwtToken(email, password);
+        const jwt = token.accessToken;
+        const farFuture = new Date(2099, 11, 31).toUTCString();
         
-        if (mounted && typeof window !== 'undefined') {
-          localStorage.setItem('profile', JSON.stringify({ 
-            name: profile.name, 
-            profilePic: profile?.profilePic 
-          }));
-          
-          const token = await getJwtToken(email, password);
-          const jwt = token.accessToken;
-          
-          const farFuture = new Date(2099, 11, 31).toUTCString();
-          document.cookie = `jwtToken=${jwt}; path=/; expires=${farFuture}; secure; samesite=strict`;
-          document.cookie = `isShopkeeper=${isShopkeeper}; path=/; expires=${farFuture}; secure; samesite=strict`;
-          document.cookie = `isAdmin=${isAdmin}; path=/; expires=${farFuture}; secure; samesite=strict`;
-          localStorage.setItem('JwtToken', jwt);
-          localStorage.setItem('isShopkeeper', isShopkeeper ? 'true' : 'false');
-          localStorage.setItem('isAdmin', isAdmin ? 'true' : 'false');
-        }
+        // Set cookies
+        document.cookie = `jwtToken=${jwt}; path=/; expires=${farFuture}; secure; samesite=strict`;
+        document.cookie = `isShopkeeper=${isShopkeeper}; path=/; expires=${farFuture}; secure; samesite=strict`;
+        document.cookie = `isAdmin=${isAdmin}; path=/; expires=${farFuture}; secure; samesite=strict`;
         
-        setLoginSuccess(true);
-        if (isAdmin) {
-          window.location.href = '/admin';
-        } else if (!isShopkeeper) {
-          window.location.href = '/';
-        } else {
-          window.location.href = '/dashboard';
-        }
-      } catch (err) {
-        console.error("Login failed", err);
-        const errorMessage = (err as Error).message;
-        if (errorMessage === "User is not confirmed.") {
-          alert("Login failed: Please verify your E-Mail from the link sent to your E-Mail address.");
-        } else {
-          alert("Login failed: " + errorMessage);
-        }
-      } finally {
-        setIsLoading(false);
+        // Set localStorage
+        localStorage.setItem('JwtToken', jwt);
+        localStorage.setItem('isShopkeeper', isShopkeeper ? 'true' : 'false');
+        localStorage.setItem('isAdmin', isAdmin ? 'true' : 'false');
+        
+        // Trigger storage event for navbar update
+        window.dispatchEvent(new Event('storage'));
       }
+      
+      setLoginSuccess(true);
+      
+      // Use router for navigation instead of window.location
+      if (isAdmin) {
+        window.location.href='/admin';
+      } else if (!isShopkeeper) {
+        window.location.href='/home';
+      } else {
+        window.location.href='/dashboard';
+      }
+      // if (isAdmin) {
+      //   router.push('/admin');
+      // } else if (!isShopkeeper) {
+      //   router.push('/home');
+      // } else {
+      //   router.push('/dashboard');
+      // }
+    } catch (err) {
+      console.error("Login failed", err);
+      const errorMessage = (err as Error).message;
+      if (errorMessage === "User is not confirmed.") {
+        alert("Login failed: Please verify your E-Mail from the link sent to your E-Mail address.");
+      } else {
+        alert("Login failed: " + errorMessage);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (!mounted) return null;
 
   return (
     <div className="flex flex-col justify-center item-center pt-[3rem] mb-10">
@@ -210,6 +249,7 @@ export default function LoginPage() {
               width={500}
               height={300}
               className="rounded-xl w-full h-auto" 
+              priority
             />
           </div>
         </div>

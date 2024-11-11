@@ -21,6 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/provider/index.jsx", "src/provider/NextUI.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/provider/index.tsx", "src/provider/NextUI.jsx"],
   "exclude": ["node_modules"]
 }
