@@ -10,7 +10,7 @@ export const routeConfig: RouteConfig = {
       defaultRoute: '/admin'
     },
     shopkeeper: {
-      allowedRoutes: ['/dashboard', '/myShop', '/orders'],
+      allowedRoutes: ['/dashboard', '/myShop', '/orders','/order-history','/inventory'],
       redirectTo: '/login',
       defaultRoute: '/dashboard'
     },
