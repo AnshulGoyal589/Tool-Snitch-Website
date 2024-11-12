@@ -21,32 +21,34 @@ export function ReviewSection() {
 
 export default function ReviewCard() {
   return (
-    <div className="p-2 sm:break-inside-avoid">
-    <div className=" max-w-md p-4 border border-gray-200 rounded-lg">
-      <p>
-        “I loved how quick the repair was. I was really worried I’d have to
-        change my phone. Special thanks to Sushil for fixing my phone.”
-      </p>
-      <div className="mt-2 flex items-center justify-between">
-        <div className="flex items-center gap-2 mt-4">
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold">Abhinav</span>
-            <span className="text-xs text-gray-500">2 days ago</span>
+    <>
+      <div className="p-2 sm:break-inside-avoid">
+      <div className=" max-w-md p-4 border border-gray-200 rounded-lg">
+        <p>
+          “I loved how quick the repair was. I was really worried I’d have to
+          change my phone. Special thanks to Sushil for fixing my phone.”
+        </p>
+        <div className="mt-2 flex items-center justify-between">
+          <div className="flex items-center gap-2 mt-4">
+            <Avatar>
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col">
+              <span className="text-sm font-semibold">Abhinav</span>
+              <span className="text-xs text-gray-500">2 days ago</span>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-1">
-          <FaStar className="text-yellow-500" size={18} />
-          <FaStar className="text-yellow-500" size={18} />
-          <FaStar className="text-yellow-500" size={18} />
-          <FaStar className="text-yellow-500" size={18} />
-          <FaStar className="text-yellow-500" size={18} />
+          <div className="flex items-center gap-1">
+            <FaStar className="text-yellow-500" size={18} />
+            <FaStar className="text-yellow-500" size={18} />
+            <FaStar className="text-yellow-500" size={18} />
+            <FaStar className="text-yellow-500" size={18} />
+            <FaStar className="text-yellow-500" size={18} />
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </>
   );
 }
